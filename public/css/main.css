@@ -498,31 +498,14 @@ section {
     transform: translateX(-100%); /* move fully left */
   }
 }
-#auth {
-  padding-top: 3.5em;
-  /* =====================
+/* =====================
    GLASSMORPHISM LOGIN CARD
    ===================== */
-  /* =====================
-   INPUT GROUP
-   ===================== */
-  /* =====================
-   BUTTONS
-   ===================== */
-  /* =====================
-   DIVIDER
-   ===================== */
-  /* =====================
-   LINKS
-   ===================== */
-  /* =====================
-   ERROR MESSAGES
-   ===================== */
-  /* =====================
-   RESPONSIVE
-   ===================== */
+.register {
+  padding-top: 4.5em;
 }
-#auth .glass-card.login-card {
+
+.glass-card.login-card {
   backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
@@ -534,12 +517,17 @@ section {
   display: flex;
   flex-direction: column;
 }
-#auth .input-group {
+
+/* =====================
+   INPUT GROUP
+   ===================== */
+.input-group {
   display: flex;
   width: 100%;
   flex-direction: row;
 }
-#auth .glass-input-icon {
+
+.glass-input-icon {
   background: rgba(15, 23, 42, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--accent);
@@ -551,8 +539,9 @@ section {
   justify-content: center;
   min-width: 45px; /* ensure icon is always visible */
 }
-#auth .glass-input,
-#auth .form-select.glass-input {
+
+.glass-input,
+.form-select.glass-input {
   background: rgba(15, 23, 42, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--text);
@@ -562,73 +551,100 @@ section {
   flex: 1;
   transition: all 0.3s ease;
 }
-#auth .glass-input:focus,
-#auth .form-select.glass-input:focus {
+
+.glass-input:focus,
+.form-select.glass-input:focus {
   border-color: var(--accent);
   background: rgba(15, 23, 42, 0.7);
   box-shadow: 0 0 8px rgba(0, 212, 170, 0.4);
   outline: none;
 }
-#auth .glass-input::placeholder {
+
+.glass-input::placeholder {
   color: rgba(255, 255, 255, 0.4);
 }
-#auth .btn.holographic {
+
+/* =====================
+   BUTTONS
+   ===================== */
+.btn.holographic {
   font-weight: 600;
   font-size: 1rem;
   padding: 0.75rem;
   border-radius: 10px;
   transition: all 0.3s ease;
 }
-#auth .btn-accent.holographic {
+
+.btn-accent.holographic {
   background: linear-gradient(135deg, var(--accent), var(--primary));
   color: var(--dark);
 }
-#auth .btn-accent.holographic:hover {
+
+.btn-accent.holographic:hover {
   background: linear-gradient(135deg, var(--primary), var(--accent));
 }
-#auth .btn-outline-accent.holographic {
+
+.btn-outline-accent.holographic {
   border: 1.5px solid var(--accent);
   color: var(--accent);
   background: transparent;
 }
-#auth .btn-outline-accent.holographic:hover {
+
+.btn-outline-accent.holographic:hover {
   background: var(--accent);
   color: var(--dark);
 }
-#auth .divider {
+
+/* =====================
+   DIVIDER
+   ===================== */
+.divider {
   display: flex;
   align-items: center;
   justify-content: center;
   color: rgba(255, 255, 255, 0.5);
   font-size: 0.8rem;
 }
-#auth .divider::before,
-#auth .divider::after {
+
+.divider::before,
+.divider::after {
   content: "";
   flex: 1;
   height: 1px;
   background: rgba(255, 255, 255, 0.1);
   margin: 0 10px;
 }
-#auth a.text-accent {
+
+/* =====================
+   LINKS
+   ===================== */
+a.text-accent {
   color: var(--accent);
   text-decoration: none;
 }
-#auth a.text-accent:hover {
+
+a.text-accent:hover {
   text-decoration: underline;
 }
-#auth .invalid-feedback {
+
+/* =====================
+   ERROR MESSAGES
+   ===================== */
+.invalid-feedback {
   font-size: 0.8rem;
   color: #ff6b6b;
 }
+
+/* =====================
+   RESPONSIVE
+   ===================== */
 @media (max-width: 576px) {
-  #auth .glass-card.login-card {
+  .glass-card.login-card {
     padding: 1.5rem;
     max-width: 90%;
     padding-top: 2em;
   }
 }
-
 /* ====== PROFESSIONAL FLASH MESSAGES ====== */
 .flash-messages-container {
   position: fixed;
