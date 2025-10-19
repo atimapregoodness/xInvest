@@ -1,0 +1,19 @@
+<section
+  class="d-flex align-items-center justify-content-center min-vh-100 bg-dark text-light text-center"
+>
+  <div class="container">
+    <div class="animate__animated animate__fadeInUp">
+      <h1 class="display-1 fw-bold text-info"><%= status || 500 %></h1>
+      <h3 class="mb-3"><%= message || "Something went wrong" %></h3>
+      <% if (error && error.stack && process.env.NODE_ENV === "development") {
+      %>
+      <pre class="text-warning small text-start p-3 border rounded">
+<%= error.stack %></pre
+      >
+      <% } %>
+      <a href="/" class="btn btn-info mt-4 px-4 py-2 rounded-pill fw-semibold"
+        >Return Home</a
+      >
+    </div>
+  </div>
+</section>

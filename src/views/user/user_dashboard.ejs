@@ -1,0 +1,124 @@
+<%- include('../layout/boilerplate', { body: `
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title mb-0">User Profile</h5>
+        </div>
+        <div class="card-body">
+          <div class="text-center mb-3">
+            <img
+              src="<%= user.profile.avatar || '/images/default-avatar.png' %>"
+              class="rounded-circle"
+              width="80"
+              height="80"
+            />
+            <h5 class="mt-2"><%= user.username %></h5>
+            <p class="text-muted"><%= user.email %></p>
+          </div>
+          <div class="list-group list-group-flush">
+            <a
+              href="/dashboard"
+              class="list-group-item list-group-item-action active"
+              >Dashboard</a
+            >
+            <a href="/wallet" class="list-group-item list-group-item-action"
+              >Wallet</a
+            >
+            <a
+              href="/investments"
+              class="list-group-item list-group-item-action"
+              >Investments</a
+            >
+            <a
+              href="/transactions"
+              class="list-group-item list-group-item-action"
+              >Transactions</a
+            >
+            <a href="/profile" class="list-group-item list-group-item-action"
+              >Profile Settings</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-9">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card stat-card">
+            <div class="card-body">
+              <div class="stat-value">$<%= totalBalance.toFixed(2) %></div>
+              <div class="stat-label">Total Balance</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card stat-card">
+            <div class="card-body">
+              <div class="stat-value">$<%= totalProfit.toFixed(2) %></div>
+              <div class="stat-label">Total Profit</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title mb-0">Recent Investments</h5>
+            </div>
+            <div class="card-body">
+              <% if (investments.length > 0) { %>
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Plan</th>
+                      <th>Amount</th>
+                      <th>Start Date</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% investments.forEach(investment => { %>
+                    <tr>
+                      <td><%= investment.plan.name %></td>
+                      <td>$<%= investment.amount.toFixed(2) %></td>
+                      <td><%= investment.startDate.toLocaleDateString() %></td>
+                      <td>
+                        <span
+                          class="badge bg-<%= investment.status === 'active' ? 'success' : 'secondary' %>"
+                        >
+                          <%= investment.status %>
+                        </span>
+                      </td>
+                    </tr>
+                    <% }) %>
+                  </tbody>
+                </table>
+              </div>
+              <% } else { %>
+              <p class="text-muted">
+                No investments yet. <a href="/investments">Start investing</a>.
+              </p>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title mb-0">Recent Transactions</h5>
+            </div>
+            <div class="card-body"><% if (transactions</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

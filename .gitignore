@@ -1,0 +1,244 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Directory-based session stores
+tmp/
+temp/
+cache/
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# nyc test coverage
+.nyc_output
+
+# Grunt intermediate storage[](http://gruntjs.com/creating-plugins#storing-task-files)
+.grunt
+
+# node-waf configuration
+.lock-wscript
+
+# Compiled binary addons[](http://nodejs.org/api/addons.html)
+build/Release
+
+# Dependency directories
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env.test
+
+# parcel-bundler cache[](https://parceljs.org/)
+.cache
+.parcel-cache
+
+# Optional eslint cache
+.eslintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_c/
+.rts2_index_cache_c/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# MongoDB
+*.mongod.lock
+mongod.lock
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Development certificates
+*.pem
+*.crt
+*.key
+
+# Temporary files
+tmp/
+temp/
+
+# Build output
+dist/
+build/
+
+# Local development
+locales/
+*.local
+
+# Production builds
+public/build/
+public/dist/
+
+# Session files
+session/
+
+# Testing
+test-results/
+coverage/
+
+# xCrypto specific
+*.backup
+config/local.js
+config/development.js
+config/production.js
+
+# Certificates, .pem, .crt, .key
+*.pem
+*.crt
+*.key
+
+# Keys
+*.key
+*.p12
+*.pfx
+*.keystore
+
+# Passwords
+passwords.txt
+
+# Sensitive files
+secrets.json
+config/secrets.yml
+
+# MongoDB dumps
+dump/
+
+# Temporary upload files
+uploads/temp/
+
+# SSL certificates
+ssl/
+certs/
+
+# Docker
+.dockerignore
+Dockerfile.*
+
+# Kubernetes
+k8s/
+*.k8s.yml
+
+# Helm
+charts/
+values-*.yml
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.tfstate*
+
+# Sentry
+.sentry/
+
+# VSCode
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/extensions.json
+
+# JetBrains
+.idea/
+*.iml
+*.iws
+out/
+
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
+
+# TypeScript
+*.tsbuildinfo
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# macOS
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Certificates
+cert/

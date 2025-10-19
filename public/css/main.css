@@ -1,0 +1,332 @@
+:root {
+  --primary: #0066ff;
+  --secondary: #1e2a3a;
+  --accent: #00d4aa;
+  --dark: #0f172a;
+  --darker: #0a0f1c;
+  --success: #00d98c;
+  --danger: #ff375f;
+  --warning: #ffb800;
+  --info: #0066ff;
+  --glass: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+/* Smooth Scrolling */
+:root {
+  --primary: #0066ff;
+  --secondary: #1e2a3a;
+  --accent: #00d4aa;
+  --dark: #0f172a;
+  --darker: #0a0f1c;
+  --success: #00d98c;
+  --danger: #ff375f;
+  --warning: #ffb800;
+  --info: #0066ff;
+  --glass: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+/* Reset section visibility */
+section {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+#firstSection {
+  padding-top: 7em !important;
+}
+
+/* Enhanced Glass Effect */
+.glass-card {
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.6s ease;
+}
+
+.glass-card:hover::before {
+  left: 100%;
+}
+
+.glass-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 25px 50px rgba(0, 212, 170, 0.15);
+}
+
+/* Gradient Backgrounds */
+.gradient-bg {
+  background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 50%, var(--secondary) 100%);
+}
+
+.hero-gradient {
+  background: linear-gradient(135deg, rgba(0, 102, 255, 0.15) 0%, rgba(0, 212, 170, 0.15) 50%, rgba(15, 23, 42, 0.95) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Price Indicators */
+.price-up {
+  color: var(--success);
+  background: rgba(0, 217, 140, 0.1);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+}
+
+.price-down {
+  color: var(--danger);
+  background: rgba(255, 55, 95, 0.1);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+}
+
+/* Live Indicators */
+.live-indicator {
+  width: 10px;
+  height: 10px;
+  background: var(--success);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+/* Forex Pair Cards */
+.forex-pair-card {
+  background: linear-gradient(135deg, rgba(30, 42, 58, 0.8), rgba(15, 23, 42, 0.9));
+  border-radius: 12px;
+  padding: 15px;
+  border-left: 4px solid var(--accent);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.forex-pair-card:hover {
+  transform: translateX(8px);
+  border-left-color: var(--primary);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Plan Cards */
+.plan-card {
+  border-radius: 20px;
+  padding: 2.5rem 2rem;
+  background: var(--glass);
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border: 1px solid var(--glass-border);
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.plan-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  transform: scaleX(0);
+  transition: transform 0.4s ease;
+}
+
+.plan-card:hover::before {
+  transform: scaleX(1);
+}
+
+.plan-card:hover {
+  transform: translateY(-12px) scale(1.02);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+  border-color: var(--accent);
+}
+
+.plan-card.featured {
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+  color: white;
+  transform: scale(1.05);
+}
+
+.plan-card.featured::before {
+  display: none;
+}
+
+.plan-card.featured:hover {
+  transform: scale(1.08) translateY(-8px);
+}
+
+/* Feature Icons */
+.feature-icon {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 25px;
+  transition: all 0.4s ease;
+}
+
+.feature-icon:hover {
+  transform: rotate(5deg) scale(1.1);
+  box-shadow: 0 15px 30px rgba(0, 212, 170, 0.3);
+}
+
+/* Price Flash Animation */
+.price-flash {
+  animation: flashUpdate 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes flashUpdate {
+  0% {
+    background-color: rgba(0, 212, 170, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    background-color: rgba(0, 212, 170, 0.6);
+    transform: scale(1.05);
+  }
+  100% {
+    background-color: transparent;
+    transform: scale(1);
+  }
+}
+/* Statistics */
+.stat-number {
+  font-size: 2.8rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transition: all 0.3s ease;
+}
+
+/* TradingView Container */
+.tradingview-widget-container {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.tradingview-widget-container:hover {
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+}
+
+/* Buttons */
+.btn-accent {
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+  border: none;
+  border-radius: 12px;
+  padding: 12px 30px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-accent:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 212, 170, 0.3);
+}
+
+/* Professional Badges */
+.pro-badge {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border-radius: 20px;
+  padding: 8px 20px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Market Depth Indicator */
+.market-depth {
+  height: 4px;
+  background: linear-gradient(90deg, var(--success), var(--warning), var(--danger));
+  border-radius: 2px;
+  margin: 10px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Institutional Features Grid */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.institutional-feature {
+  background: linear-gradient(135deg, rgba(30, 42, 58, 0.6), rgba(15, 23, 42, 0.8));
+  border-radius: 16px;
+  padding: 2rem;
+  border-left: 4px solid var(--accent);
+  transition: all 0.3s ease;
+}
+
+.institutional-feature:hover {
+  transform: translateX(10px);
+  border-left-color: var(--primary);
+}
+
+/* Ensure all sections are visible */
+.py-5 {
+  padding-top: 3rem !important;
+  padding-bottom: 3rem !important;
+}
+
+.min-vh-80 {
+  min-height: 80vh;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+html {
+  scroll-behavior: smooth;
+}/*# sourceMappingURL=main.css.map */

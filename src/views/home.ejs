@@ -1,0 +1,1093 @@
+<%- layout('layout/boilerplate', { title: 'xInvest - Home' }) %>
+
+<!-- ===================== ENHANCED HERO SECTION ===================== -->
+<section
+  class="hero-section hero-gradient text-white py-5 position-relative"
+  id="firstSection"
+>
+  <div class="container position-relative z-1">
+    <div class="row align-items-center min-vh-80">
+      <div class="col-lg-6">
+        <div class="fade-in">
+          <span class="pro-badge mb-3 d-inline-block">
+            <span class="live-indicator"></span>
+            INSTITUTIONAL FOREX PLATFORM
+          </span>
+          <h1 class="display-3 fw-bold mb-4">
+            Professional
+            <span class="text-accent">Forex Investment</span> Solutions
+          </h1>
+          <p class="lead text-light mb-4 fs-5">
+            Access institutional-grade forex trading with lightning-fast
+            execution, razor-thin spreads, and professional portfolio
+            management.
+          </p>
+
+          <!-- Enhanced Stats -->
+          <div class="row g-3 mb-4">
+            <div class="col-md-4">
+              <div class="glass-card p-3 text-center">
+                <div class="stat-number">15K+</div>
+                <small class="text-muted">Professional Traders</small>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="glass-card p-3 text-center">
+                <div class="stat-number">$2.8B+</div>
+                <small class="text-muted">Daily Volume</small>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="glass-card p-3 text-center">
+                <div class="stat-number">99.2%</div>
+                <small class="text-muted">Execution Rate</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex flex-wrap gap-3">
+            <a href="/auth/register" class="btn btn-accent btn-lg px-5 py-3">
+              <i class="fas fa-rocket me-2"></i>Start Trading
+            </a>
+            <a
+              href="#institutional-features"
+              class="btn btn-outline-light btn-lg px-5 py-3"
+            >
+              <i class="fas fa-chart-line me-2"></i>View Platform
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <!-- Professional Live Forex Widget -->
+        <div class="glass-card p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">
+              <i class="fas fa-bolt text-accent me-2"></i>
+              Live Market Prices
+            </h5>
+            <span class="text-success small">
+              <span class="live-indicator"></span>
+              Real-time
+            </span>
+          </div>
+          <div class="market-depth"></div>
+          <div id="live-forex-widget">
+            <!-- Data will be populated by JavaScript -->
+          </div>
+          <div class="text-center mt-3">
+            <small class="text-muted"
+              >Powered by OneZero Technology • Equinix NY4/TY3</small
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== INSTITUTIONAL FEATURES ===================== -->
+<section id="institutional-features" class="py-5 bg-dark">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="pro-badge mb-3">INSTITUTIONAL TECHNOLOGY</span>
+      <h2 class="fw-bold text-white mb-3">Lightning Speed Execution</h2>
+      <p class="lead text-muted">
+        Professional trading conditions with institutional infrastructure
+      </p>
+    </div>
+
+    <div class="feature-grid">
+      <!-- Feature 1: Lightning Execution -->
+      <div class="institutional-feature">
+        <div class="feature-icon">
+          <i class="fas fa-bolt fa-2x text-white"></i>
+        </div>
+        <h4 class="text-white mb-3">Lightning Execution</h4>
+        <p class="text-light mb-3">
+          Ultra-fast trade execution with razor-thin spreads starting from 0.1
+          pips
+        </p>
+        <div class="glass-card p-3 text-center mt-3">
+          <div class="row text-center">
+            <div class="col-6">
+              <small class="text-muted d-block">Bid</small>
+              <strong class="text-success">1.10005</strong>
+            </div>
+            <div class="col-6">
+              <small class="text-muted d-block">Ask</small>
+              <strong class="text-danger">1.10006</strong>
+            </div>
+          </div>
+          <div class="mt-2">
+            <span class="badge bg-accent text-dark">Spread: 0.1 pips</span>
+          </div>
+        </div>
+        <ul class="list-unstyled mt-3">
+          <li class="text-muted mb-2">
+            <i class="fas fa-check text-success me-2"></i>Top-tier Liquidity
+            Providers
+          </li>
+          <li class="text-muted mb-2">
+            <i class="fas fa-check text-success me-2"></i>OneZero Financial
+            Technology
+          </li>
+          <li class="text-muted">
+            <i class="fas fa-check text-success me-2"></i>Equinix NY4 & TY3 Data
+            Centers
+          </li>
+        </ul>
+      </div>
+
+      <!-- Feature 2: Expert Advisor Environment -->
+      <div class="institutional-feature">
+        <div class="feature-icon">
+          <i class="fas fa-robot fa-2x text-white"></i>
+        </div>
+        <h4 class="text-white mb-3">Perfect EA Environment</h4>
+        <p class="text-light mb-3">
+          Optimized platform for Expert Advisors with maximum flexibility
+        </p>
+        <div class="glass-card p-3 mt-3">
+          <div class="row text-center">
+            <div class="col-6 mb-3">
+              <i class="fas fa-tachometer-alt text-accent fa-2x mb-2"></i>
+              <div class="text-muted small">Scalping</div>
+            </div>
+            <div class="col-6 mb-3">
+              <i class="fas fa-sync-alt text-accent fa-2x mb-2"></i>
+              <div class="text-muted small">Hedging</div>
+            </div>
+            <div class="col-6">
+              <i class="fas fa-newspaper text-accent fa-2x mb-2"></i>
+              <div class="text-muted small">News Trading</div>
+            </div>
+            <div class="col-6">
+              <i class="fas fa-ban text-accent fa-2x mb-2"></i>
+              <div class="text-muted small">No Requotes</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feature 3: Payments & Security -->
+      <div class="institutional-feature">
+        <div class="feature-icon">
+          <i class="fas fa-shield-alt fa-2x text-white"></i>
+        </div>
+        <h4 class="text-white mb-3">Secure Banking</h4>
+        <p class="text-light mb-3">
+          Instant deposits and fast withdrawals with top-tier security
+        </p>
+        <div class="glass-card p-3 mt-3">
+          <div class="row text-center mb-3">
+            <div class="col-4">
+              <i class="fab fa-cc-visa text-muted fa-2x"></i>
+            </div>
+            <div class="col-4">
+              <i class="fab fa-cc-mastercard text-muted fa-2x"></i>
+            </div>
+            <div class="col-4">
+              <i class="fab fa-cc-paypal text-muted fa-2x"></i>
+            </div>
+          </div>
+          <div class="text-center">
+            <small class="text-muted">Funds secured in Tier 1 banks</small>
+          </div>
+        </div>
+        <div class="mt-3">
+          <span class="badge bg-success me-2">FCA Regulated</span>
+          <span class="badge bg-info">CySEC Licensed</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PRODUCT DIVERSIFICATION ===================== -->
+<section class="py-5 gradient-bg">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <span class="pro-badge mb-3">15,000+ PRODUCTS</span>
+        <h2 class="fw-bold text-white mb-4">
+          Diversify Across 7 Asset Classes
+        </h2>
+        <p class="text-light lead mb-4">
+          Access a comprehensive range of trading instruments with single
+          account convenience. Trade Forex, Futures, Indices, Metals, Energies,
+          and Shares.
+        </p>
+
+        <div class="row g-3">
+          <div class="col-6">
+            <div class="glass-card p-3 text-center">
+              <i class="fas fa-globe-americas text-accent fa-2x mb-2"></i>
+              <div class="text-white fw-bold">80+</div>
+              <small class="text-muted">Forex Pairs</small>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="glass-card p-3 text-center">
+              <i class="fas fa-chart-bar text-accent fa-2x mb-2"></i>
+              <div class="text-white fw-bold">50+</div>
+              <small class="text-muted">Stock Indices</small>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="glass-card p-3 text-center">
+              <i class="fas fa-gem text-accent fa-2x mb-2"></i>
+              <div class="text-white fw-bold">12+</div>
+              <small class="text-muted">Precious Metals</small>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="glass-card p-3 text-center">
+              <i class="fas fa-bolt text-accent fa-2x mb-2"></i>
+              <div class="text-white fw-bold">8+</div>
+              <small class="text-muted">Energy Products</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="glass-card p-4 mt-5 mt-lg-0">
+          <h5 class="text-white mb-4">Competitive Pricing</h5>
+          <div class="row g-3">
+            <div class="col-6">
+              <div class="forex-pair-card text-center">
+                <div class="text-accent fw-bold">UK 100</div>
+                <div class="text-white">from 0.8 pts</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="forex-pair-card text-center">
+                <div class="text-accent fw-bold">Germany 30</div>
+                <div class="text-white">from 0.9 pts</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="forex-pair-card text-center">
+                <div class="text-accent fw-bold">EUR/USD</div>
+                <div class="text-white">from 0.6 pips</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="forex-pair-card text-center">
+                <div class="text-accent fw-bold">EUR/GBP</div>
+                <div class="text-white">from 0.8 pips</div>
+              </div>
+            </div>
+          </div>
+          <div class="text-center mt-4">
+            <small class="text-muted"
+              >Depth of market available on all forex pairs</small
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== LIVE FOREX MARKET ===================== -->
+<section class="py-5 bg-dark">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="fw-bold text-white">
+        <span class="live-indicator"></span>
+        Professional Market Watch
+      </h2>
+      <div class="text-muted small">
+        Real-time updates • <span id="last-update">Loading...</span>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="glass-card p-4">
+          <h5 class="text-white mb-4">
+            <i class="fas fa-exchange-alt text-accent me-2"></i>
+            Live Currency Pairs
+          </h5>
+          <div class="table-responsive">
+            <table class="table table-dark table-hover table-borderless">
+              <thead class="bg-accent text-dark">
+                <tr>
+                  <th>Instrument</th>
+                  <th>Bid/Ask</th>
+                  <th>Change</th>
+                  <th>High/Low</th>
+                  <th>Spread</th>
+                  <th>Trade</th>
+                </tr>
+              </thead>
+              <tbody id="forex-pairs-table">
+                <!-- Data will be populated by JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="glass-card p-4 h-100">
+          <h5 class="text-white mb-4">
+            <i class="fas fa-chart-pie text-accent me-2"></i>
+            Market Overview
+          </h5>
+          <div class="mb-4">
+            <h6 class="text-muted mb-2">Market Sentiment</h6>
+            <div class="progress mb-2" style="height: 8px">
+              <div class="progress-bar bg-success" style="width: 68%"></div>
+            </div>
+            <small class="text-muted">68% Bullish • 32% Bearish</small>
+          </div>
+
+          <div class="mb-4">
+            <h6 class="text-muted mb-2">Volatility Index</h6>
+            <div class="d-flex align-items-center">
+              <div class="progress flex-grow-1 me-3" style="height: 8px">
+                <div class="progress-bar bg-warning" style="width: 52%"></div>
+              </div>
+              <span class="text-warning small">Medium</span>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <h6 class="text-muted mb-2">Trading Sessions</h6>
+            <div class="d-flex justify-content-between small mb-1">
+              <span class="text-success">London</span>
+              <span class="text-success">● Active</span>
+            </div>
+            <div class="d-flex justify-content-between small mb-1">
+              <span class="text-warning">New York</span>
+              <span class="text-warning">● Opening</span>
+            </div>
+            <div class="d-flex justify-content-between small">
+              <span class="text-muted">Tokyo</span>
+              <span class="text-muted">● Closed</span>
+            </div>
+          </div>
+
+          <div class="text-center mt-4">
+            <a href="/auth/register" class="btn btn-accent btn-sm">
+              <i class="fas fa-play me-2"></i>Start Trading
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TRADING ACCOUNTS ===================== -->
+<section class="py-5 gradient-bg">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="pro-badge mb-3">TRADING SOLUTIONS</span>
+      <h2 class="fw-bold text-white">Professional Trading Accounts</h2>
+      <p class="text-light lead">
+        Tailored solutions for every trading style and experience level
+      </p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="glass-card p-4 h-100">
+          <div class="feature-icon" style="width: 60px; height: 60px">
+            <i class="fas fa-user text-white"></i>
+          </div>
+          <h4 class="text-white mb-3">Individual Accounts</h4>
+          <p class="text-light mb-4">
+            Comprehensive trading solutions for retail traders, scalpers, and
+            day traders. Perfect for both manual trading and Expert Advisors.
+          </p>
+          <ul class="list-unstyled">
+            <li class="text-light mb-2">
+              <i class="fas fa-check text-success me-2"></i>All trading styles
+              supported
+            </li>
+            <li class="text-light mb-2">
+              <i class="fas fa-check text-success me-2"></i>EA and algorithmic
+              trading
+            </li>
+            <li class="text-light mb-2">
+              <i class="fas fa-check text-success me-2"></i>Advanced charting
+              tools
+            </li>
+            <li class="text-light">
+              <i class="fas fa-check text-success me-2"></i>Multiple platform
+              access
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="glass-card p-4 h-100">
+          <div class="feature-icon" style="width: 60px; height: 60px">
+            <i class="fas fa-users text-white"></i>
+          </div>
+          <h4 class="text-white mb-3">Fund Manager Program</h4>
+          <p class="text-light mb-4">
+            Build and manage your investment fund with our proprietary copy
+            trading system and investor management tools.
+          </p>
+          <ul class="list-unstyled">
+            <li class="text-light mb-2">
+              <i class="fas fa-check text-success me-2"></i>Proprietary copy
+              trading
+            </li>
+            <li class="text-light mb-2">
+              <i class="fas fa-check text-success me-2"></i>Investor management
+              portal
+            </li>
+            <li class="text-light mb-2">
+              <i class="fas fa-check text-success me-2"></i>Performance
+              analytics
+            </li>
+            <li class="text-light">
+              <i class="fas fa-check text-success me-2"></i>Revenue sharing
+              models
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== INVESTMENT PORTFOLIOS ===================== -->
+<section class="py-5 bg-dark">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <div class="glass-card p-4">
+          <span class="pro-badge mb-3">xInvest INSIGHTS</span>
+          <h3 class="text-white mb-4">Curated Investment Portfolios</h3>
+          <p class="text-light mb-4">
+            Diversify your investments with carefully screened and curated
+            portfolios of global stocks, ETFs, and futures markets.
+          </p>
+
+          <div class="row g-3 mb-4">
+            <div class="col-6">
+              <div class="text-center">
+                <i class="fas fa-filter text-accent fa-2x mb-2"></i>
+                <div class="text-white fw-bold">AI-Screened</div>
+                <small class="text-muted">Market Analysis</small>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="text-center">
+                <i class="fas fa-chart-line text-accent fa-2x mb-2"></i>
+                <div class="text-white fw-bold">Expert Curated</div>
+                <small class="text-muted">Portfolio Selection</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2">
+            <a href="/auth/register" class="btn btn-accent">
+              <i class="fas fa-rocket me-2"></i>Get Started
+            </a>
+            <a href="#investment-plans" class="btn btn-outline-light">
+              View Portfolios
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="glass-card p-4 mt-5 mt-lg-0">
+          <h5 class="text-white mb-4">Why Professional Traders Choose Us</h5>
+          <div class="row g-3">
+            <div class="col-6">
+              <div class="text-center p-3">
+                <div class="display-6 fw-bold text-accent">23</div>
+                <small class="text-muted">Years Experience</small>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="text-center p-3">
+                <div class="display-6 fw-bold text-accent">15K+</div>
+                <small class="text-muted">Products</small>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="text-center p-3">
+                <div class="display-6 fw-bold text-accent">99.2%</div>
+                <small class="text-muted">Uptime</small>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="text-center p-3">
+                <div class="display-6 fw-bold text-accent">24/7</div>
+                <small class="text-muted">Support</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-center mt-4">
+            <small class="text-muted">
+              Globally recognized • API integration • Automated strategies
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== INVESTMENT PLANS ===================== -->
+<section id="investment-plans" class="py-5 gradient-bg">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="pro-badge mb-3">INVESTMENT STRATEGIES</span>
+      <h2 class="fw-bold text-white">Professional Investment Plans</h2>
+      <p class="text-light lead">
+        Structured investment solutions for consistent returns
+      </p>
+    </div>
+
+    <div class="row g-4">
+      <!-- Conservative Plan -->
+      <div class="col-md-4">
+        <div class="plan-card text-center">
+          <span class="badge bg-secondary mb-3">CONSERVATIVE</span>
+          <h4 class="fw-bold text-accent">Wealth Builder</h4>
+          <div class="my-4">
+            <span class="h1 fw-bold text-white">5.8%</span>
+            <span class="text-muted">/month</span>
+          </div>
+          <ul class="list-unstyled mb-4">
+            <li class="mb-2">
+              <i class="fas fa-check text-success me-2"></i>Minimum: $1,000
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-check text-success me-2"></i>3 Month Duration
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-check text-success me-2"></i>Capital Protection
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-check text-success me-2"></i>Daily Compounding
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-times text-muted me-2"></i>Priority Support
+            </li>
+          </ul>
+          <button
+            class="btn btn-outline-accent w-100"
+            onclick="openInvestModal('conservative', 1000)"
+          >
+            Start Investing
+          </button>
+        </div>
+      </div>
+
+      <!-- Professional Plan -->
+      <div class="col-md-4">
+        <div class="plan-card featured text-center">
+          <span class="badge bg-warning text-dark mb-3">PROFESSIONAL</span>
+          <h4 class="fw-bold">Premium Growth</h4>
+          <div class="my-4">
+            <span class="h1 fw-bold">9.2%</span>
+            <span class="text-light">/month</span>
+          </div>
+          <ul class="list-unstyled mb-4">
+            <li class="mb-2">
+              <i class="fas fa-check text-light me-2"></i>Minimum: $10,000
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-check text-light me-2"></i>6 Month Duration
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-check text-light me-2"></i>Enhanced Protection
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-check text-light me-2"></i>Advanced Compounding
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-check text-light me-2"></i>Priority Support
+            </li>
+          </ul>
+          <button
+            class="btn btn-light w-100 fw-bold"
+            onclick="openInvestModal('professional', 10000)"
+          >
+            Get Premium
+          </button>
+        </div>
+      </div>
+
+      <!-- Institutional Plan -->
+      <div class="col-md-4">
+        <div class="plan-card text-center">
+          <span class="badge bg-warning text-dark mb-3">INSTITUTIONAL</span>
+          <h4 class="fw-bold text-accent">Elite Portfolio</h4>
+          <div class="my-4">
+            <span class="h1 fw-bold text-white">13.5%</span>
+            <span class="text-muted">/month</span>
+          </div>
+          <ul class="list-unstyled mb-4">
+            <li class="mb-2">
+              <i class="fas fa-check text-success me-2"></i>Minimum: $50,000
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-check text-success me-2"></i>12 Month Duration
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-check text-success me-2"></i>Full Capital
+              Protection
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-check text-success me-2"></i>Maximum Compounding
+            </li>
+            <li class="mb-2">
+              <i class="fas fa-check text-success me-2"></i>Dedicated Manager
+            </li>
+          </ul>
+          <button
+            class="btn btn-outline-accent w-100"
+            onclick="openInvestModal('institutional', 50000)"
+          >
+            Elite Access
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ADVANCED CHARTING ===================== -->
+<section class="py-5 bg-dark">
+  <div class="container">
+    <div class="text-center mb-5">
+      <span class="pro-badge mb-3">PROFESSIONAL TOOLS</span>
+      <h2 class="fw-bold text-white">Advanced Market Analysis</h2>
+      <p class="text-muted">
+        Institutional-grade charting and technical analysis tools
+      </p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-12">
+        <div class="glass-card p-3">
+          <!-- TradingView Advanced Chart -->
+          <div class="tradingview-widget-container">
+            <div id="advanced-chart" style="height: 500px"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CTA SECTION ===================== -->
+<section class="py-5 gradient-bg text-center">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <h2 class="fw-bold mb-4">Start Your Professional Trading Journey</h2>
+        <p class="lead text-light mb-4">
+          Join thousands of successful traders who trust our institutional-grade
+          platform for their forex trading and investment needs.
+        </p>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+          <a href="/auth/register" class="btn btn-accent btn-lg px-5 py-3">
+            <i class="fas fa-user-plus me-2"></i>Create Account
+          </a>
+          <a href="/contact" class="btn btn-outline-light btn-lg px-5 py-3">
+            <i class="fas fa-phone me-2"></i>Contact Sales
+          </a>
+        </div>
+        <p class="text-muted mt-4 small">
+          Get started in less than 3 minutes • Professional support 24/7
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== INVESTMENT MODAL ===================== -->
+<div class="modal fade" id="investModal" tabindex="-1">
+  <div class="modal-dialog modal-md modal-dialog-centered">
+    <div class="modal-content glass-card">
+      <div class="modal-header border-0">
+        <h5 class="modal-title text-white" id="modal-plan-title">
+          Invest in <span id="plan-name"></span>
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="invest-form">
+          <input type="hidden" name="planType" id="modal-plan-type" />
+          <div class="mb-4">
+            <label class="form-label text-light">Investment Amount (USD)</label>
+            <input
+              type="number"
+              class="form-control bg-dark text-light border-secondary"
+              id="modal-amount"
+              name="amount"
+              min="0"
+              step="100"
+              required
+            />
+            <div class="form-text text-muted" id="min-amount-hint"></div>
+          </div>
+          <div class="mb-4">
+            <label class="form-label text-light">Expected Monthly Return</label>
+            <div class="glass-card p-3 text-center">
+              <span class="h4 text-accent" id="expected-return">$0.00</span>
+              <small class="text-muted d-block"
+                >Based on selected investment plan</small
+              >
+            </div>
+          </div>
+          <button type="submit" class="btn btn-accent w-100 py-3 fw-bold">
+            <i class="fas fa-lock me-2"></i>Secure Investment
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TradingView Script -->
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+
+<script>
+  // Professional TradingView Chart
+  document.addEventListener("DOMContentLoaded", function () {
+    // Initialize advanced chart
+    try {
+      new TradingView.widget({
+        container_id: "advanced-chart",
+        width: "100%",
+        height: "500",
+        symbol: "FX:EURUSD",
+        interval: "15",
+        timezone: "exchange",
+        theme: "dark",
+        style: "1",
+        locale: "en",
+        toolbar_bg: "#0f172a",
+        enable_publishing: false,
+        hide_top_toolbar: false,
+        hide_legend: false,
+        save_image: false,
+        studies: [
+          "MASimple@tv-basicstudies",
+          "RSI@tv-basicstudies",
+          "BB@tv-basicstudies",
+          "Volume@tv-basicstudies",
+        ],
+        show_popup_button: true,
+        popup_width: "1000",
+        popup_height: "650",
+      });
+    } catch (error) {
+      console.error("TradingView Chart Error:", error);
+    }
+
+    // Initialize live data
+    initializeLiveData();
+  });
+
+  // Socket.io for real-time forex data
+  const socket = io();
+
+  socket.on("forexUpdate", (data) => {
+    updateForexPrices(data.pairs);
+    document.getElementById("last-update").textContent = new Date(
+      data.ts
+    ).toLocaleTimeString();
+  });
+
+  function initializeLiveData() {
+    // Initial population of forex widgets
+    updateLiveForexWidget();
+    updateForexTable();
+  }
+
+  function updateLiveForexWidget() {
+    const widget = document.getElementById("live-forex-widget");
+    const majorPairs = ["EURUSD", "GBPUSD", "USDJPY", "USDCHF", "AUDUSD"];
+
+    widget.innerHTML = majorPairs
+      .map(
+        (pair) => `
+    <div class="forex-pair-card mb-3" data-pair="${pair}">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h6 class="mb-1">${pair}</h6>
+          <small class="text-muted">${getPairName(pair)}</small>
+        </div>
+        <div class="text-end">
+          <h6 class="mb-1 live-price" id="${pair.toLowerCase()}-live">${getInitialPrice(
+          pair
+        )}</h6>
+          <span class="price-up">+0.00%</span>
+        </div>
+      </div>
+    </div>
+  `
+      )
+      .join("");
+  }
+
+  function getInitialPrice(pair) {
+    const prices = {
+      EURUSD: "1.08742",
+      GBPUSD: "1.27185",
+      USDJPY: "148.234",
+      USDCHF: "0.87956",
+      AUDUSD: "0.65891",
+    };
+    return prices[pair] || "1.00000";
+  }
+
+  function updateForexPrices(pairs) {
+    // Update live widget prices
+    for (const [pair, data] of Object.entries(pairs)) {
+      const priceElement = document.getElementById(
+        `${pair.toLowerCase()}-live`
+      );
+      if (priceElement) {
+        updatePriceWithAnimation(priceElement, data.bid);
+      }
+    }
+
+    // Update forex pairs table
+    updateForexTable(pairs);
+  }
+
+  function updatePriceWithAnimation(element, newPrice) {
+    if (element && element.textContent !== newPrice) {
+      element.classList.add("price-flash");
+      setTimeout(() => element.classList.remove("price-flash"), 1000);
+      element.textContent = newPrice;
+    }
+  }
+
+  function updateForexTable(pairs = null) {
+    const tableBody = document.getElementById("forex-pairs-table");
+    if (!tableBody) return;
+
+    // Use provided data or generate professional data
+    const data = pairs || generateProfessionalTableData();
+
+    tableBody.innerHTML = Object.entries(data)
+      .map(([pair, data]) => {
+        const changeClass = data.change >= 0 ? "price-up" : "price-down";
+        const changeSymbol = data.change >= 0 ? "+" : "";
+
+        return `
+      <tr>
+        <td>
+          <strong>${pair}</strong>
+          <div class="text-muted small">${getPairName(pair)}</div>
+        </td>
+        <td>
+          <div class="fw-bold">${data.bid} / ${data.ask}</div>
+        </td>
+        <td>
+          <span class="${changeClass}">${changeSymbol}${
+          data.changePercent
+        }%</span>
+        </td>
+        <td>
+          <div class="small">${data.high} / ${data.low}</div>
+        </td>
+        <td>
+          <span class="badge bg-secondary">${data.spread}</span>
+        </td>
+        <td>
+          <button class="btn btn-sm btn-outline-accent" onclick="tradePair('${pair}')">
+            <i class="fas fa-chart-line me-1"></i>Trade
+          </button>
+        </td>
+      </tr>
+    `;
+      })
+      .join("");
+  }
+
+  function generateProfessionalTableData() {
+    const pairs = [
+      "EURUSD",
+      "GBPUSD",
+      "USDJPY",
+      "USDCHF",
+      "AUDUSD",
+      "USDCAD",
+      "NZDUSD",
+      "EURGBP",
+    ];
+    const data = {};
+
+    pairs.forEach((pair) => {
+      const change = (Math.random() * 0.3 - 0.15).toFixed(2);
+      const changePercent = parseFloat(change);
+      const price = getInitialPrice(pair);
+
+      data[pair] = {
+        bid: price,
+        ask: (parseFloat(price) * 1.0001).toFixed(5),
+        change: changePercent,
+        changePercent: change,
+        high: (parseFloat(price) * 1.001).toFixed(5),
+        low: (parseFloat(price) * 0.999).toFixed(5),
+        spread: getProfessionalSpread(pair),
+      };
+    });
+
+    return data;
+  }
+
+  function getPairName(pair) {
+    const names = {
+      EURUSD: "Euro / US Dollar",
+      GBPUSD: "British Pound / US Dollar",
+      USDJPY: "US Dollar / Japanese Yen",
+      USDCHF: "US Dollar / Swiss Franc",
+      AUDUSD: "Australian Dollar / US Dollar",
+      USDCAD: "US Dollar / Canadian Dollar",
+      NZDUSD: "New Zealand Dollar / US Dollar",
+      EURGBP: "Euro / British Pound",
+      USDCNH: "US Dollar / Chinese Yuan",
+    };
+    return names[pair] || pair;
+  }
+
+  function getProfessionalSpread(pair) {
+    const spreads = {
+      EURUSD: "0.6 pips",
+      GBPUSD: "0.8 pips",
+      USDJPY: "0.7 pips",
+      USDCHF: "1.0 pips",
+      AUDUSD: "0.9 pips",
+      USDCAD: "1.1 pips",
+      NZDUSD: "1.2 pips",
+      EURGBP: "0.8 pips",
+    };
+    return spreads[pair] || "1.0 pips";
+  }
+
+  // Investment Modal Functions
+  function openInvestModal(planType, minAmount) {
+    const planNames = {
+      conservative: "Wealth Builder Plan",
+      professional: "Premium Growth Plan",
+      institutional: "Elite Portfolio Plan",
+    };
+
+    const returns = {
+      conservative: 5.8,
+      professional: 9.2,
+      institutional: 13.5,
+    };
+
+    document.getElementById("plan-name").textContent = planNames[planType];
+    document.getElementById("modal-plan-type").value = planType;
+    document.getElementById("modal-amount").value = minAmount;
+    document.getElementById("modal-amount").min = minAmount;
+    document.getElementById(
+      "min-amount-hint"
+    ).textContent = `Minimum investment: $${minAmount.toLocaleString()}`;
+
+    updateExpectedReturn(minAmount, returns[planType]);
+
+    const modal = new bootstrap.Modal(document.getElementById("investModal"));
+    modal.show();
+  }
+
+  function updateExpectedReturn(amount, returnRate) {
+    const monthlyReturn = ((amount * returnRate) / 100).toFixed(2);
+    document.getElementById(
+      "expected-return"
+    ).textContent = `$${monthlyReturn}`;
+  }
+
+  // Update expected return when amount changes
+  document
+    .getElementById("modal-amount")
+    ?.addEventListener("input", function () {
+      const amount = parseFloat(this.value) || 0;
+      const planType = document.getElementById("modal-plan-type").value;
+      const returns = {
+        conservative: 5.8,
+        professional: 9.2,
+        institutional: 13.5,
+      };
+      updateExpectedReturn(amount, returns[planType]);
+    });
+
+  // Handle investment form submission
+  document
+    .getElementById("invest-form")
+    ?.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const amount = document.getElementById("modal-amount").value;
+      const planType = document.getElementById("modal-plan-type").value;
+
+      // Redirect to registration with investment parameters
+      window.location.href = `/auth/register?investment=${planType}&amount=${amount}`;
+    });
+
+  function tradePair(pair) {
+    window.location.href = `/trade?symbol=${pair}`;
+  }
+
+  // Add smooth scrolling for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener("click", function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute("href"));
+      if (target) {
+        target.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    });
+  });
+</script>
+
+<!-- ===================== TRADINGVIEW SCRIPT ===================== -->
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (typeof TradingView !== "undefined") {
+      new TradingView.widget({
+        container_id: "advanced-chart",
+        autosize: true,
+        symbol: "OANDA:EURUSD", // Default symbol
+        interval: "15",
+        timezone: "Etc/UTC",
+        theme: "dark",
+        style: "1",
+        locale: "en",
+        toolbar_bg: "#0e1117",
+        enable_publishing: false,
+        hide_top_toolbar: false,
+        hide_legend: false,
+        save_image: false,
+        calendar: true,
+        studies: [
+          "RSI@tv-basicstudies",
+          "MACD@tv-basicstudies",
+          "BollingerBands@tv-basicstudies",
+        ],
+        support_host: "https://www.tradingview.com",
+      });
+    }
+  });
+</script>
