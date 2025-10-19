@@ -105,16 +105,6 @@
       </ul>
     </div>
   </div>
-
-  <!-- Live Ticker -->
-  <div class="live-ticker d-none d-lg-flex align-items-center">
-    <span class="live-indicator"></span>
-    <div class="ticker-container">
-      <div class="ticker-text" id="liveTickerText">
-        <!-- Filled dynamically -->
-      </div>
-    </div>
-  </div>
 </nav>
 
 <!-- ===================== STYLES ===================== -->
@@ -174,71 +164,12 @@
     border-radius: 10px;
   }
 
-  /* ===================== LIVE TICKER ===================== */
-  .live-ticker {
-    position: absolute;
-    bottom: -1.6rem;
-
-    left: 0;
-    width: 100%;
-    overflow: hidden;
-    height: 26px;
-    background: rgba(0, 0, 0, 0.25);
-    padding-left: 10px;
-  }
-
-  .live-indicator {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-    margin-right: 5px;
-    animation: pulse 1.5s infinite;
-  }
-
-  @keyframes pulse {
-    0%,
-    100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.5;
-      transform: scale(1.5);
-    }
-  }
-
-  .ticker-container {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-  }
-
-  .ticker-text {
-    display: inline-block;
-    white-space: nowrap;
-    color: #ccc;
-    animation: tickerMove 40s linear infinite;
-  }
-
-  @keyframes tickerMove {
-    from {
-      transform: translateX(100%);
-    }
-    to {
-      transform: translateX(-100%);
-    }
-  }
-
   @media (max-width: 991px) {
     .navbar-nav {
       background: rgba(15, 23, 42, 0.97);
       backdrop-filter: blur(15px);
       border-radius: 12px;
       padding: 1rem;
-    }
-    .live-ticker {
-      display: none !important;
     }
   }
 </style>
@@ -250,43 +181,5 @@
     window.addEventListener("scroll", () => {
       navbar.classList.toggle("scrolled", window.scrollY > 50);
     });
-
-    const pairs = [
-      "EUR/USD",
-      "GBP/USD",
-      "USD/JPY",
-      "AUD/USD",
-      "USD/CAD",
-      "NZD/USD",
-      "USD/CHF",
-      "EUR/GBP",
-      "EUR/JPY",
-      "GBP/JPY",
-      "BTC/USD",
-      "ETH/USD",
-      "BNB/USD",
-      "SOL/USD",
-      "XRP/USD",
-      "DOGE/USD",
-      "ADA/USD",
-      "LTC/USD",
-      "XAU/USD",
-      "XAG/USD",
-    ];
-
-    const ticker = document.getElementById("liveTickerText");
-
-    function generatePrices() {
-      let html = "";
-      pairs.forEach((symbol) => {
-        const base = Math.random() * (2 - 1) + 1;
-        const value = (base + Math.random() * 0.005).toFixed(5);
-        html += `<span class="mx-2">${symbol}: <strong>${value}</strong></span> | `;
-      });
-      ticker.innerHTML = html;
-    }
-
-    generatePrices();
-    setInterval(generatePrices, 5000);
   });
 </script>

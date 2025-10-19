@@ -5,6 +5,16 @@
   class="hero-section hero-gradient text-white py-5 position-relative"
   id="firstSection"
 >
+  <!-- Live Ticker -->
+  <div class="live-ticker d-none d-lg-flex align-items-center">
+    <span class="live-indicator"></span>
+    <div class="ticker-container">
+      <div class="ticker-text" id="liveTickerText">
+        <!-- Filled dynamically -->
+      </div>
+    </div>
+  </div>
+
   <div class="container position-relative z-1">
     <div class="row align-items-center min-vh-80">
       <div class="col-lg-6">
@@ -759,335 +769,455 @@
     </div>
   </div>
 </div>
-
-<!-- TradingView Script -->
-<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-
 <script>
-  // Professional TradingView Chart
-  document.addEventListener("DOMContentLoaded", function () {
-    // Initialize advanced chart
-    try {
-      new TradingView.widget({
-        container_id: "advanced-chart",
-        width: "100%",
-        height: "500",
-        symbol: "FX:EURUSD",
-        interval: "15",
-        timezone: "exchange",
-        theme: "dark",
-        style: "1",
-        locale: "en",
-        toolbar_bg: "#0f172a",
-        enable_publishing: false,
-        hide_top_toolbar: false,
-        hide_legend: false,
-        save_image: false,
-        studies: [
-          "MASimple@tv-basicstudies",
-          "RSI@tv-basicstudies",
-          "BB@tv-basicstudies",
-          "Volume@tv-basicstudies",
-        ],
-        show_popup_button: true,
-        popup_width: "1000",
-        popup_height: "650",
-      });
-    } catch (error) {
-      console.error("TradingView Chart Error:", error);
-    }
-
-    // Initialize live data
-    initializeLiveData();
-  });
-
-  // Socket.io for real-time forex data
-  const socket = io();
-
-  socket.on("forexUpdate", (data) => {
-    updateForexPrices(data.pairs);
-    document.getElementById("last-update").textContent = new Date(
-      data.ts
-    ).toLocaleTimeString();
-  });
-
-  function initializeLiveData() {
-    // Initial population of forex widgets
-    updateLiveForexWidget();
-    updateForexTable();
-  }
-
-  function updateLiveForexWidget() {
-    const widget = document.getElementById("live-forex-widget");
-    const majorPairs = ["EURUSD", "GBPUSD", "USDJPY", "USDCHF", "AUDUSD"];
-
-    widget.innerHTML = majorPairs
-      .map(
-        (pair) => `
-    <div class="forex-pair-card mb-3" data-pair="${pair}">
-      <div class="d-flex justify-content-between align-items-center">
-        <div>
-          <h6 class="mb-1">${pair}</h6>
-          <small class="text-muted">${getPairName(pair)}</small>
-        </div>
-        <div class="text-end">
-          <h6 class="mb-1 live-price" id="${pair.toLowerCase()}-live">${getInitialPrice(
-          pair
-        )}</h6>
-          <span class="price-up">+0.00%</span>
-        </div>
-      </div>
-    </div>
-  `
-      )
-      .join("");
-  }
-
-  function getInitialPrice(pair) {
-    const prices = {
-      EURUSD: "1.08742",
-      GBPUSD: "1.27185",
-      USDJPY: "148.234",
-      USDCHF: "0.87956",
-      AUDUSD: "0.65891",
-    };
-    return prices[pair] || "1.00000";
-  }
-
-  function updateForexPrices(pairs) {
-    // Update live widget prices
-    for (const [pair, data] of Object.entries(pairs)) {
-      const priceElement = document.getElementById(
-        `${pair.toLowerCase()}-live`
-      );
-      if (priceElement) {
-        updatePriceWithAnimation(priceElement, data.bid);
+  /* ========================= Combined Site JS (TradingView, Live Ticker, Live Forex Widgets) ========================= */
+  (async function () {
+    // --- Utility helpers ---
+    const safe = (fn) => {
+      try {
+        return fn();
+      } catch (e) {
+        console.error(e);
+        return null;
       }
+    };
+
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+    // Debounce util
+    function debounce(fn, wait = 150) {
+      let t;
+      return (...args) => {
+        clearTimeout(t);
+        t = setTimeout(() => fn(...args), wait);
+      };
     }
 
-    // Update forex pairs table
-    updateForexTable(pairs);
-  }
+    // -------------------- DOM references (guarded) --------------------
+    const tickerText = document.getElementById("liveTickerText");
+    const tickerContainer = document.querySelector(".ticker-container");
+    const liveForexWidget = document.getElementById("live-forex-widget");
+    const forexPairsTable = document.getElementById("forex-pairs-table");
+    const lastUpdateEl = document.getElementById("last-update");
 
-  function updatePriceWithAnimation(element, newPrice) {
-    if (element && element.textContent !== newPrice) {
-      element.classList.add("price-flash");
-      setTimeout(() => element.classList.remove("price-flash"), 1000);
-      element.textContent = newPrice;
-    }
-  }
-
-  function updateForexTable(pairs = null) {
-    const tableBody = document.getElementById("forex-pairs-table");
-    if (!tableBody) return;
-
-    // Use provided data or generate professional data
-    const data = pairs || generateProfessionalTableData();
-
-    tableBody.innerHTML = Object.entries(data)
-      .map(([pair, data]) => {
-        const changeClass = data.change >= 0 ? "price-up" : "price-down";
-        const changeSymbol = data.change >= 0 ? "+" : "";
-
-        return `
-      <tr>
-        <td>
-          <strong>${pair}</strong>
-          <div class="text-muted small">${getPairName(pair)}</div>
-        </td>
-        <td>
-          <div class="fw-bold">${data.bid} / ${data.ask}</div>
-        </td>
-        <td>
-          <span class="${changeClass}">${changeSymbol}${
-          data.changePercent
-        }%</span>
-        </td>
-        <td>
-          <div class="small">${data.high} / ${data.low}</div>
-        </td>
-        <td>
-          <span class="badge bg-secondary">${data.spread}</span>
-        </td>
-        <td>
-          <button class="btn btn-sm btn-outline-accent" onclick="tradePair('${pair}')">
-            <i class="fas fa-chart-line me-1"></i>Trade
-          </button>
-        </td>
-      </tr>
-    `;
-      })
-      .join("");
-  }
-
-  function generateProfessionalTableData() {
-    const pairs = [
-      "EURUSD",
-      "GBPUSD",
-      "USDJPY",
-      "USDCHF",
-      "AUDUSD",
-      "USDCAD",
-      "NZDUSD",
-      "EURGBP",
+    // -------------------- Symbols / config --------------------
+    const forexPairs = [
+      "EUR/USD",
+      "GBP/USD",
+      "USD/JPY",
+      "AUD/USD",
+      "USD/CAD",
+      "NZD/USD",
+      "USD/CHF",
+      "EUR/GBP",
+      "EUR/JPY",
+      "GBP/JPY",
     ];
-    const data = {};
+    const cryptoPairs = [
+      "bitcoin",
+      "ethereum",
+      "bnb",
+      "solana",
+      "ripple",
+      "dogecoin",
+      "cardano",
+      "litecoin",
+      "tron",
+      "polkadot",
+    ];
+    const stockSymbols = [
+      "AAPL",
+      "MSFT",
+      "GOOGL",
+      "AMZN",
+      "TSLA",
+      "META",
+      "NFLX",
+      "NVDA",
+      "AMD",
+      "INTC",
+    ];
 
-    pairs.forEach((pair) => {
-      const change = (Math.random() * 0.3 - 0.15).toFixed(2);
-      const changePercent = parseFloat(change);
-      const price = getInitialPrice(pair);
+    // API endpoints
+    const forexAPI = "https://api.exchangerate.host/latest?base=USD"; // no key
+    const cryptoAPI =
+      "https://api.coingecko.com/api/v3/simple/price?ids=" +
+      cryptoPairs.join(",") +
+      "&vs_currencies=usd";
+    const stocksAPI =
+      "https://query1.finance.yahoo.com/v7/finance/quote?symbols=" +
+      stockSymbols.join(",");
 
-      data[pair] = {
-        bid: price,
-        ask: (parseFloat(price) * 1.0001).toFixed(5),
-        change: changePercent,
-        changePercent: change,
-        high: (parseFloat(price) * 1.001).toFixed(5),
-        low: (parseFloat(price) * 0.999).toFixed(5),
-        spread: getProfessionalSpread(pair),
-      };
-    });
+    // If any of these fail often in your environment, swap to a server-side proxy to avoid CORS / rate limits.
 
-    return data;
-  }
-
-  function getPairName(pair) {
-    const names = {
-      EURUSD: "Euro / US Dollar",
-      GBPUSD: "British Pound / US Dollar",
-      USDJPY: "US Dollar / Japanese Yen",
-      USDCHF: "US Dollar / Swiss Franc",
-      AUDUSD: "Australian Dollar / US Dollar",
-      USDCAD: "US Dollar / Canadian Dollar",
-      NZDUSD: "New Zealand Dollar / US Dollar",
-      EURGBP: "Euro / British Pound",
-      USDCNH: "US Dollar / Chinese Yuan",
-    };
-    return names[pair] || pair;
-  }
-
-  function getProfessionalSpread(pair) {
-    const spreads = {
-      EURUSD: "0.6 pips",
-      GBPUSD: "0.8 pips",
-      USDJPY: "0.7 pips",
-      USDCHF: "1.0 pips",
-      AUDUSD: "0.9 pips",
-      USDCAD: "1.1 pips",
-      NZDUSD: "1.2 pips",
-      EURGBP: "0.8 pips",
-    };
-    return spreads[pair] || "1.0 pips";
-  }
-
-  // Investment Modal Functions
-  function openInvestModal(planType, minAmount) {
-    const planNames = {
-      conservative: "Wealth Builder Plan",
-      professional: "Premium Growth Plan",
-      institutional: "Elite Portfolio Plan",
-    };
-
-    const returns = {
-      conservative: 5.8,
-      professional: 9.2,
-      institutional: 13.5,
-    };
-
-    document.getElementById("plan-name").textContent = planNames[planType];
-    document.getElementById("modal-plan-type").value = planType;
-    document.getElementById("modal-amount").value = minAmount;
-    document.getElementById("modal-amount").min = minAmount;
-    document.getElementById(
-      "min-amount-hint"
-    ).textContent = `Minimum investment: $${minAmount.toLocaleString()}`;
-
-    updateExpectedReturn(minAmount, returns[planType]);
-
-    const modal = new bootstrap.Modal(document.getElementById("investModal"));
-    modal.show();
-  }
-
-  function updateExpectedReturn(amount, returnRate) {
-    const monthlyReturn = ((amount * returnRate) / 100).toFixed(2);
-    document.getElementById(
-      "expected-return"
-    ).textContent = `$${monthlyReturn}`;
-  }
-
-  // Update expected return when amount changes
-  document
-    .getElementById("modal-amount")
-    ?.addEventListener("input", function () {
-      const amount = parseFloat(this.value) || 0;
-      const planType = document.getElementById("modal-plan-type").value;
-      const returns = {
-        conservative: 5.8,
-        professional: 9.2,
-        institutional: 13.5,
-      };
-      updateExpectedReturn(amount, returns[planType]);
-    });
-
-  // Handle investment form submission
-  document
-    .getElementById("invest-form")
-    ?.addEventListener("submit", function (e) {
-      e.preventDefault();
-      const amount = document.getElementById("modal-amount").value;
-      const planType = document.getElementById("modal-plan-type").value;
-
-      // Redirect to registration with investment parameters
-      window.location.href = `/auth/register?investment=${planType}&amount=${amount}`;
-    });
-
-  function tradePair(pair) {
-    window.location.href = `/trade?symbol=${pair}`;
-  }
-
-  // Add smooth scrolling for anchor links
-  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-    anchor.addEventListener("click", function (e) {
-      e.preventDefault();
-      const target = document.querySelector(this.getAttribute("href"));
-      if (target) {
-        target.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
+    // -------------------- TradingView widget init (safe) --------------------
+    function initTradingView() {
+      // Only initialize if TradingView global exists and container is present
+      const containerExists = document.getElementById("advanced-chart");
+      if (typeof TradingView === "undefined" || !containerExists) {
+        // If tv.js hasn't loaded yet, try again later (but don't loop forever)
+        if (typeof TradingView === "undefined") {
+          console.warn(
+            "TradingView not loaded (tv.js). Skipping widget initialization."
+          );
+        }
+        return;
       }
-    });
-  });
-</script>
 
-<!-- ===================== TRADINGVIEW SCRIPT ===================== -->
-<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    if (typeof TradingView !== "undefined") {
-      new TradingView.widget({
-        container_id: "advanced-chart",
-        autosize: true,
-        symbol: "OANDA:EURUSD", // Default symbol
-        interval: "15",
-        timezone: "Etc/UTC",
-        theme: "dark",
-        style: "1",
-        locale: "en",
-        toolbar_bg: "#0e1117",
-        enable_publishing: false,
-        hide_top_toolbar: false,
-        hide_legend: false,
-        save_image: false,
-        calendar: true,
-        studies: [
-          "RSI@tv-basicstudies",
-          "MACD@tv-basicstudies",
-          "BollingerBands@tv-basicstudies",
-        ],
-        support_host: "https://www.tradingview.com",
+      try {
+        // Remove any previous widget to avoid duplicates (defensive)
+        safe(() => {
+          if (containerExists._tv) {
+            if (typeof containerExists._tv.remove === "function")
+              containerExists._tv.remove();
+          }
+        });
+
+        const widget = new TradingView.widget({
+          container_id: "advanced-chart",
+          autosize: true,
+          symbol: "OANDA:EURUSD",
+          interval: "15",
+          timezone: "Etc/UTC",
+          theme: "dark",
+          style: "1",
+          locale: "en",
+          toolbar_bg: "#0e1117",
+          enable_publishing: false,
+          hide_top_toolbar: false,
+          hide_legend: false,
+          save_image: false,
+          studies: [
+            "RSI@tv-basicstudies",
+            "MACD@tv-basicstudies",
+            "BollingerBands@tv-basicstudies",
+          ],
+          support_host: "https://www.tradingview.com",
+        });
+
+        // store reference to optionally destroy later
+        containerExists._tv = widget;
+      } catch (err) {
+        console.error("TradingView init error:", err);
+      }
+    }
+
+    // Initialize TradingView (try once, and again after a short delay if tv.js arrives slightly later)
+    initTradingView();
+    // attempt again once in 1s if TradingView wasn't present yet
+    setTimeout(initTradingView, 1000);
+
+    // -------------------- Fetch helpers --------------------
+    async function fetchJson(url, opts = {}) {
+      try {
+        const res = await fetch(url, opts);
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status} - ${res.statusText}`);
+        }
+        return await res.json();
+      } catch (err) {
+        console.error("fetchJson error for", url, err);
+        return null;
+      }
+    }
+
+    // Fetchers return arrays of formatted strings for ticker display (safe)
+    async function fetchForexForTicker() {
+      const json = await fetchJson(forexAPI);
+      if (!json || !json.rates) return [];
+      const rates = json.rates;
+      return forexPairs.map((pair) => {
+        const [a, b] = pair.split("/");
+        // exchangerate.host returns rates relative to base (USD here)
+        // to compute A/B when base=USD:
+        // if pair is EUR/USD => need direct rates[EUR]? common approach: compute A/B = rateB ? (rates[A]/rates[B]) : ...
+        // Simpler: compute A/B using rates object (rates[CUR] = 1 unit base -> CUR per USD)
+        // robust approach: compute using ratios if both present
+        const rateA = rates[a];
+        const rateB = rates[b];
+        let value = "—";
+        if (rateA && rateB) {
+          // a/b = (rateA per USD) / (rateB per USD) => rateA / rateB
+          value = (rateA / rateB).toFixed(5);
+        } else if (a === "USD" && rateB) {
+          value = (1 / rateB).toFixed(5);
+        } else if (b === "USD" && rateA) {
+          value = rateA.toFixed(5);
+        }
+        return `${pair}: <strong>${value}</strong>`;
       });
     }
-  });
+
+    async function fetchCryptoForTicker() {
+      const json = await fetchJson(cryptoAPI);
+      if (!json) return [];
+      return Object.entries(json).map(
+        ([k, v]) =>
+          `${k.toUpperCase()}/USD: <strong>$${(v.usd || 0).toLocaleString(
+            undefined,
+            { maximumFractionDigits: 2 }
+          )}</strong>`
+      );
+    }
+
+    async function fetchStocksForTicker() {
+      const json = await fetchJson(stocksAPI);
+      if (
+        !json ||
+        !json.quoteResponse ||
+        !Array.isArray(json.quoteResponse.result)
+      )
+        return [];
+      return json.quoteResponse.result.map((q) => {
+        const price =
+          typeof q.regularMarketPrice !== "undefined"
+            ? q.regularMarketPrice
+            : "—";
+        return `${q.symbol}: <strong>$${price}</strong>`;
+      });
+    }
+
+    // -------------------- Live UI updates --------------------
+    // Safe update ticker DOM
+    function setTickerHtml(html) {
+      if (!tickerText) return;
+      tickerText.innerHTML = html;
+    }
+
+    // Adjust ticker speed based on width (throttled)
+    const adjustTickerSpeed = debounce(() => {
+      try {
+        if (!tickerText || !tickerContainer) return;
+        const baseSpeed = 120; // pixels per second - tweak as desired (higher = faster)
+        const textWidth = tickerText.scrollWidth;
+        const containerWidth = tickerContainer.offsetWidth;
+        const duration = Math.max(8, (textWidth + containerWidth) / baseSpeed); // min 8s
+        tickerText.style.animationDuration = `${duration}s`;
+      } catch (err) {
+        console.error("adjustTickerSpeed error:", err);
+      }
+    }, 120);
+
+    // Update forex widget small cards
+    function updateLiveForexWidget(pairsData) {
+      if (!liveForexWidget) return;
+      const majorPairs = ["EURUSD", "GBPUSD", "USDJPY", "USDCHF", "AUDUSD"];
+      const html = majorPairs
+        .map((pair) => {
+          const key = pair.toUpperCase();
+          const raw = pairsData && pairsData[key];
+          const price = raw && raw.bid ? raw.bid : getInitialPrice(pair) || "—";
+          return `
+        <div class="forex-pair-card mb-3" data-pair="${pair}">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="mb-1">${pair}</h6>
+              <small class="text-muted">${getPairName(pair)}</small>
+            </div>
+            <div class="text-end">
+              <h6 class="mb-1 live-price" id="${pair.toLowerCase()}-live">${price}</h6>
+              <span class="price-up">+0.00%</span>
+            </div>
+          </div>
+        </div>`;
+        })
+        .join("");
+      liveForexWidget.innerHTML = html;
+    }
+
+    // Update forex pairs table (expects pairs object or will use generated)
+    function updateForexTable(pairs = null) {
+      if (!forexPairsTable) return;
+      const data = pairs || generateProfessionalTableData();
+      forexPairsTable.innerHTML = Object.entries(data)
+        .map(([pair, d]) => {
+          const changeClass = Number(d.change) >= 0 ? "price-up" : "price-down";
+          const changeSymbol = Number(d.change) >= 0 ? "+" : "";
+          return `
+        <tr>
+          <td>
+            <strong>${pair}</strong>
+            <div class="text-muted small">${getPairName(pair)}</div>
+          </td>
+          <td><div class="fw-bold">${d.bid} / ${d.ask}</div></td>
+          <td><span class="${changeClass}">${changeSymbol}${
+            d.changePercent
+          }%</span></td>
+          <td><div class="small">${d.high} / ${d.low}</div></td>
+          <td><span class="badge bg-secondary">${d.spread}</span></td>
+          <td><button class="btn btn-sm btn-outline-accent" onclick="tradePair('${pair}')"><i class="fas fa-chart-line me-1"></i>Trade</button></td>
+        </tr>`;
+        })
+        .join("");
+    }
+
+    // -------------------- Helper functions for table generation --------------------
+    function generateProfessionalTableData() {
+      const pairs = [
+        "EURUSD",
+        "GBPUSD",
+        "USDJPY",
+        "USDCHF",
+        "AUDUSD",
+        "USDCAD",
+        "NZDUSD",
+        "EURGBP",
+      ];
+      const data = {};
+      pairs.forEach((pair) => {
+        const price =
+          parseFloat(getInitialPrice(pair)) ||
+          (1 + Math.random() * 0.1).toFixed(5);
+        const change = (Math.random() * 0.3 - 0.15).toFixed(2);
+        const changePercent = Math.abs(Number(change)).toFixed(2);
+        data[pair] = {
+          bid: price,
+          ask: (parseFloat(price) * 1.00012).toFixed(5),
+          change: Number(change),
+          changePercent,
+          high: (parseFloat(price) * 1.001).toFixed(5),
+          low: (parseFloat(price) * 0.999).toFixed(5),
+          spread: getProfessionalSpread(pair),
+        };
+      });
+      return data;
+    }
+
+    function getPairName(pair) {
+      const map = {
+        EURUSD: "Euro / US Dollar",
+        GBPUSD: "British Pound / US Dollar",
+        USDJPY: "US Dollar / Japanese Yen",
+        USDCHF: "US Dollar / Swiss Franc",
+        AUDUSD: "Australian Dollar / US Dollar",
+        USDCAD: "US Dollar / Canadian Dollar",
+        NZDUSD: "New Zealand Dollar / US Dollar",
+        EURGBP: "Euro / British Pound",
+      };
+      return map[pair] || pair;
+    }
+
+    function getProfessionalSpread(pair) {
+      const spreads = {
+        EURUSD: "0.6 pips",
+        GBPUSD: "0.8 pips",
+        USDJPY: "0.7 pips",
+        USDCHF: "1.0 pips",
+        AUDUSD: "0.9 pips",
+        USDCAD: "1.1 pips",
+        NZDUSD: "1.2 pips",
+        EURGBP: "0.8 pips",
+      };
+      return spreads[pair] || "1.0 pips";
+    }
+
+    // initial fallback price map used by getInitialPrice()
+    function getInitialPrice(pair) {
+      const map = {
+        EURUSD: "1.08742",
+        GBPUSD: "1.27185",
+        USDJPY: "148.234",
+        USDCHF: "0.87956",
+        AUDUSD: "0.65891",
+      };
+      return map[pair] || "1.00000";
+    }
+
+    // -------------------- tradePair (global function used by buttons) --------------------
+    window.tradePair = function (pair) {
+      window.location.href = `/trade?symbol=${encodeURIComponent(pair)}`;
+    };
+
+    // -------------------- Socket.io (optional) --------------------
+    function setupSocket() {
+      if (typeof io === "undefined") {
+        // socket.io not present — skip
+        return null;
+      }
+
+      try {
+        const socket = io();
+
+        socket.on("connect_error", (err) => {
+          console.warn("Socket connect error:", err);
+        });
+
+        socket.on("forexUpdate", (data) => {
+          // expected data format: { pairs: { EURUSD: { bid: "1.09", ask: "1.09", ... }, ... }, ts: timestamp }
+          if (data && data.pairs) {
+            // update forex widget and table
+            updateLiveForexWidget(data.pairs);
+            updateForexTable(data.pairs);
+            if (lastUpdateEl && data.ts) {
+              lastUpdateEl.textContent = new Date(data.ts).toLocaleTimeString();
+            }
+          }
+        });
+
+        return socket;
+      } catch (err) {
+        console.error("Socket setup failed:", err);
+        return null;
+      }
+    }
+
+    // -------------------- TICKER orchestration --------------------
+    async function updateTickerOnce() {
+      // fetch in parallel, but tolerate errors
+      const [forexList, cryptoList, stocksList] = await Promise.allSettled([
+        fetchForexForTicker(),
+        fetchCryptoForTicker(),
+        fetchStocksForTicker(),
+      ]);
+
+      const parts = [];
+
+      if (forexList.status === "fulfilled")
+        parts.push(...(forexList.value || []));
+      if (cryptoList.status === "fulfilled")
+        parts.push(...(cryptoList.value || []));
+      if (stocksList.status === "fulfilled")
+        parts.push(...(stocksList.value || []));
+
+      // if nothing returned, show a short fallback
+      if (parts.length === 0) {
+        parts.push("Market data unavailable");
+      }
+
+      // join and set html
+      setTickerHtml(parts.join(" &nbsp; | &nbsp; "));
+
+      // update speed
+      adjustTickerSpeed();
+    }
+
+    // -------------------- Kick off initial UI --------------------
+    // populate forex widget and table with initial data
+    updateLiveForexWidget(); // built from getInitialPrice fallback
+    updateForexTable();
+
+    // set up socket if available
+    setupSocket();
+
+    // initial ticker update and periodic refresh
+    await updateTickerOnce();
+    const tickerInterval = setInterval(updateTickerOnce, 30000); // 30s
+
+    // Responsive adjustments
+    window.addEventListener("resize", adjustTickerSpeed);
+
+    // keep ticker speed accurate after fonts load (icon/font widths)
+    window.addEventListener("load", () => {
+      // small delay to ensure rendering done
+      setTimeout(adjustTickerSpeed, 300);
+    });
+
+    // Defensive cleanup hook (if SPA navigation later)
+    // return an object that could be used to stop intervals if needed
+    return {
+      stop: () => {
+        clearInterval(tickerInterval);
+      },
+    };
+  })();
 </script>

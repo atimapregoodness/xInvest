@@ -1,3 +1,4 @@
+@charset "UTF-8";
 :root {
   --primary: #0066ff;
   --secondary: #1e2a3a;
@@ -34,7 +35,7 @@ section {
 }
 
 #firstSection {
-  padding-top: 7em !important;
+  padding-top: 17vh !important;
 }
 
 /* Enhanced Glass Effect */
@@ -320,6 +321,64 @@ section {
   min-height: 80vh;
 }
 
+/* ===================== LIVE TICKER ===================== */
+.live-ticker {
+  position: fixed;
+  top: 3.5em;
+  left: 0;
+  width: 100%;
+  height: 26px;
+  background: var(--glass);
+  backdrop-filter: blur(16px);
+  overflow: hidden;
+  padding-left: 10px;
+  z-index: 1000;
+}
+
+/* Blinking live dot */
+.live-indicator {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-right: 5px;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.4);
+  }
+}
+/* Scrolling text container */
+.ticker-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Ticker text animation */
+.ticker-text {
+  display: inline-block;
+  white-space: nowrap;
+  color: #ccc;
+  animation: tickerMove 25s linear infinite; /* reduced from 100s → smoother + faster */
+  will-change: transform;
+}
+
+@keyframes tickerMove {
+  0% {
+    transform: translateX(100%); /* start offscreen to the right */
+  }
+  100% {
+    transform: translateX(-100%); /* move fully left */
+  }
+}
 * {
   margin: 0;
   padding: 0;
