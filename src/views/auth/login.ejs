@@ -13,7 +13,12 @@
     </div>
 
     <!-- Login Form -->
-    <form action="/auth/login" method="POST" class="login-form mt-3">
+    <form
+      action="/auth/login"
+      method="POST"
+      class="login-form mt-3"
+      id="loginForm"
+    >
       <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
 
       <!-- Email -->
@@ -27,6 +32,7 @@
           class="form-control glass-input"
           placeholder="Email Address"
           required
+          autocomplete="email"
           aria-label="Email"
         />
       </div>
@@ -42,6 +48,7 @@
           class="form-control glass-input"
           placeholder="Password"
           required
+          autocomplete="current-password"
           aria-label="Password"
         />
       </div>
@@ -55,6 +62,13 @@
         <i class="fas fa-sign-in-alt me-2"></i>Login
       </button>
     </form>
+
+    <!-- Forgot Password -->
+    <p class="text-muted small mb-2">
+      <a href="/auth/forgot-password" class="text-accent"
+        >Forgot your password?</a
+      >
+    </p>
 
     <!-- Divider -->
     <div class="divider my-4">
@@ -76,6 +90,18 @@
       duration: 800,
       easing: "ease-out-cubic",
       once: true,
+    });
+
+    // Optional: simple client-side form validation
+    const form = document.getElementById("loginForm");
+    form.addEventListener("submit", (e) => {
+      const email = form.querySelector('input[name="email"]');
+      const password = form.querySelector('input[name="password"]');
+
+      if (!email.value || !password.value) {
+        e.preventDefault();
+        alert("Please enter both email and password.");
+      }
     });
   });
 </script>

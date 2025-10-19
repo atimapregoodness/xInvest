@@ -1,308 +1,215 @@
 const passport = require("passport");
-const rateLimit = require("express-rate-limit");
-const csrf = require("csurf");
 const validator = require("validator");
 const User = require("../models/User");
 const { sendWelcomeEmail } = require("../utils/emailService");
 
-// CSRF protection
-const csrfProtection = csrf({ cookie: true });
-
-// Rate limiting configurations
-const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 5,
-  message: {
-    error: "Too many authentication attempts, please try again later",
-    type: "rate_limit_exceeded",
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-  skipSuccessfulRequests: true,
-});
-
-const strictAuthLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
-  max: 10,
-  message: {
-    error: "Too many requests from this IP, please try again in an hour",
-    type: "strict_rate_limit",
-  },
-});
-
-// Get login page
+// --------------------
+// GET: Login Page
+// --------------------
 exports.getLogin = (req, res) => {
   res.render("auth/login", {
     title: "xInvest - Login",
-    csrfToken: req.csrfToken ? req.csrfToken() : "",
   });
 };
 
-// Handle login
-exports.postLogin = [
-  authLimiter,
-  csrfProtection,
-  (req, res, next) => {
-    try {
-      const { email, password, rememberMe } = req.body;
+// --------------------
+// POST: Handle Login
+// --------------------
+exports.postLogin = async (req, res, next) => {
+  try {
+    const { email, password, rememberMe } = req.body;
 
-      // Basic validation
-      if (!email || !password) {
-        req.flash("error_msg", "Email and password are required");
+    if (!email || !password) {
+      req.flash("error_msg", "All fields are required");
+      return res.redirect("/auth/login");
+    }
+
+    passport.authenticate("local", (err, user, info) => {
+      if (err) {
+        console.error("Login error:", err);
+        req.flash("error_msg", "Something went wrong during login");
         return res.redirect("/auth/login");
       }
 
-      // Use passport for authentication
-      passport.authenticate("local-login", (err, user, info) => {
-        if (err) {
-          console.error("Login authentication error:", err);
-          req.flash("error_msg", "Internal server error during authentication");
+      if (!user) {
+        req.flash("error_msg", info?.message || "Invalid credentials");
+        return res.redirect("/auth/login");
+      }
+
+      req.login(user, (loginErr) => {
+        if (loginErr) {
+          console.error("Session creation error:", loginErr);
+          req.flash("error_msg", "Failed to create session");
           return res.redirect("/auth/login");
         }
 
-        if (!user) {
-          req.flash("error_msg", info.message || "Invalid email or password");
-          return res.redirect("/auth/login");
+        // Record login timestamp
+        user.lastLogin = new Date();
+        user.save().catch(console.error);
+
+        // Remember me
+        if (rememberMe) {
+          req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; // 30 days
+        } else {
+          req.session.cookie.expires = false; // session-only
         }
 
-        // Log in the user
-        req.login(user, (loginErr) => {
-          if (loginErr) {
-            console.error("Session creation error:", loginErr);
-            req.flash(
-              "error_msg",
-              "Internal server error during session creation"
-            );
-            return res.redirect("/auth/login");
-          }
+        console.log(`✅ Login success: ${user.email} (${req.ip})`);
+        req.flash("success_msg", "Login successful!");
+        return res.redirect("/dashboard");
+      });
+    })(req, res, next);
+  } catch (err) {
+    console.error("Login endpoint error:", err);
+    req.flash("error_msg", "Internal server error");
+    return res.redirect("/auth/login");
+  }
+};
 
-          // Add login history
-          user.security.activityLog.push({
-            action: "login",
-            ip: req.ip,
-            userAgent: req.get("User-Agent"),
-            timestamp: new Date(),
-          });
-
-          // Limit login history to last 50 activities
-          if (user.security.activityLog.length > 50) {
-            user.security.activityLog = user.security.activityLog.slice(-50);
-          }
-
-          user.save().catch(console.error);
-
-          // Set session duration based on remember me
-          if (rememberMe) {
-            req.session.cookie.maxAge = 30 * 24 * 60 * 60 * 1000; // 30 days
-          } else {
-            req.session.cookie.expires = false; // Session cookie
-          }
-
-          // Log successful login
-          console.log(`Successful login: ${user.email} from IP: ${req.ip}`);
-
-          req.flash("success_msg", "Login successful!");
-          res.redirect("/dashboard");
-        });
-      })(req, res, next);
-    } catch (error) {
-      console.error("Login endpoint error:", error);
-      req.flash("error_msg", "Internal server error");
-      res.redirect("/auth/login");
-    }
-  },
-];
-
-// Get register page
+// --------------------
+// GET: Register Page
+// --------------------
 exports.getRegister = (req, res) => {
   res.render("auth/register", {
     title: "xInvest - Sign Up",
-    csrfToken: req.csrfToken ? req.csrfToken() : "",
   });
 };
 
-// Handle registration
-exports.postRegister = [
-  strictAuthLimiter,
-  csrfProtection,
-  async (req, res, next) => {
-    try {
-      const { fullname, email, phone, password, confirmPassword } = req.body;
+// --------------------
+// POST: Register New User
+// --------------------
+exports.postRegister = async (req, res) => {
+  try {
+    const { fullName, email, country, phone, password, confirmPassword } =
+      req.body;
 
-      // Check for missing fields
-      if (!fullname || !email || !phone || !password || !confirmPassword) {
-        req.flash("error_msg", "All fields are required");
-        return res.redirect("/auth/register");
+    // Validate all fields
+    if (
+      !fullName ||
+      !email ||
+      !country ||
+      !phone ||
+      !password ||
+      !confirmPassword
+    ) {
+      req.flash("error_msg", "All fields are required");
+      return res.redirect("/auth/register");
+    }
+
+    if (password !== confirmPassword) {
+      req.flash("error_msg", "Passwords do not match");
+      return res.redirect("/auth/register");
+    }
+
+    if (!validator.isEmail(email)) {
+      req.flash("error_msg", "Invalid email address");
+      return res.redirect("/auth/register");
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      req.flash("error_msg", "User already exists with this email");
+      return res.redirect("/auth/register");
+    }
+
+    // Create new user
+    const newUser = new User({
+      fullName,
+      email,
+      country,
+      phone,
+      username: email, // required by passport-local-mongoose
+    });
+
+    await User.register(newUser, password);
+
+    // Auto-login after registration
+    req.login(newUser, (err) => {
+      if (err) {
+        console.error("Auto-login error:", err);
+        req.flash("success_msg", "Account created! Please log in manually.");
+        return res.redirect("/auth/login");
       }
 
-      // Use passport for registration
-      passport.authenticate("local-register", (err, user, info) => {
-        if (err) {
-          console.error("Registration error:", err);
-          req.flash("error_msg", "Internal server error during registration");
-          return res.redirect("/auth/register");
-        }
+      // Optional: send welcome email
+      sendWelcomeEmail?.(newUser.email, newUser.fullName).catch(() => {});
 
-        if (!user) {
-          req.flash("error_msg", info.message || "Registration failed");
-          return res.redirect("/auth/register");
-        }
+      console.log(`✅ Registration success: ${newUser.email}`);
+      req.flash("success_msg", "Welcome to xInvest!");
+      return res.redirect("/dashboard");
+    });
+  } catch (err) {
+    console.error("Registration error:", err);
+    req.flash("error_msg", "Something went wrong during registration");
+    return res.redirect("/auth/register");
+  }
+};
 
-        // Log in the user automatically after registration
-        req.login(user, async (loginErr) => {
-          if (loginErr) {
-            console.error("Auto-login error:", loginErr);
-            req.flash(
-              "error_msg",
-              "Registration successful but automatic login failed"
-            );
-            return res.redirect("/auth/register");
-          }
-
-          try {
-            // Send welcome email (optional, in background)
-            sendWelcomeEmail(user.email, user.profile.firstName).catch(
-              console.error
-            );
-
-            // Log registration success
-            console.log(
-              `Successful registration: ${user.email} from IP: ${req.ip}`
-            );
-
-            req.flash(
-              "success_msg",
-              "Registration successful! Welcome to xInvest."
-            );
-            res.redirect("/dashboard");
-          } catch (error) {
-            console.error("Post-registration processing error:", error);
-            req.flash("success_msg", "Registration successful!");
-            res.redirect("/dashboard");
-          }
-        });
-      })(req, res, next);
-    } catch (error) {
-      console.error("Registration endpoint error:", error);
-      req.flash("error_msg", "Internal server error");
-      res.redirect("/auth/register");
-    }
-  },
-];
-
-// Handle logout
 exports.getLogout = (req, res) => {
   try {
-    const userEmail = req.user ? req.user.email : "Unknown";
+    const email = req.user ? req.user.email : "Unknown";
 
     req.logout((err) => {
       if (err) {
         console.error("Logout error:", err);
         req.flash("error_msg", "Error during logout");
-        return res.redirect("/");
+        return res.redirect("/dashboard");
       }
 
-      req.session.destroy((destroyErr) => {
-        if (destroyErr) {
-          console.error("Session destruction error:", destroyErr);
-        }
+      // Set flash message **before destroying session**
+      req.flash("success_msg", "You have been logged out");
 
-        // Clear session cookie
+      req.session.destroy(() => {
         res.clearCookie("connect.sid");
-
-        console.log(`User logged out: ${userEmail}`);
-
-        req.flash("success_msg", "Logout successful");
-        res.redirect("/");
+        console.log(`🚪 Logged out: ${email}`);
+        res.redirect("/"); // redirect after flash is set
       });
     });
-  } catch (error) {
-    console.error("Logout endpoint error:", error);
-    req.flash("error_msg", "Internal server error during logout");
-    res.redirect("/");
+  } catch (err) {
+    console.error("Logout endpoint error:", err);
+    res.redirect("/"); // no flash here, session might not exist
   }
 };
 
-// Get forgot password page
+// --------------------
+// GET: Forgot Password
+// --------------------
 exports.getForgotPassword = (req, res) => {
   res.render("auth/forgot-password", {
     title: "xInvest - Forgot Password",
-    csrfToken: req.csrfToken ? req.csrfToken() : "",
   });
 };
 
-// Handle forgot password
-exports.postForgotPassword = [
-  authLimiter,
-  csrfProtection,
-  async (req, res) => {
-    try {
-      const { email } = req.body;
+// --------------------
+// POST: Forgot Password
+// --------------------
+exports.postForgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
 
-      if (!email) {
-        req.flash("error_msg", "Please provide your email address");
-        return res.redirect("/auth/forgot-password");
-      }
+    if (!email) {
+      req.flash("error_msg", "Please enter your email");
+      return res.redirect("/auth/forgot-password");
+    }
 
-      // Find user by email
-      const user = await User.findOne({ email: email.toLowerCase() });
-
-      if (!user) {
-        // Don't reveal whether email exists for security
-        req.flash(
-          "success_msg",
-          "If an account with that email exists, a password reset link has been sent."
-        );
-        return res.redirect("/auth/login");
-      }
-
-      // Generate reset token (you'll need to add this to your User model)
-      // const resetToken = user.createPasswordResetToken();
-      // await user.save();
-
-      // Send reset email (implement this in emailService)
-      // await sendPasswordResetEmail(user.email, resetToken);
-
+    const user = await User.findOne({ email });
+    if (!user) {
       req.flash(
         "success_msg",
-        "If an account with that email exists, a password reset link has been sent."
+        "If an account exists, reset instructions were sent."
       );
-      res.redirect("/auth/login");
-    } catch (error) {
-      console.error("Forgot password error:", error);
-      req.flash("error_msg", "Error processing your request");
-      res.redirect("/auth/forgot-password");
+      return res.redirect("/auth/login");
     }
-  },
-];
 
-// Additional API endpoints (if needed)
-exports.getCsrfToken = [
-  csrfProtection,
-  (req, res) => {
-    res.json({ csrfToken: req.csrfToken() });
-  },
-];
-
-exports.getAuthStatus = (req, res) => {
-  if (req.isAuthenticated()) {
-    res.json({
-      authenticated: true,
-      user: {
-        id: req.user._id,
-        username: req.user.username,
-        email: req.user.email,
-        profile: req.user.profile,
-      },
-    });
-  } else {
-    res.json({
-      authenticated: false,
-    });
+    // TODO: implement OTP or reset token system
+    req.flash(
+      "success_msg",
+      "If an account exists, reset instructions have been sent."
+    );
+    return res.redirect("/auth/login");
+  } catch (err) {
+    console.error("Forgot password error:", err);
+    req.flash("error_msg", "Error processing request");
+    return res.redirect("/auth/forgot-password");
   }
 };
-
-// Export rate limiters for use in routes if needed
-exports.authLimiter = authLimiter;
-exports.strictAuthLimiter = strictAuthLimiter;
-exports.csrfProtection = csrfProtection;
