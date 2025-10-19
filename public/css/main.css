@@ -498,10 +498,30 @@ section {
     transform: translateX(-100%); /* move fully left */
   }
 }
-/* =====================
+#auth {
+  /* =====================
    GLASSMORPHISM LOGIN CARD
    ===================== */
-.glass-card.login-card {
+  /* =====================
+   INPUT GROUP
+   ===================== */
+  /* =====================
+   BUTTONS
+   ===================== */
+  /* =====================
+   DIVIDER
+   ===================== */
+  /* =====================
+   LINKS
+   ===================== */
+  /* =====================
+   ERROR MESSAGES
+   ===================== */
+  /* =====================
+   RESPONSIVE
+   ===================== */
+}
+#auth .glass-card.login-card {
   backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
@@ -510,135 +530,103 @@ section {
   max-width: 420px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   transition: all 0.4s ease;
+  display: flex;
+  flex-direction: column;
 }
-
-/* =====================
-   INPUT GROUP
-   ===================== */
-.glass-input-icon {
+#auth .input-group {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+}
+#auth .glass-input-icon {
   background: rgba(15, 23, 42, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--accent);
   border-right: none;
   border-radius: 8px 0 0 8px;
   padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 45px; /* ensure icon is always visible */
 }
-
-.glass-input,
-.form-select.glass-input {
+#auth .glass-input,
+#auth .form-select.glass-input {
   background: rgba(15, 23, 42, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--text);
   padding: 0.75rem 1rem;
   border-radius: 0 8px 8px 0;
   font-size: 0.95rem;
+  flex: 1;
   transition: all 0.3s ease;
 }
-
-.glass-input:focus,
-.form-select.glass-input:focus {
+#auth .glass-input:focus,
+#auth .form-select.glass-input:focus {
   border-color: var(--accent);
   background: rgba(15, 23, 42, 0.7);
   box-shadow: 0 0 8px rgba(0, 212, 170, 0.4);
   outline: none;
 }
-
-.glass-input::placeholder {
+#auth .glass-input::placeholder {
   color: rgba(255, 255, 255, 0.4);
 }
-
-/* =====================
-   BUTTONS
-   ===================== */
-.btn.holographic {
+#auth .btn.holographic {
   font-weight: 600;
   font-size: 1rem;
   padding: 0.75rem;
   border-radius: 10px;
   transition: all 0.3s ease;
 }
-
-.btn-accent.holographic {
+#auth .btn-accent.holographic {
   background: linear-gradient(135deg, var(--accent), var(--primary));
   color: var(--dark);
 }
-
-.btn-accent.holographic:hover {
+#auth .btn-accent.holographic:hover {
   background: linear-gradient(135deg, var(--primary), var(--accent));
 }
-
-.btn-outline-accent.holographic {
+#auth .btn-outline-accent.holographic {
   border: 1.5px solid var(--accent);
   color: var(--accent);
   background: transparent;
 }
-
-.btn-outline-accent.holographic:hover {
+#auth .btn-outline-accent.holographic:hover {
   background: var(--accent);
   color: var(--dark);
 }
-
-/* =====================
-   DIVIDER
-   ===================== */
-.divider {
+#auth .divider {
   display: flex;
   align-items: center;
   justify-content: center;
   color: rgba(255, 255, 255, 0.5);
   font-size: 0.8rem;
 }
-
-.divider::before,
-.divider::after {
+#auth .divider::before,
+#auth .divider::after {
   content: "";
   flex: 1;
   height: 1px;
   background: rgba(255, 255, 255, 0.1);
   margin: 0 10px;
 }
-
-/* =====================
-   LINKS
-   ===================== */
-a.text-accent {
+#auth a.text-accent {
   color: var(--accent);
   text-decoration: none;
 }
-
-a.text-accent:hover {
+#auth a.text-accent:hover {
   text-decoration: underline;
 }
-
-/* =====================
-   ERROR MESSAGES
-   ===================== */
-.invalid-feedback {
+#auth .invalid-feedback {
   font-size: 0.8rem;
   color: #ff6b6b;
 }
-
-/* =====================
-   RESPONSIVE
-   ===================== */
 @media (max-width: 576px) {
-  .glass-card.login-card {
-    padding: 1.8rem;
+  #auth .glass-card.login-card {
+    padding: 1.5rem;
     max-width: 90%;
   }
-  .input-group {
-    flex-direction: column;
-  }
-  .input-group > .form-select.glass-input,
-  .input-group > .form-control.glass-input {
-    border-radius: 8px;
-    margin-top: 0.5rem;
-  }
-  .glass-input-icon {
-    border-radius: 8px;
-    margin-bottom: 0.5rem;
-  }
 }
+
 /* ====== PROFESSIONAL FLASH MESSAGES ====== */
 .flash-messages-container {
   position: fixed;

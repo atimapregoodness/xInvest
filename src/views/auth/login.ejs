@@ -2,6 +2,7 @@
 
 <div
   class="container d-flex justify-content-center align-items-center min-vh-100 mt-4"
+  id="auth"
 >
   <div class="glass-card login-card text-center" data-aos="fade-up">
     <!-- Header -->
@@ -38,7 +39,7 @@
       </div>
 
       <!-- Password -->
-      <div class="input-group mb-4">
+      <div class="input-group mb-3">
         <span class="input-group-text glass-input-icon">
           <i class="fas fa-lock"></i>
         </span>
@@ -53,6 +54,13 @@
         />
       </div>
 
+      <!-- Forgot Password -->
+      <div class="text-end mb-3">
+        <a href="/auth/forgot-password" class="text-accent small"
+          >Forgot your password?</a
+        >
+      </div>
+
       <!-- Login Button -->
       <button
         type="submit"
@@ -62,13 +70,6 @@
         <i class="fas fa-sign-in-alt me-2"></i>Login
       </button>
     </form>
-
-    <!-- Forgot Password -->
-    <p class="text-muted small mb-2">
-      <a href="/auth/forgot-password" class="text-accent"
-        >Forgot your password?</a
-      >
-    </p>
 
     <!-- Divider -->
     <div class="divider my-4">
