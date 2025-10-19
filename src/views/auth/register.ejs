@@ -1,22 +1,239 @@
-<%- include('layout') %>
+<%- layout('layout/boilerplate', { title: 'xInvest - Sign Up' }) %>
 
-<h2 data-aos="fade-in">Register</h2>
-<form action="/auth/register" method="POST" data-aos="fade-up">
-  <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-  <div class="input-group">
-    <i class="fas fa-user"></i>
-    <input type="text" name="name" placeholder="Name" required />
-  </div>
-  <div class="input-group">
-    <i class="fas fa-envelope"></i>
-    <input type="email" name="email" placeholder="Email" required />
-  </div>
-  <div class="input-group">
-    <i class="fas fa-lock"></i>
-    <input type="password" name="password" placeholder="Password" required />
-  </div>
-  <button type="submit" class="btn holographic">Register</button>
-</form>
-<a href="/auth/google" class="btn holographic"
-  ><i class="fab fa-google"></i> Google Register</a
+<div
+  class="container d-flex justify-content-center align-items-center min-vh-100 mt-4"
 >
+  <div class="glass-card login-card text-center" data-aos="fade-up">
+    <!-- Header -->
+    <div class="mb-4">
+      <h2 class="text-white fw-bold mb-2" data-i18n="Sign Up">Sign Up</h2>
+      <p class="text-muted small" data-i18n="Create Account Subtitle">
+        Create your xInvest account to start trading securely
+      </p>
+    </div>
+
+    <!-- Signup Form -->
+    <form
+      action="/auth/register"
+      method="POST"
+      class="login-form mt-3"
+      id="signupForm"
+      novalidate
+    >
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+      <input type="hidden" name="phone" id="fullPhoneInput" />
+
+      <!-- Full Name -->
+      <div class="input-group mb-3">
+        <span class="input-group-text glass-input-icon"
+          ><i class="fas fa-user"></i
+        ></span>
+        <input
+          type="text"
+          name="fullname"
+          class="form-control glass-input"
+          placeholder="Full Name"
+          required
+          minlength="2"
+          aria-label="Full Name"
+          data-i18n-placeholder="Full Name"
+        />
+        <div class="invalid-feedback">
+          Please enter your full name (minimum 2 characters).
+        </div>
+      </div>
+
+      <!-- Country + Phone -->
+      <div class="input-group mb-3">
+        <span class="input-group-text glass-input-icon"
+          ><i class="fas fa-globe"></i
+        ></span>
+        <select
+          name="country"
+          class="form-select glass-input"
+          id="countryInput"
+          required
+          aria-label="Country"
+        >
+          <option value="" disabled selected data-i18n="Select Country">
+            Select Country
+          </option>
+          <% const countries = [ {name:"Afghanistan", code:"+93"},
+          {name:"Albania", code:"+355"}, {name:"Algeria", code:"+213"},
+          {name:"Andorra", code:"+376"}, {name:"Angola", code:"+244"},
+          {name:"Argentina", code:"+54"}, {name:"Australia", code:"+61"},
+          {name:"Austria", code:"+43"}, {name:"Bangladesh", code:"+880"},
+          {name:"Belgium", code:"+32"}, {name:"Brazil", code:"+55"},
+          {name:"Canada", code:"+1"}, {name:"Chile", code:"+56"}, {name:"China",
+          code:"+86"}, {name:"Colombia", code:"+57"}, {name:"Denmark",
+          code:"+45"}, {name:"Egypt", code:"+20"}, {name:"Finland",
+          code:"+358"}, {name:"France", code:"+33"}, {name:"Germany",
+          code:"+49"}, {name:"Ghana", code:"+233"}, {name:"Greece", code:"+30"},
+          {name:"Hong Kong", code:"+852"}, {name:"Iceland", code:"+354"},
+          {name:"India", code:"+91"}, {name:"Indonesia", code:"+62"},
+          {name:"Ireland", code:"+353"}, {name:"Israel", code:"+972"},
+          {name:"Italy", code:"+39"}, {name:"Japan", code:"+81"}, {name:"Kenya",
+          code:"+254"}, {name:"Malaysia", code:"+60"}, {name:"Mexico",
+          code:"+52"}, {name:"Morocco", code:"+212"}, {name:"Nepal",
+          code:"+977"}, {name:"Netherlands", code:"+31"}, {name:"New Zealand",
+          code:"+64"}, {name:"Nigeria", code:"+234"}, {name:"Norway",
+          code:"+47"}, {name:"Pakistan", code:"+92"}, {name:"Philippines",
+          code:"+63"}, {name:"Poland", code:"+48"}, {name:"Portugal",
+          code:"+351"}, {name:"Qatar", code:"+974"}, {name:"Russia", code:"+7"},
+          {name:"Saudi Arabia", code:"+966"}, {name:"Singapore", code:"+65"},
+          {name:"South Africa", code:"+27"}, {name:"South Korea", code:"+82"},
+          {name:"Spain", code:"+34"}, {name:"Sweden", code:"+46"},
+          {name:"Switzerland", code:"+41"}, {name:"Taiwan", code:"+886"},
+          {name:"Thailand", code:"+66"}, {name:"Turkey", code:"+90"},
+          {name:"Uganda", code:"+256"}, {name:"Ukraine", code:"+380"},
+          {name:"United Arab Emirates", code:"+971"}, {name:"United Kingdom",
+          code:"+44"}, {name:"United States", code:"+1"}, {name:"Vietnam",
+          code:"+84"}, {name:"Zambia", code:"+260"}, {name:"Zimbabwe",
+          code:"+263"} ]; %> <% countries.forEach(c => { %>
+          <option
+            value="<%= c.name %>"
+            data-code="<%= c.code %>"
+            data-i18n="<%= c.name %>"
+          >
+            <%= c.name %>
+          </option>
+          <% }) %>
+        </select>
+        <input
+          type="tel"
+          name="phoneNumber"
+          class="form-control glass-input"
+          placeholder="Phone Number"
+          required
+          minlength="7"
+          pattern="[0-9]+"
+          id="phoneNumberInput"
+          data-i18n-placeholder="Phone Number"
+        />
+        <div class="invalid-feedback">
+          Please select a valid country and phone number.
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="input-group mb-3">
+        <span class="input-group-text glass-input-icon"
+          ><i class="fas fa-lock"></i
+        ></span>
+        <input
+          type="password"
+          name="password"
+          class="form-control glass-input"
+          placeholder="Password"
+          required
+          minlength="8"
+          pattern="^(?=.*[A-Za-z])(?=.*\d).{8,}$"
+          id="passwordInput"
+          data-i18n-placeholder="Password"
+        />
+        <div class="invalid-feedback">
+          Password must have 8+ characters with letters and numbers.
+        </div>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="input-group mb-4">
+        <span class="input-group-text glass-input-icon"
+          ><i class="fas fa-lock"></i
+        ></span>
+        <input
+          type="password"
+          name="confirmPassword"
+          class="form-control glass-input"
+          placeholder="Confirm Password"
+          required
+          id="confirmPasswordInput"
+          data-i18n-placeholder="Confirm Password"
+        />
+        <div class="invalid-feedback">Passwords do not match.</div>
+      </div>
+
+      <!-- Terms and Conditions -->
+      <div class="form-check mb-4 text-start">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="termsCheck"
+          required
+        />
+        <label class="form-check-label small text-muted" for="termsCheck">
+          <span data-i18n="Accept Terms">
+            I accept the
+            <a href="/terms" target="_blank" class="text-accent"
+              >Terms & Conditions</a
+            >
+          </span>
+        </label>
+        <div class="invalid-feedback">
+          You must accept the terms to continue.
+        </div>
+      </div>
+
+      <!-- Signup Button -->
+      <button
+        type="submit"
+        class="btn btn-accent holographic w-100 mb-3"
+        data-i18n="Sign Up"
+      >
+        <i class="fas fa-user-plus me-2"></i>Sign Up
+      </button>
+
+    <!-- Divider -->
+    <div class="divider my-4"><span data-i18n="Or">OR</span></div>
+
+    <!-- Login Link -->
+    <p class="text-muted small">
+      <span data-i18n="Already have an account">Already have an account?</span>
+      <a href="/auth/login" class="text-accent fw-semibold" data-i18n="Login"
+        >Login</a
+      >
+    </p>
+  </div>
+</div>
+
+
+<!-- Script -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    AOS.init({ duration: 800, easing: "ease-out-cubic", once: true });
+
+    const form = document.getElementById("signupForm");
+    if (form) {
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (!form.checkValidity()) {
+          e.stopPropagation();
+          form.classList.add("was-validated");
+          return;
+        }
+
+        const countrySelect = document.getElementById("countryInput");
+        const phoneNumberInput = document.getElementById("phoneNumberInput");
+        const fullPhoneInput = document.getElementById("fullPhoneInput");
+        const password = document.getElementById("passwordInput").value;
+        const confirmPassword = document.getElementById(
+          "confirmPasswordInput"
+        ).value;
+
+        const countryCode =
+          countrySelect.options[countrySelect.selectedIndex]?.dataset.code ||
+          "";
+        fullPhoneInput.value = `${countryCode}${phoneNumberInput.value}`;
+
+        if (password !== confirmPassword) {
+          document
+            .getElementById("confirmPasswordInput")
+            .classList.add("is-invalid");
+          return;
+        }
+
+        form.submit();
+      });
+    }
+  });
+</script>

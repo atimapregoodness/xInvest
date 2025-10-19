@@ -1,0 +1,101 @@
+@import "variables";
+
+#dropdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* horizontal center */
+  justify-content: center; /* vertical center */
+}
+
+#accountDropdown {
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+  border: none;
+  border-radius: 12px;
+  padding: 12px 30px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  color: #000;
+}
+
+#acctContents {
+  margin-top: 0.2em;
+}
+
+#acctContents img {
+  object-fit: cover;
+  border: 2px solid #ccc;
+}
+#acctContents h6 {
+  font-weight: 600;
+}
+.glass-nav {
+  background: var(--glass);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--glass-border);
+  transition: background 0.4s ease, box-shadow 0.4s ease;
+}
+
+// .glass-nav.scrolled {
+//   background: rgba(15, 23, 42, 0.74);
+//   // box-shadow: 0 4px 20px rgba(0, 212, 170, 0.15);
+// }
+
+.navbar-brand i {
+  font-size: 1.3rem;
+  color: var(--accent);
+}
+
+.nav-link {
+  color: #f1f1f1;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: var(--accent);
+}
+
+.dropdown-menu {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.dropdown-item {
+  color: #e0e0e0;
+}
+
+.dropdown-item:hover {
+  background: rgba(0, 212, 170, 0.15);
+  color: var(--accent);
+}
+
+.btn-accent {
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+  color: var(--dark);
+  font-weight: 600;
+  border-radius: 10px;
+}
+
+@media (max-width: 991px) {
+  .navbar-nav {
+    background: rgba(15, 23, 42, 0.97);
+    backdrop-filter: blur(15px);
+    border-radius: 12px;
+    padding: 1rem;
+  }
+}
+
+/* Hide Google Translate bar & logo */
+.goog-te-banner-frame.skiptranslate,
+.goog-te-gadget-icon,
+.goog-logo-link,
+.goog-te-gadget span {
+  display: none !important;
+}
+
+.goog-te-gadget {
+  height: 0;
+  overflow: hidden;
+}

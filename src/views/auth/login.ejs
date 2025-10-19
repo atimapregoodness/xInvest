@@ -1,16 +1,81 @@
-<%- include('layout') %>
+<%- layout('layout/boilerplate') %>
 
-<h2 data-aos="fade-in">Login</h2>
-<form action="/auth/login" method="POST" data-aos="fade-up">
-  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-  <div class="input-group">
-    <i class="fas fa-envelope"></i>
-    <input type="email" name="email" placeholder="Email" required>
+<div
+  class="container d-flex justify-content-center align-items-center min-vh-100 mt-4"
+>
+  <div class="glass-card login-card text-center" data-aos="fade-up">
+    <!-- Header -->
+    <div class="mb-4">
+      <h2 class="text-white fw-bold mb-2" data-i18n="Login">Login</h2>
+      <p class="text-muted small" data-i18n="Subtitle">
+        Securely access your xInvest account
+      </p>
+    </div>
+
+    <!-- Login Form -->
+    <form action="/auth/login" method="POST" class="login-form mt-3">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+      <!-- Email -->
+      <div class="input-group mb-3">
+        <span class="input-group-text glass-input-icon">
+          <i class="fas fa-envelope"></i>
+        </span>
+        <input
+          type="email"
+          name="email"
+          class="form-control glass-input"
+          placeholder="Email Address"
+          required
+          aria-label="Email"
+        />
+      </div>
+
+      <!-- Password -->
+      <div class="input-group mb-4">
+        <span class="input-group-text glass-input-icon">
+          <i class="fas fa-lock"></i>
+        </span>
+        <input
+          type="password"
+          name="password"
+          class="form-control glass-input"
+          placeholder="Password"
+          required
+          aria-label="Password"
+        />
+      </div>
+
+      <!-- Login Button -->
+      <button
+        type="submit"
+        class="btn btn-accent holographic w-100 mb-3"
+        data-i18n="Login"
+      >
+        <i class="fas fa-sign-in-alt me-2"></i>Login
+      </button>
+    </form>
+
+    <!-- Divider -->
+    <div class="divider my-4">
+      <span>OR</span>
+    </div>
+
+    <!-- Register -->
+    <p class="text-muted small">
+      Don't have an account?
+      <a href="/auth/register" class="text-accent fw-semibold">Create one</a>
+    </p>
   </div>
-  <div class="input-group">
-    <i class="fas fa-lock"></i>
-    <input type="password" name="password" placeholder="Password" required>
-  </div>
-  <button type="submit" class="btn holographic">Login</button>
-</form>
-<a href="/auth/google" class="btn holographic"><i class="fab fa-google"></i> Google Login</a>
+</div>
+
+<!-- ===================== SCRIPT ===================== -->
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    AOS.init({
+      duration: 800,
+      easing: "ease-out-cubic",
+      once: true,
+    });
+  });
+</script>

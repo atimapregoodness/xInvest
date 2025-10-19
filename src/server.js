@@ -359,6 +359,11 @@ app.get("/api/forex", (req, res) => {
   });
 });
 
+app.get("/set-lang/:lang", (req, res) => {
+  res.cookie("lang", req.params.lang, { maxAge: 900000 });
+  res.redirect("back");
+});
+
 app.get("/api/health", (req, res) => {
   res.json({
     status: "healthy",

@@ -44,7 +44,8 @@ section {
 
 .glass-card:hover {
   border-color: var(--accent);
-  transform: translateY(-8px) scale(1.02);
+  // transition: 0.4s;
+  // transform: translateY(-8px) scale(1.02);
   box-shadow: 0 25px 50px rgba(0, 212, 170, 0.15);
 }
 
@@ -259,7 +260,6 @@ section {
 }
 
 .btn-accent:hover {
-  transform: translateY(-3px);
   box-shadow: 0 10px 25px rgba(0, 212, 170, 0.3);
 }
 

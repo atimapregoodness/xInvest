@@ -1,4 +1,125 @@
 @charset "UTF-8";
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+:root {
+  --primary: #0066ff;
+  --secondary: #1e2a3a;
+  --accent: #00d4aa;
+  --dark: #0f172a;
+  --darker: #0a0f1c;
+  --success: #00d98c;
+  --danger: #ff375f;
+  --warning: #ffb800;
+  --info: #0066ff;
+  --glass: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+#dropdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* horizontal center */
+  justify-content: center; /* vertical center */
+}
+
+#accountDropdown {
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+  border: none;
+  border-radius: 12px;
+  padding: 12px 30px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  color: #000;
+}
+
+#acctContents {
+  margin-top: 0.2em;
+}
+
+#acctContents img {
+  object-fit: cover;
+  border: 2px solid #ccc;
+}
+
+#acctContents h6 {
+  font-weight: 600;
+}
+
+.glass-nav {
+  background: var(--glass);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--glass-border);
+  transition: background 0.4s ease, box-shadow 0.4s ease;
+}
+
+.navbar-brand i {
+  font-size: 1.3rem;
+  color: var(--accent);
+}
+
+.nav-link {
+  color: #f1f1f1;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: var(--accent);
+}
+
+.dropdown-menu {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.dropdown-item {
+  color: #e0e0e0;
+}
+
+.dropdown-item:hover {
+  background: rgba(0, 212, 170, 0.15);
+  color: var(--accent);
+}
+
+.btn-accent {
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+  color: var(--dark);
+  font-weight: 600;
+  border-radius: 10px;
+}
+
+@media (max-width: 991px) {
+  .navbar-nav {
+    background: rgba(15, 23, 42, 0.97);
+    backdrop-filter: blur(15px);
+    border-radius: 12px;
+    padding: 1rem;
+  }
+}
+/* Hide Google Translate bar & logo */
+.goog-te-banner-frame.skiptranslate,
+.goog-te-gadget-icon,
+.goog-logo-link,
+.goog-te-gadget span {
+  display: none !important;
+}
+
+.goog-te-gadget {
+  height: 0;
+  overflow: hidden;
+}
+
 :root {
   --primary: #0066ff;
   --secondary: #1e2a3a;
@@ -66,7 +187,6 @@ section {
 
 .glass-card:hover {
   border-color: var(--accent);
-  transform: translateY(-8px) scale(1.02);
   box-shadow: 0 25px 50px rgba(0, 212, 170, 0.15);
 }
 
@@ -265,7 +385,6 @@ section {
 }
 
 .btn-accent:hover {
-  transform: translateY(-3px);
   box-shadow: 0 10px 25px rgba(0, 212, 170, 0.3);
 }
 
@@ -379,13 +498,345 @@ section {
     transform: translateX(-100%); /* move fully left */
   }
 }
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  scroll-behavior: smooth;
+/* =====================
+   GLASSMORPHISM LOGIN CARD
+   ===================== */
+.glass-card.login-card {
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  transition: all 0.4s ease;
 }
 
-html {
-  scroll-behavior: smooth;
+/* =====================
+   INPUT GROUP
+   ===================== */
+.glass-input-icon {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--accent);
+  border-right: none;
+  border-radius: 8px 0 0 8px;
+  padding: 0.75rem;
+}
+
+.glass-input,
+.form-select.glass-input {
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text);
+  padding: 0.75rem 1rem;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.glass-input:focus,
+.form-select.glass-input:focus {
+  border-color: var(--accent);
+  background: rgba(15, 23, 42, 0.7);
+  box-shadow: 0 0 8px rgba(0, 212, 170, 0.4);
+  outline: none;
+}
+
+.glass-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* =====================
+   BUTTONS
+   ===================== */
+.btn.holographic {
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0.75rem;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.btn-accent.holographic {
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+  color: var(--dark);
+}
+
+.btn-accent.holographic:hover {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+}
+
+.btn-outline-accent.holographic {
+  border: 1.5px solid var(--accent);
+  color: var(--accent);
+  background: transparent;
+}
+
+.btn-outline-accent.holographic:hover {
+  background: var(--accent);
+  color: var(--dark);
+}
+
+/* =====================
+   DIVIDER
+   ===================== */
+.divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.8rem;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0 10px;
+}
+
+/* =====================
+   LINKS
+   ===================== */
+a.text-accent {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a.text-accent:hover {
+  text-decoration: underline;
+}
+
+/* =====================
+   ERROR MESSAGES
+   ===================== */
+.invalid-feedback {
+  font-size: 0.8rem;
+  color: #ff6b6b;
+}
+
+/* =====================
+   RESPONSIVE
+   ===================== */
+@media (max-width: 576px) {
+  .glass-card.login-card {
+    padding: 1.8rem;
+    max-width: 90%;
+  }
+  .input-group {
+    flex-direction: column;
+  }
+  .input-group > .form-select.glass-input,
+  .input-group > .form-control.glass-input {
+    border-radius: 8px;
+    margin-top: 0.5rem;
+  }
+  .glass-input-icon {
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+  }
+}
+/* ====== PROFESSIONAL FLASH MESSAGES ====== */
+.flash-messages-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  max-width: 400px;
+  width: 100%;
+}
+
+.flash-message {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 42, 58, 0.95));
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transform: translateX(120%);
+  opacity: 0;
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  border: none;
+}
+
+.flash-message.success::before {
+  background: linear-gradient(to bottom, #00d98c, #00b875);
+}
+
+.flash-message.error::before {
+  background: linear-gradient(to bottom, #ff375f, #e62e50);
+}
+
+.flash-message.warning::before {
+  background: linear-gradient(to bottom, #ffb800, #e6a600);
+}
+
+.flash-message.info::before {
+  background: linear-gradient(to bottom, #0066ff, #0055dd);
+}
+
+.flash-message.show {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.flash-message.hide {
+  transform: translateX(120%);
+  opacity: 0;
+}
+
+.flash-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 14px;
+  flex-shrink: 0;
+}
+
+.flash-icon.success {
+  background: rgba(0, 217, 140, 0.15);
+  color: #00d98c;
+}
+
+.flash-icon.error {
+  background: rgba(255, 55, 95, 0.15);
+  color: #ff375f;
+}
+
+.flash-icon.warning {
+  background: rgba(255, 184, 0, 0.15);
+  color: #ffb800;
+}
+
+.flash-icon.info {
+  background: rgba(0, 102, 255, 0.15);
+  color: #0066ff;
+}
+
+.flash-content {
+  flex-grow: 1;
+}
+
+.flash-title {
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 4px;
+  color: white;
+}
+
+.flash-text {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.4;
+}
+
+.flash-close {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px;
+  margin-left: 10px;
+  transition: color 0.3s ease;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.flash-close:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.flash-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  border-radius: 0 0 0 4px;
+  width: 100%;
+  transform-origin: left;
+  animation: progressBar 5s linear forwards;
+}
+
+.flash-message.success .flash-progress {
+  background: linear-gradient(to right, #00d98c, #00b875);
+}
+
+.flash-message.error .flash-progress {
+  background: linear-gradient(to right, #ff375f, #e62e50);
+}
+
+.flash-message.warning .flash-progress {
+  background: linear-gradient(to right, #ffb800, #e6a600);
+}
+
+.flash-message.info .flash-progress {
+  background: linear-gradient(to right, #0066ff, #0055dd);
+}
+
+@keyframes progressBar {
+  0% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(0);
+  }
+}
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .flash-messages-container {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+  .flash-message {
+    padding: 14px 16px;
+  }
+  .flash-icon {
+    width: 36px;
+    height: 36px;
+    margin-right: 12px;
+  }
+}
+/* ===================== ANIMATION UTILITIES ===================== */
+/* Common animation base */
+.show-animate {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.6s ease-out;
+  will-change: transform, opacity;
+}
+.show-animate.visible {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+/* Direction variants */
+.show-from-bottom {
+  transform: translateY(30px);
+}
+
+.show-from-left {
+  transform: translateX(-30px);
+}
+
+.show-from-right {
+  transform: translateX(30px);
 }/*# sourceMappingURL=main.css.map */
