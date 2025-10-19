@@ -625,6 +625,7 @@ section {
   #auth .glass-card.login-card {
     padding: 1.5rem;
     max-width: 90%;
+    padding-top: 2em;
   }
 }
 
