@@ -118,69 +118,76 @@ document.addEventListener("DOMContentLoaded", function () {
   refreshBtn.addEventListener("click", updateMarket);
   updateMarket();
 
-
   const socket = io(); // served by socket.io script from server
 
-  socket.on('connect', () => {
-    console.log('Connected to market feed');
+  socket.on("connect", () => {
+    console.log("Connected to market feed");
   });
 
-  socket.on('marketUpdate', (payload) => {
+  socket.on("marketUpdate", (payload) => {
     // crypto
     if (payload.crypto) {
       const btc = payload.crypto.BTC;
       const usdt = payload.crypto.USDT;
-      updateEl('#btc-price', formatNumber(btc.price, 2), btc.change24h);
-      updateEl('#usdt-price', formatNumber(usdt.price, 2), usdt.change24h);
+      updateEl("#btc-price", formatNumber(btc.price, 2), btc.change24h);
+      updateEl("#usdt-price", formatNumber(usdt.price, 2), usdt.change24h);
     }
 
     // forex heroes
     if (payload.forexPairs) {
-      setText('#eurusd-price', payload.forexPairs.EURUSD);
-      setText('#gbpusd-price', payload.forexPairs.GBPUSD);
-      setText('#usdjpy-price', payload.forexPairs.USDJPY);
+      setText("#eurusd-price", payload.forexPairs.EURUSD);
+      setText("#gbpusd-price", payload.forexPairs.GBPUSD);
+      setText("#usdjpy-price", payload.forexPairs.USDJPY);
     }
 
     // last updated
-    document.getElementById('last-update') && (document.getElementById('last-update').textContent = new Date(payload.ts).toLocaleTimeString() + (payload.simulated ? ' (sim)' : '') );
+    document.getElementById("last-update") &&
+      (document.getElementById("last-update").textContent =
+        new Date(payload.ts).toLocaleTimeString() +
+        (payload.simulated ? " (sim)" : ""));
   });
 
   function setText(selector, val) {
     const el = document.querySelector(selector);
     if (!el) return;
-    el.classList.add('price-flash');
-    setTimeout(()=> el.classList.remove('price-flash'), 900);
-    el.textContent = (typeof val === 'number' || !isNaN(val)) ? Number(val).toLocaleString() : val;
+    el.classList.add("price-flash");
+    setTimeout(() => el.classList.remove("price-flash"), 900);
+    el.textContent =
+      typeof val === "number" || !isNaN(val)
+        ? Number(val).toLocaleString()
+        : val;
   }
 
   function updateEl(selector, priceText, change24) {
     const el = document.querySelector(selector);
     if (!el) return;
     el.textContent = priceText;
-    const changeSpan = document.createElement('span');
+    const changeSpan = document.createElement("span");
     changeSpan.textContent = ` ${Number(change24).toFixed(2)}%`;
-    changeSpan.className = Number(change24) >= 0 ? 'price-up ms-2' : 'price-down ms-2';
+    changeSpan.className =
+      Number(change24) >= 0 ? "price-up ms-2" : "price-down ms-2";
     // append or update small label next to price
     const parent = el.parentElement;
     if (parent) {
-      let existing = parent.querySelector('.price-change-small');
+      let existing = parent.querySelector(".price-change-small");
       if (!existing) {
-        existing = document.createElement('div');
-        existing.className = 'price-change-small small';
+        existing = document.createElement("div");
+        existing.className = "price-change-small small";
         parent.appendChild(existing);
       }
-      existing.innerHTML = '';
+      existing.innerHTML = "";
       existing.appendChild(changeSpan);
     }
     // flash animation
-    el.classList.add('price-flash');
-    setTimeout(()=> el.classList.remove('price-flash'), 900);
+    el.classList.add("price-flash");
+    setTimeout(() => el.classList.remove("price-flash"), 900);
   }
 
-  function formatNumber(n, decimals=2) {
-    if (n === null || n === undefined) return '-';
-    return Number(n).toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  function formatNumber(n, decimals = 2) {
+    if (n === null || n === undefined) return "-";
+    return Number(n).toLocaleString(undefined, {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    });
   }
-
-
 });
