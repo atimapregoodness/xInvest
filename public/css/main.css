@@ -1980,7 +1980,7 @@ a.text-accent:hover {
 /* TABLET MOBILE (481px - 768px) */
 @media (max-width: 768px) and (min-width: 481px) {
   .transactions-table-container {
-    margin-left: 0em !important;
+    margin: 0em !important;
   }
   .dashboard {
     padding: 0.25rem;
@@ -2015,6 +2015,9 @@ a.text-accent:hover {
 }
 /* MOBILE (361px - 480px) */
 @media (max-width: 480px) and (min-width: 361px) {
+  .transactions-table-container {
+    margin: 0em !important;
+  }
   .dashboard {
     padding: 0.25rem;
   }
