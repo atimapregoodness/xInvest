@@ -332,6 +332,8 @@ app.set("views", path.join(__dirname, "views"));
 app.use((req, res, next) => {
   res.locals.user = req.user || null;
   res.locals.wallet = req.user.wallet || null;
+  res.locals.transactions = req.user.transactions || [];
+
   res.locals.currentPath = req.path;
 
   // Directly expose flash messages from req.flash()

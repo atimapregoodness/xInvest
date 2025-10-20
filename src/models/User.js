@@ -1,91 +1,82 @@
 const mongoose = require("mongoose");
-const passportLocalMongoose = require("passport-local-mongoose");
 
-const userSchema = new mongoose.Schema(
+const transactionSchema = new mongoose.Schema(
   {
-    fullName: {
+    type: {
       type: String,
-      required: [true, "Full Name is required"],
-      trim: true,
-      maxlength: [100, "Full Name cannot exceed 100 characters"],
-    },
-
-    email: {
-      type: String,
-      required: [true, "Email is required"],
-      unique: true,
-      trim: true,
-      lowercase: true,
-      match: [
-        /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
-        "Please enter a valid email",
+      enum: [
+        "deposit",
+        "withdrawal",
+        "investment",
+        "profit",
+        "transfer",
+        "fee",
+        "bonus",
       ],
+      required: true,
     },
-
-    phone: {
+    currency: {
       type: String,
-      required: [true, "Phone number is required"],
-      unique: true, // ✅ ADDED: Prevent duplicate phones
-      trim: true,
-      // ✅ FIXED: Accept international format (+1234567890)
-      match: [
-        /^[\+]?[1-9][\d]{0,15}$/,
-        "Phone number must be valid international format (e.g., +12025550123)",
-      ],
+      enum: ["USDT", "BTC", "ETH"],
+      required: true,
     },
-
-    country: {
+    amount: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    fee: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    netAmount: {
+      type: Number,
+      required: true,
+    },
+    status: {
       type: String,
-      required: [true, "Country is required"],
-      trim: true,
-      maxlength: 50,
+      enum: ["pending", "completed", "failed", "cancelled"],
+      default: "pending",
     },
-
-    wallet: {
-      balance: { type: Number, default: 0 },
-      BTC: { type: Number, default: 0 },
-      ETH: { type: Number, default: 0 },
-      USDT: { type: Number, default: 0 },
+    walletAddress: String,
+    txHash: String,
+    description: String,
+    metadata: {
+      investmentId: { type: mongoose.Schema.Types.ObjectId, ref: "Investment" },
+      planName: String,
+      exchangeRate: Number,
+      network: {
+        type: String,
+        enum: ["ERC20", "TRC20", "BEP20", "BTC", "ETH"],
+      },
+      confirmations: { type: Number, default: 0 },
     },
-
-    // ✅ ADDED: Track user activity
-    lastLogin: { type: Date },
-    isActive: { type: Boolean, default: true },
+    completedAt: Date,
+    failureReason: String,
   },
   {
+    _id: false, // No separate _id for embedded docs
     timestamps: true,
-    // ✅ FIXED: Remove username from indexes (passport handles it)
   }
 );
 
-// ✅ FIXED: Passport configuration
-userSchema.plugin(passportLocalMongoose, {
-  usernameField: "email",
-  usernameLowercase: true, // ✅ ADDED: Force lowercase email
-  hashField: "hash", // ✅ ADDED: Explicit field names
-  saltField: "salt",
-
-  // ✅ FIXED: Custom error messages
-  errorMessages: {
-    MissingPasswordError: "Password is required.",
-    AttemptTooSoonError: "Too many failed login attempts. Try again later.",
-    TooManyAttemptsError:
-      "Account locked temporarily due to multiple failed attempts.",
-    NoSaltValueStoredError: "Authentication not possible.",
-    IncorrectPasswordError: "Incorrect password.",
-    IncorrectUsernameError: "Email not found.",
-    MissingUsernameError: "Email is required.",
-    UserExistsError: "Email already registered.",
+const userSchema = new mongoose.Schema(
+  {
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    wallet: {
+      BTC: { type: Number, default: 0 },
+      ETH: { type: Number, default: 0 },
+      USDT: { type: Number, default: 0 },
+      totalBalance: { type: Number, default: 0 },
+    },
+    // EMBEDDED TRANSACTIONS (MAX 1000 transactions per user)
+    transactions: [transactionSchema],
   },
-});
-
-// ✅ ADDED: Pre-save hook to ensure phone format
-userSchema.pre("save", function (next) {
-  if (this.phone && !this.phone.startsWith("+")) {
-    // Add + if missing (handled in frontend, but backup)
-    this.phone = "+" + this.phone;
+  {
+    timestamps: true,
   }
-  next();
-});
+);
 
 module.exports = mongoose.model("User", userSchema);

@@ -129,3 +129,161 @@ exports.updateProfile = async (req, res) => {
     res.redirect("/dashboard/profile");
   }
 };
+
+// Get wallet with LIVE prices
+exports.getWallet = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user || !user.wallet) {
+      return res.status(404).json({
+        success: false,
+        message: "Wallet not found",
+      });
+    }
+
+    res.render("user/wallet", {
+      title: "Wallet",
+      wallet: user.wallet,
+    });
+  } catch (error) {
+    console.error("Get wallet error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
+const cloudinary = require("cloudinary").v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const multer = require("multer");
+
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: "xinvest/botslips",
+    allowed_formats: ["jpg", "jpeg", "png"],
+    transformation: [{ width: 800, height: 600, crop: "limit" }],
+  },
+});
+
+const upload = multer({ storage });
+
+// ==========================================================================
+// PURCHASE BOT
+// ==========================================================================
+exports.purchaseBot = [
+  upload.single("slip"),
+  async (req, res) => {
+    try {
+      const { plan, price, paymentMethod, cryptoType } = req.body;
+      const user = await User.findById(req.user._id);
+
+      // Add bot purchase to transactions
+      const transaction = {
+        type: "bot_purchase",
+        currency: "USD",
+        amount: parseFloat(price),
+        netAmount: -parseFloat(price),
+        status: "pending",
+        description: `Bot Purchase: ${plan}`,
+        metadata: {
+          plan,
+          paymentMethod,
+          cryptoType,
+          slipUrl: req.file ? req.file.path : null,
+        },
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      user.transactions.unshift(transaction);
+      await user.save();
+
+      res.json({
+        success: true,
+        message: "Bot purchase submitted successfully!",
+        transactionId: transaction._id,
+        slipUrl: req.file ? req.file.path : null,
+      });
+    } catch (error) {
+      console.error("Bot purchase error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Purchase failed. Please try again.",
+      });
+    }
+  },
+];
+
+// ==========================================================================
+// GET USER BOTS
+// ==========================================================================
+exports.getUserBots = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    const bots = user.transactions
+      .filter((t) => t.type === "bot_purchase" && t.status === "completed")
+      .map((t) => ({
+        plan: t.metadata.plan,
+        purchasedAt: t.createdAt,
+        price: t.amount,
+      }));
+
+    res.json({ success: true, bots });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error fetching bots" });
+  }
+};
+
+// ==========================================================================
+// INVEST IN TRADING BOT
+// ==========================================================================
+exports.investInBot = [
+  upload.single("receipt"),
+  async (req, res) => {
+    try {
+      const { plan, amount, paymentMethod, cryptoType } = req.body;
+      const user = await User.findById(req.user._id);
+
+      // Create investment transaction
+      const investment = {
+        type: "investment",
+        currency: cryptoType || "USD",
+        amount: parseFloat(amount),
+        netAmount: parseFloat(amount),
+        status: "pending",
+        description: `${plan} Trading Bot Investment`,
+        metadata: {
+          plan,
+          paymentMethod,
+          cryptoType,
+          dailyReturn: PLANS[plan].dailyReturn,
+          lockPeriod: PLANS[plan].lockPeriod,
+          receiptUrl: req.file ? req.file.path : null,
+          adminManaged: true,
+        },
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      user.transactions.unshift(investment);
+
+      // Update wallet
+      if (cryptoType === "USDT") user.wallet.USDT -= parseFloat(amount);
+      await user.save();
+
+      res.json({
+        success: true,
+        message: `Your ${plan} bot investment has been activated!`,
+        investmentId: investment._id,
+        expectedDaily: (
+          parseFloat(amount) * parseFloat(PLANS[plan].dailyReturn)
+        ).toFixed(2),
+      });
+    } catch (error) {
+      res.status(500).json({ success: false, message: error.message });
+    }
+  },
+];

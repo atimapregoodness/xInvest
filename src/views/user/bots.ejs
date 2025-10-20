@@ -1,0 +1,337 @@
+<%- layout('layout/acctBoilerplate', { title: 'xInvest - Trading Bots' }) %>
+<%- partial("partials/floatingNav") %> <%- partial('partials/sideBar') %>
+
+<div class="dashboard">
+<div class="bots-page">
+  <section class="page-header">
+    <h1>AI Trading Bots</h1>
+    <p>Invest in our professionally managed bots. Our expert team trades 24/7 for you</p>
+    <div class="stats-bar">
+      <div class="stat"><i class="fas fa-chart-line"></i> 245% Avg ROI</div>
+      <div class="stat"><i class="fas fa-users"></i> 12,500+ Active Investors</div>
+      <div class="stat"><i class="fas fa-clock"></i> Admin Managed 24/7</div>
+    </div>
+  </section>
+
+  <!-- INVESTMENT PLANS GRID -->
+  <section class="bots-grid">
+    <!-- PLAN 1: BEGINNER -->
+    <div class="bot-card beginner-plan">
+      <div class="bot-header">
+        <i class="fas fa-robot"></i>
+        <h3>Beginner Plan</h3>
+        <span class="risk-level low">Low Risk</span>
+      </div>
+      <div class="bot-features">
+        <div class="feature"><i class="fas fa-check"></i> $100 Minimum Investment</div>
+        <div class="feature"><i class="fas fa-check"></i> 1% Daily Return</div>
+        <div class="feature"><i class="fas fa-check"></i> BTC & USDT Pairs</div>
+        <div class="feature"><i class="fas fa-check"></i> 30-Day Lock Period</div>
+        <div class="feature"><i class="fas fa-times"></i> Forex Trading</div>
+        <div class="feature"><i class="fas fa-times"></i> Advanced Strategies</div>
+      </div>
+      <div class="bot-price">
+        <span class="price-amount">$100</span>
+        <span class="price-period">Minimum</span>
+      </div>
+      <button class="buy-btn beginner-btn" data-plan="beginner" data-price="100">
+        <i class="fas fa-shopping-cart"></i> Start Investing
+      </button>
+    </div>
+
+    <!-- PLAN 2: PROFESSIONAL (POPULAR) -->
+    <div class="bot-card professional-plan popular">
+      <div class="popular-badge">MOST POPULAR</div>
+      <div class="bot-header">
+        <i class="fas fa-robot"></i>
+        <h3>Professional Plan</h3>
+        <span class="risk-level medium">Medium Risk</span>
+      </div>
+      <div class="bot-features">
+        <div class="feature"><i class="fas fa-check"></i> $500 Minimum Investment</div>
+        <div class="feature"><i class="fas fa-check"></i> 2.5% Daily Return</div>
+        <div class="feature"><i class="fas fa-check"></i> BTC, ETH, USDT Pairs</div>
+        <div class="feature"><i class="fas fa-check"></i> Forex (EUR/USD, GBP/USD)</div>
+        <div class="div class="feature"><i class="fas fa-check"></i> 45-Day Lock Period</div>
+        <div class="feature"><i class="fas fa-check"></i> Auto-Compounding</div>
+      </div>
+      <div class="bot-price">
+        <span class="price-amount">$500</span>
+        <span class="price-period">Minimum</span>
+      </div>
+      <button class="buy-btn professional-btn" data-plan="professional" data-price="500">
+        <i class="fas fa-shopping-cart"></i> Start Investing
+      </button>
+    </div>
+
+    <!-- PLAN 3: PREMIUM -->
+    <div class="bot-card premium-plan">
+      <div class="bot-header">
+        <i class="fas fa-robot"></i>
+        <h3>Premium Plan</h3>
+        <span class="risk-level high">High Risk</span>
+      </div>
+      <div class="bot-features">
+        <div class="feature"><i class="fas fa-check"></i> $2,000 Minimum Investment</div>
+        <div class="feature"><i class="fas fa-check"></i> 5% Daily Return</div>
+        <div class="feature"><i class="fas fa-check"></i> All Crypto Pairs</div>
+        <div class="feature"><i class="fas fa-check"></i> All Major Forex Pairs</div>
+        <div class="feature"><i class="fas fa-check"></i> Advanced Algo Trading</div>
+        <div class="feature"><i class="fas fa-check"></i> Priority Withdrawals</div>
+        <div class="feature"><i class="fas fa-check"></i> 60-Day Lock Period</div>
+      </div>
+      <div class="bot-price">
+        <span class="price-amount">$2,000</span>
+        <span class="price-period">Minimum</span>
+      </div>
+      <button class="buy-btn premium-btn" data-plan="premium" data-price="2000">
+        <i class="fas fa-shopping-cart"></i> Start Investing
+      </button>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-it-works">
+    <h2>How Our Trading Bots Work</h2>
+    <div class="works-grid">
+      <div class="work-step">
+        <div class="step-number">1</div>
+        <h4>Invest</h4>
+        <p>Choose your plan and deposit crypto</p>
+      </div>
+      <div class="work-step">
+        <div class="step-number">2</div>
+        <h4>Admin Trades</h4>
+        <p>Our expert team manages your bot 24/7</p>
+      </div>
+      <div class="work-step">
+        <div class="step-number">3</div>
+        <h4>Earn Daily</h4>
+        <p>Receive automated daily profits</p>
+      </div>
+      <div class="work-step">
+        <div class="step-number">4</div>
+        <h4>Withdraw</h4>
+        <p>After lock period, withdraw anytime</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- BOOTSTRAP INVESTMENT MODAL -->
+<div class="modal fade" id="investmentModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content bot-modal">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-robot"></i> Start <span id="selectedPlan"></span> Investment
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="investment-summary">
+          <h6>Investment Summary</h6>
+          <div class="summary-item">
+            <span><strong id="selectedPlanName"></strong></span>
+            <span class="price"><strong id="selectedPrice"></strong></span>
+          </div>
+          <div class="summary-item">
+            <span>Expected Daily Return</span>
+            <span id="dailyReturn" class="success">2.5%</span>
+          </div>
+          <div class="summary-item">
+            <span>Lock Period</span>
+            <span id="lockPeriod">45 Days</span>
+          </div>
+        </div>
+
+        <div class="payment-tabs">
+          <ul class="nav nav-tabs" id="paymentTabs">
+            <li class="nav-item">
+              <button class="nav-link active" id="crypto-tab" data-bs-toggle="tab" data-bs-target="#crypto">
+                <i class="fab fa-bitcoin"></i> Crypto Deposit
+              </button>
+            </li>
+            <li class="nav-item">
+              <button class="nav-link" id="giftcard-tab" data-bs-toggle="tab" data-bs-target="#giftcard">
+                <i class="fas fa-gift-card"></i> Gift Cards
+              </button>
+            </li>
+          </ul>
+
+          <div class="tab-content mt-3">
+            <!-- CRYPTO DEPOSIT -->
+            <div class="tab-pane fade show active" id="crypto">
+              <div class="crypto-options">
+                <div class="crypto-item active" data-crypto="USDT">
+                  <i class="fab fa-usd-circle"></i> USDT (TRC20)
+                  <div class="crypto-details">
+                    <span class="address">T: xInvestBotPayment123456789...</span>
+                    <button class="copy-btn" onclick="copyAddress('USDT')">Copy Address</button>
+                  </div>
+                </div>
+                <div class="crypto-item" data-crypto="BTC">
+                  <i class="fab fa-bitcoin"></i> Bitcoin
+                  <div class="crypto-details">
+                    <span class="address">1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</span>
+                    <button class="copy-btn" onclick="copyAddress('BTC')">Copy Address</button>
+                  </div>
+                </div>
+                <div class="crypto-item" data-crypto="ETH">
+                  <i class="fab fa-ethereum"></i> Ethereum
+                  <div class="crypto-details">
+                    <span class="address">0x742d35Cc6634C0532925a3b8D4d8f9...</span>
+                    <button class="copy-btn" onclick="copyAddress('ETH')">Copy Address</button>
+                  </div>
+                </div>
+              </div>
+              <div class="upload-slip">
+                <label>Upload Transaction Receipt</label>
+                <div class="file-upload">
+                  <input type="file" id="receiptInput" accept="image/*" class="d-none">
+                  <button type="button" class="upload-btn" onclick="document.getElementById('receiptInput').click()">
+                    <i class="fas fa-upload"></i> Upload Proof
+                  </button>
+                  <div id="receiptName" class="file-name"></div>
+                  <small>PNG, JPG • Max 5MB • Processing: 24 hours</small>
+                </div>
+              </div>
+            </div>
+
+            <!-- GIFTCARD TAB -->
+            <div class="tab-pane fade" id="giftcard">
+              <div class="giftcard-options">
+                <div class="giftcard-item">
+                  <img src="/images/giftcards/amazon.png" alt="Amazon">
+                  <div class="giftcard-details">
+                    <h6>Amazon $100</h6>
+                    <input type="text" class="form-control" placeholder="Enter 16-digit PIN">
+                  </div>
+                </div>
+                <div class="giftcard-item">
+                  <img src="/images/giftcards/apple.png" alt="Apple">
+                  <div class="giftcard-details">
+                    <h6>Apple iTunes $100</h6>
+                    <input type="text" class="form-control" placeholder="Enter 16-digit PIN">
+                  </div>
+                </div>
+                <div class="giftcard-item">
+                  <img src="/images/giftcards/google.png" alt="Google">
+                  <div class="giftcard-details">
+                    <h6>Google Play $100</h6>
+                    <input type="text" class="form-control" placeholder="Enter 16-digit PIN">
+                  </div>
+                </div>
+              </div>
+              <div class="upload-slip">
+                <label>Upload Gift Card Receipt</label>
+                <div class="file-upload">
+                  <input type="file" id="giftcardInput" accept="image/*" class="d-none">
+                  <button type="button" class="upload-btn" onclick="document.getElementById('giftcardInput').click()">
+                    <i class="fas fa-upload"></i> Upload Proof
+                  </button>
+                  <div id="giftcardFileName" class="file-name"></div>
+                  <small>PNG, JPG • Max 5MB • Processing: 24 hours</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-success" id="submitInvestment">
+          <i class="fas fa-robot"></i> Activate Bot Trading
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const PLANS = {
+  beginner: { dailyReturn: '1%', lockPeriod: '30 Days' },
+  professional: { dailyReturn: '2.5%', lockPeriod: '45 Days' },
+  premium: { dailyReturn: '5%', lockPeriod: '60 Days' }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Investment button handlers
+  document.querySelectorAll('.buy-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const plan = e.target.dataset.plan;
+      const price = e.target.dataset.price;
+      
+      document.getElementById('selectedPlan').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+      document.getElementById('selectedPlanName').textContent = plan.charAt(0).toUpperCase() + plan.slice(1) + ' Plan';
+      document.getElementById('selectedPrice').textContent = `$${price}`;
+      document.getElementById('dailyReturn').textContent = PLANS[plan].dailyReturn;
+      document.getElementById('lockPeriod').textContent = PLANS[plan].lockPeriod;
+      
+      new bootstrap.Modal(document.getElementById('investmentModal')).show();
+    });
+  });
+
+  // File upload handlers
+  document.getElementById('receiptInput').addEventListener('change', (e) => {
+    document.getElementById('receiptName').textContent = e.target.files[0]?.name || '';
+  });
+
+  document.getElementById('giftcardInput').addEventListener('change', (e) => {
+    document.getElementById('giftcardFileName').textContent = e.target.files[0]?.name || '';
+  });
+
+  // Submit investment
+  document.getElementById('submitInvestment').addEventListener('click', async () => {
+    const formData = new FormData();
+    const plan = document.getElementById('selectedPlan').textContent.toLowerCase();
+    const fileInput = document.querySelector('#receiptInput, #giftcardInput');
+    const file = fileInput.files[0];
+    const paymentMethod = document.querySelector('.nav-link.active').getAttribute('data-bs-target') === '#crypto' ? 'crypto' : 'giftcard';
+    const cryptoType = document.querySelector('.crypto-item.active')?.dataset.crypto || '';
+
+    formData.append('plan', plan);
+    formData.append('amount', document.getElementById('selectedPrice').textContent);
+    formData.append('paymentMethod', paymentMethod);
+    if (cryptoType) formData.append('cryptoType', cryptoType);
+    if (file) formData.append('receipt', file);
+
+    try {
+      const response = await fetch('/api/bots/invest', {
+        method: 'POST',
+        body: formData
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        alert(`🎉 Investment activated! Your ${plan} bot is now trading. Processing in 24 hours.`);
+        bootstrap.Modal.getInstance(document.getElementById('investmentModal')).hide();
+        setTimeout(() => location.reload(), 1000);
+      } else {
+        alert('Error: ' + result.message);
+      }
+    } catch (error) {
+      alert('Network error. Please try again.');
+    }
+  });
+
+  // Crypto selection
+  document.querySelectorAll('.crypto-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.crypto-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+    });
+  });
+});
+
+// Copy address function
+function copyAddress(crypto) {
+  const address = document.querySelector(`[data-crypto="${crypto}"] .address`).textContent;
+  navigator.clipboard.writeText(address).then(() => {
+    alert(`${crypto} address copied!`);
+  });
+}
+</script>

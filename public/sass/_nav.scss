@@ -632,10 +632,10 @@
 /* ===================== FIXED SIDEBAR NAVIGATION ===================== */
 .sidebar-nav {
   position: fixed;
-  top: 5em;
-  left: 1em;
-  border-radius: 0.5em;
-  height: 80vh;
+  top: 3em;
+  // left: 1em;
+  // border-radius: 0.5em;
+  height: 95vh;
 
   background: var(--glass);
   backdrop-filter: blur(18px);
@@ -646,6 +646,7 @@
   justify-content: space-between;
   padding: 1rem 0;
   z-index: 1000;
+  padding-bottom: 3em !important;
   transition: width 0.3s ease;
   border: 1px solid var(--glass-border);
 }
