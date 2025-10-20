@@ -167,6 +167,10 @@
   min-width: 300px;
   max-width: 90vw;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  a {
+    text-decoration: none;
+  }
 }
 
 .nav-item-mobile {
@@ -372,4 +376,249 @@
 .goog-te-gadget {
   height: 0 !important;
   overflow: hidden !important;
+}
+
+// ================================
+.mobile-account {
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 0.5rem;
+  width: 100%;
+
+  margin-top: auto;
+}
+
+.account-divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--glass-border) 20%,
+    var(--glass-border) 80%,
+    transparent 100%
+  );
+  margin: 1rem 0;
+}
+
+/* User profile section */
+.user-profile {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.user-profile:hover {
+  border-color: var(--glass-border);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.user-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--dark);
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-name {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+  font-size: 1rem;
+}
+
+.user-email {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.user-status {
+  display: flex;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--success);
+  margin-top: 0.25rem;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--success);
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Additional account options */
+.account-options {
+  margin-top: 1rem;
+}
+
+.option-group {
+  margin-bottom: 1rem;
+}
+
+.option-title {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 0.75rem;
+  padding-left: 0.5rem;
+}
+
+/* Enhanced logout button */
+.mobile-link.logout {
+  background: rgba(255, 55, 95, 0.1);
+  border: 1px solid rgba(255, 55, 95, 0.2);
+}
+
+.mobile-link.logout:hover {
+  background: rgba(255, 55, 95, 0.2);
+  border-color: rgba(255, 55, 95, 0.3);
+}
+
+/* Settings link */
+.mobile-link.settings:hover i {
+  color: var(--warning);
+}
+
+/* Wallet link */
+.mobile-link.wallet:hover i {
+  color: var(--success);
+}
+
+/* Badge for notifications */
+.link-badge {
+  background: var(--danger);
+  color: white;
+  border-radius: 10px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-left: auto;
+  animation: glow 2s infinite;
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 5px rgba(255, 55, 95, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(255, 55, 95, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(255, 55, 95, 0.5);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .mobile-account {
+    padding: 1rem;
+  }
+
+  .mobile-link {
+    padding: 0.875rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .user-avatar {
+    width: 42px;
+    height: 42px;
+    font-size: 1rem;
+  }
+}
+
+.mobile-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 90%;
+  max-width: 400px;
+  margin: 1.5rem auto;
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  background: rgba(50, 255, 176, 0.1);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 77, 77, 0.2);
+}
+
+.mobile-btn.logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 90%;
+  max-width: 400px;
+  margin: 1.5rem auto;
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  background: rgba(255, 50, 50, 0.1);
+  color: #ff4d4d;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 77, 77, 0.2);
+}
+
+.mobile-btn.logout i {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.mobile-btn.logout:hover {
+  background: rgba(255, 77, 77, 0.2);
+  color: #ff3333;
+  transform: scale(1.02);
+}
+
+.mobile-btn.logout:hover i {
+  transform: translateX(-3px);
+}
+
+/* Make sure it fits with mobile nav aesthetic */
+@media (min-width: 992px) {
+  .mobile-btn.logout {
+    display: none;
+  }
 }

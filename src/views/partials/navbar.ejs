@@ -124,6 +124,32 @@
         aria-label="Close"
       ></button>
     </div>
+    <div class="mobile-account">
+      <!-- User Profile Section -->
+      <div class="user-profile">
+        <div class="user-avatar">JD</div>
+        <div class="user-info">
+          <div class="user-name">John Doe</div>
+          <div class="user-email">john.doe@example.com</div>
+          <div class="user-status">
+            <div class="status-dot"></div>
+            Online • Pro Trader
+          </div>
+        </div>
+      </div>
+
+      <hr class="account-divider" />
+
+      <!-- Logout Section -->
+      <a class="mobile-btn" href="/dashboard">
+        <i class="fas fa-sign-out-alt"></i>
+        Dashboard
+      </a>
+      <a class="mobile-btn logout text-danger" href="/auth/logout">
+        <i class="fas fa-sign-out-alt"></i>
+        Logout
+      </a>
+    </div>
 
     <ul class="mobile-nav list-unstyled mb-3">
       <li><a class="mobile-link" href="/">Home</a></li>
@@ -133,17 +159,6 @@
       <li><a class="mobile-link" href="/bots">Auto Invest</a></li>
       <li><a class="mobile-link" href="/faqs">FAQs</a></li>
     </ul>
-
-    <div class="mobile-account mt-auto">
-      <% if (user) { %>
-
-      <a class="mobile-link d-block" href="/dashboard">Dashboard</a>
-      <a class="mobile-link d-block" href="/auth/logout">Logout</a>
-      <% } else { %>
-      <a class="mobile-link d-block" href="/auth/login">Login</a>
-      <a class="mobile-link d-block" href="/auth/register">Register</a>
-      <% } %>
-    </div>
   </div>
 </nav>
 
@@ -203,4 +218,35 @@
       }
     });
   });
+
+  const links = document.querySelectorAll(".mobile-link");
+
+  links.forEach((link) => {
+    link.addEventListener("click", function (e) {
+      // Add click feedback
+      this.style.transform = "translateX(4px) scale(0.98)";
+
+      setTimeout(() => {
+        this.style.transform = "";
+      }, 150);
+
+      // Simulate navigation for demo
+      if (!this.href || this.href === "#") {
+        e.preventDefault();
+        const linkText = this.textContent.trim();
+        alert(`Navigating to: ${linkText}`);
+      }
+    });
+  });
+
+  // Simulate live status update
+  setInterval(() => {
+    const statusDot = document.querySelector(".status-dot");
+    if (statusDot) {
+      statusDot.style.animation = "none";
+      setTimeout(() => {
+        statusDot.style.animation = "pulse 2s infinite";
+      }, 10);
+    }
+  }, 5000);
 </script>
