@@ -33,3 +33,100 @@
     <span>Logout</span>
   </a>
 </aside>
+
+<script>
+  // ==========================================================================
+  // SIDEBAR ACTIVE NAVIGATION - AUTO HIGHLIGHT
+  // ==========================================================================
+
+  document.addEventListener("DOMContentLoaded", function () {
+    // 1. GET ALL SIDEBAR ITEMS
+    const sidebarItems = document.querySelectorAll(".sidebar-item");
+
+    // 2. GET CURRENT URL
+    const currentPath = window.location.pathname;
+
+    // 3. MAP PATHS TO SIDEBAR ITEMS
+    const pathMap = {
+      "/dashboard": '.sidebar-item[href="/dashboard"]',
+      "/dashboard/trade": '.sidebar-item[href="/dashboard/trade"]',
+      "/dashboard/bots": '.sidebar-item[href="/dashboard/bots"]',
+      "/dashboard/wallet": '.sidebar-item[href="/dashboard/wallet"]',
+      "/dashboard/personal": '.sidebar-item[href="/dashboard/personal"]',
+    };
+
+    // 4. REMOVE ALL ACTIVE CLASSES
+    sidebarItems.forEach((item) => {
+      item.classList.remove("active");
+    });
+
+    // 5. ADD ACTIVE TO CURRENT PAGE
+    let activeItem = null;
+
+    // Check exact match first
+    for (const [path, selector] of Object.entries(pathMap)) {
+      if (currentPath === path) {
+        activeItem = document.querySelector(selector);
+        break;
+      }
+    }
+
+    // If no exact match, check for bots page
+    if (!activeItem && currentPath.includes("/bots")) {
+      activeItem = document.querySelector(
+        '.sidebar-item[href="/dashboard/bots"]'
+      );
+    }
+
+    // 6. ACTIVATE THE ITEM
+    if (activeItem) {
+      activeItem.classList.add("active");
+    } else {
+      // Default to Home
+      document
+        .querySelector('.sidebar-item[href="/dashboard"]')
+        .classList.add("active");
+    }
+
+    // 7. SMOOTH SCROLL & HOVER EFFECTS
+    sidebarItems.forEach((item) => {
+      item.addEventListener("mouseenter", function () {
+        this.style.transform = "translateX(4px)";
+      });
+
+      item.addEventListener("mouseleave", function () {
+        this.style.transform = "translateX(0)";
+      });
+    });
+
+    // 8. UPDATE BADGE COUNTS (Optional)
+    updateNavBadges();
+  });
+
+  // ==========================================================================
+  // UPDATE NAVIGATION BADGES (DYNAMIC COUNTS)
+  // ==========================================================================
+  function updateNavBadges() {
+    // Example: Trade badge shows 3 active trades
+    const tradeBadge = document.querySelector(".nav-badge");
+    if (tradeBadge) {
+      // You can fetch real data here
+      tradeBadge.textContent = "3";
+    }
+  }
+
+  // ==========================================================================
+  // CLICK HANDLER - REMOVE ACTIVE ON CLICK
+  // ==========================================================================
+  document.addEventListener("click", function (e) {
+    if (e.target.closest(".sidebar-item")) {
+      // Remove active from all
+      document.querySelectorAll(".sidebar-item").forEach((item) => {
+        item.classList.remove("active");
+      });
+
+      // Add active to clicked
+      e.target.closest(".sidebar-item").classList.add("active");
+    }
+  });
+</script>

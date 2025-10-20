@@ -1,0 +1,182 @@
+<!-- FANCY PAGE LOADER - FULLSCREEN OVERLAY -->
+<div id="pageLoader" class="page-loader">
+  <div class="loader-container">
+    <!-- MAIN LOGO SPINNER -->
+    <div class="loader-logo">
+      <i class="fas fa-chart-line"></i>
+      <h3>xInvest</h3>
+    </div>
+
+    <!-- ANIMATED PROGRESS BAR -->
+    <div class="progress-container">
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+      <span class="progress-text">Loading...</span>
+    </div>
+
+    <!-- ANIMATED DOTS -->
+    <div class="loading-dots">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <!-- STATUS TEXT -->
+    <div class="loader-status">
+      <span class="status-text">Initializing Trading Dashboard</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ==========================================================================
+  // FANCY PAGE LOADER - ALL HTTP REQUESTS
+  // ==========================================================================
+
+  class PageLoader {
+    constructor() {
+      this.loader = document.getElementById("pageLoader");
+      this.progressBar = document.querySelector(".progress-fill");
+      this.progressText = document.querySelector(".progress-text");
+      this.statusText = document.querySelector(".status-text");
+
+      this.init();
+    }
+
+    // 1. INITIALIZE ON PAGE LOAD
+    init() {
+      // Show loader on page load
+      this.show();
+
+      // Hide after content loads
+      window.addEventListener("load", () => {
+        setTimeout(() => this.hide(), 800);
+      });
+
+      // Track ALL HTTP requests
+      this.interceptRequests();
+
+      // Update status messages
+      this.updateStatusMessages();
+    }
+
+    // 2. SHOW LOADER
+    show() {
+      this.loader.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+    }
+
+    // 3. HIDE LOADER
+    hide() {
+      this.loader.classList.add("hidden");
+      document.body.style.overflow = "";
+    }
+
+    // 4. INTERCEPT ALL HTTP REQUESTS (GET/POST/PUT/DELETE)
+    interceptRequests() {
+      // FETCH API INTERCEPTOR
+      const originalFetch = window.fetch;
+      window.fetch = async (...args) => {
+        this.show();
+        try {
+          const response = await originalFetch(...args);
+          this.updateProgress(100);
+          return response;
+        } catch (error) {
+          this.hide();
+          throw error;
+        } finally {
+          setTimeout(() => this.hide(), 500);
+        }
+      };
+
+      // XMLHTTPREQUEST INTERCEPTOR
+      const originalXHROpen = XMLHttpRequest.prototype.open;
+      const originalXHRSend = XMLHttpRequest.prototype.send;
+
+      XMLHttpRequest.prototype.open = function (method, url, ...args) {
+        this.addEventListener("loadstart", () => this.show());
+        return originalXHROpen.apply(this, [method, url, ...args]);
+      };
+
+      XMLHttpRequest.prototype.send = function (...args) {
+        this.addEventListener("loadend", () => {
+          setTimeout(() => this.hide(), 300);
+        });
+        return originalXHRSend.apply(this, args);
+      };
+
+      // FORM SUBMIT INTERCEPTOR
+      document.addEventListener("submit", (e) => {
+        if (!e.target.closest(".no-loader")) {
+          this.show();
+        }
+      });
+
+      // LINK CLICK INTERCEPTOR
+      document.addEventListener("click", (e) => {
+        if (e.target.closest("a[href]") && !e.target.closest(".no-loader")) {
+          const link = e.target.closest("a");
+          if (link.href && !link.href.includes("#")) {
+            this.show();
+          }
+        }
+      });
+    }
+
+    // 5. UPDATE PROGRESS BAR
+    updateProgress(percent) {
+      this.progressBar.style.width = `${percent}%`;
+      this.progressText.textContent = `Loading... ${percent}%`;
+    }
+
+    // 6. DYNAMIC STATUS MESSAGES
+    updateStatusMessages() {
+      const messages = [
+        "Initializing Trading Dashboard",
+        "Loading Market Data",
+        "Connecting to Exchange",
+        "Setting up AI Bots",
+        "Preparing Wallet",
+        "Finalizing Security",
+        "Ready to Trade!",
+      ];
+
+      let index = 0;
+      const interval = setInterval(() => {
+        this.statusText.textContent = messages[index];
+        index = (index + 1) % messages.length;
+      }, 2000);
+
+      // Stop when loader hides
+      this.loader.addEventListener("transitionend", () => {
+        if (this.loader.classList.contains("hidden")) {
+          clearInterval(interval);
+        }
+      });
+    }
+
+    // 7. MANUAL SHOW/HIDE (For custom use)
+    static showLoader() {
+      document.getElementById("pageLoader").classList.remove("hidden");
+    }
+
+    static hideLoader() {
+      document.getElementById("pageLoader").classList.add("hidden");
+    }
+  }
+
+  // ==========================================================================
+  // INITIALIZE ON DOM READY
+  // ==========================================================================
+  document.addEventListener("DOMContentLoaded", () => {
+    new PageLoader();
+  });
+
+  // ==========================================================================
+  // GLOBAL FUNCTIONS (For easy use in other scripts)
+  // ==========================================================================
+  window.showLoader = () => PageLoader.showLoader();
+  window.hideLoader = () => PageLoader.hideLoader();
+</script>
