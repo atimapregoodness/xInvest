@@ -306,6 +306,10 @@
     display: flex;
   }
 
+  .sidebar-nav {
+    display: none !important;
+  }
+
   .nav-item-mobile {
     padding: 0.6rem 0.4rem;
     min-width: 55px;
@@ -620,6 +624,135 @@
 /* Make sure it fits with mobile nav aesthetic */
 @media (min-width: 992px) {
   .mobile-btn.logout {
+    display: none;
+  }
+}
+
+///side bar
+/* ===================== FIXED SIDEBAR NAVIGATION ===================== */
+.sidebar-nav {
+  position: fixed;
+  top: 5em;
+  left: 1em;
+  border-radius: 0.5em;
+  height: 80vh;
+
+  background: var(--glass);
+  backdrop-filter: blur(18px);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+  z-index: 1000;
+  transition: width 0.3s ease;
+  border: 1px solid var(--glass-border);
+}
+
+/* ===== BRAND ===== */
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+/* ===== MENU ===== */
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  width: 100%;
+  padding: 1em 2em;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  color: #ddd;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
+
+  &:hover {
+    background-color: var(--glass);
+    transition: 0.5s;
+  }
+}
+
+.sidebar-item.active {
+  background-color: var(--glass);
+}
+
+.sidebar-item i {
+  font-size: 1.2rem;
+  min-width: 24px;
+  text-align: center;
+  color: var(--accent);
+}
+
+.sidebar-item span {
+  white-space: nowrap;
+
+  color: #ffffff !important;
+}
+
+/* ===== BADGE ===== */
+.nav-badge {
+  position: absolute;
+  right: 14px;
+  top: 8px;
+  background: var(--accent);
+  color: #000;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 2px 6px;
+}
+
+/* ===== LOGOUT BUTTON ===== */
+.sidebar-logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  padding: 0.8rem 1rem;
+  width: 90%;
+  border-radius: 12px;
+  background: rgba(255, 50, 50, 0.08);
+  color: #ff4d4d;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 77, 77, 0.15);
+}
+
+.sidebar-logout:hover {
+  background: rgba(255, 77, 77, 0.2);
+  transform: scale(1.03);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 991px) {
+  .sidebar-nav {
+    width: 70px;
+  }
+
+  .sidebar-nav:hover {
+    width: 70px;
+  }
+
+  .sidebar-item span,
+  .sidebar-brand span,
+  .nav-badge {
     display: none;
   }
 }

@@ -4,6 +4,7 @@
   padding: 0;
   box-sizing: border-box;
   scroll-behavior: smooth;
+  font-family: "Inter", sans-serif;
 }
 
 html {
@@ -317,6 +318,9 @@ html {
   .floating-nav {
     display: flex;
   }
+  .sidebar-nav {
+    display: none !important;
+  }
   .nav-item-mobile {
     padding: 0.6rem 0.4rem;
     min-width: 55px;
@@ -607,6 +611,127 @@ html {
 /* Make sure it fits with mobile nav aesthetic */
 @media (min-width: 992px) {
   .mobile-btn.logout {
+    display: none;
+  }
+}
+/* ===================== FIXED SIDEBAR NAVIGATION ===================== */
+.sidebar-nav {
+  position: fixed;
+  top: 5em;
+  left: 1em;
+  border-radius: 0.5em;
+  height: 80vh;
+  background: var(--glass);
+  backdrop-filter: blur(18px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+  z-index: 1000;
+  transition: width 0.3s ease;
+  border: 1px solid var(--glass-border);
+}
+
+/* ===== BRAND ===== */
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+/* ===== MENU ===== */
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  width: 100%;
+  padding: 1em 2em;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: 12px;
+  color: #ddd;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  position: relative;
+}
+.sidebar-item:hover {
+  background-color: var(--glass);
+  transition: 0.5s;
+}
+
+.sidebar-item.active {
+  background-color: var(--glass);
+}
+
+.sidebar-item i {
+  font-size: 1.2rem;
+  min-width: 24px;
+  text-align: center;
+  color: var(--accent);
+}
+
+.sidebar-item span {
+  white-space: nowrap;
+  color: #ffffff !important;
+}
+
+/* ===== BADGE ===== */
+.nav-badge {
+  position: absolute;
+  right: 14px;
+  top: 8px;
+  background: var(--accent);
+  color: #000;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: 8px;
+  padding: 2px 6px;
+}
+
+/* ===== LOGOUT BUTTON ===== */
+.sidebar-logout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  padding: 0.8rem 1rem;
+  width: 90%;
+  border-radius: 12px;
+  background: rgba(255, 50, 50, 0.08);
+  color: #ff4d4d;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 77, 77, 0.15);
+}
+
+.sidebar-logout:hover {
+  background: rgba(255, 77, 77, 0.2);
+  transform: scale(1.03);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 991px) {
+  .sidebar-nav {
+    width: 70px;
+  }
+  .sidebar-nav:hover {
+    width: 70px;
+  }
+  .sidebar-item span,
+  .sidebar-brand span,
+  .nav-badge {
     display: none;
   }
 }
@@ -1133,6 +1258,304 @@ a.text-accent:hover {
     padding: 1.5rem;
     max-width: 90%;
     padding-top: 2em;
+  }
+}
+:root {
+  --primary: #0066ff;
+  --secondary: #1e2a3a;
+  --accent: #00d4aa;
+  --dark: #0f172a;
+  --darker: #0a0f1c;
+  --success: #00d98c;
+  --danger: #ff375f;
+  --warning: #ffb800;
+  --info: #0066ff;
+  --glass: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+.dashboard {
+  padding-top: 4em;
+  padding-left: 40vh;
+  padding-right: 10vh;
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    padding-top: 4em !important;
+    padding-left: 0.5em !important;
+    padding-right: 0.5em !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-items: center !important;
+    justify-content: center !important;
+    flex-direction: column !important;
+  }
+  #section1 {
+    display: flex !important;
+    align-items: center !important;
+    justify-items: center !important;
+    justify-content: center !important;
+    flex-direction: column !important;
+  }
+  .balance-card {
+    padding: 1em;
+  }
+}
+#section1 {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* ===================== BALANCE CARD ===================== */
+.balance-card {
+  background: var(--glass);
+  backdrop-filter: blur(18px);
+  border: 1px solid var(--glass-border);
+  border-radius: 0.5em;
+  padding: 1rem;
+  color: #fff;
+  width: 100%;
+  margin: 1rem auto;
+}
+
+/* ===== HEADER ===== */
+.balance-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.balance-header h5 {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #cfcfcf;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.toggle-balance {
+  background: transparent;
+  border: none;
+  color: var(--accent);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.toggle-balance:hover {
+  transform: scale(1.1);
+}
+
+/* ===== AMOUNT ===== */
+.balance-amount {
+  font-size: 3.4rem;
+  font-weight: 800;
+  margin-top: 0.6rem;
+  margin-bottom: 1.5rem;
+  letter-spacing: 1px;
+  color: #fff;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+/* ===== ACTION BUTTONS ===== */
+.balance-actions {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1.2rem;
+}
+
+.balance-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: #f1f1f1;
+  transition: all 0.3s ease;
+}
+
+.balance-btn i {
+  font-size: 1.3rem;
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 4px;
+}
+
+.balance-btn span {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.balance-btn:hover {
+  transform: translateY(-3px);
+  color: var(--accent);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .balance-card {
+    max-width: 100%;
+    padding: 1.4rem;
+  }
+  .balance-amount {
+    font-size: 2rem;
+  }
+  .balance-btn span {
+    font-size: 0.8rem;
+  }
+}
+.asset-list-container {
+  border-radius: 16px;
+  padding: 1rem;
+  margin: 1.5rem 0;
+}
+
+.asset-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.asset-item {
+  display: grid;
+  grid-template-columns: 48px 1fr auto auto auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.asset-item:hover {
+  background: rgba(0, 212, 170, 0.05);
+  transform: translateX(4px);
+}
+
+.asset-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  color: var(--dark);
+  flex-shrink: 0;
+}
+
+.asset-btc {
+  background: linear-gradient(135deg, #f7931a, #ff6b35);
+}
+
+.asset-eth {
+  background: linear-gradient(135deg, #627eea, #8f6fe8);
+}
+
+.asset-usdt {
+  background: linear-gradient(135deg, #00d4aa, #00a085);
+}
+
+.asset-info {
+  min-width: 0;
+}
+
+.asset-name {
+  font-weight: 600;
+  color: var(--text);
+  font-size: 0.95rem;
+  margin-bottom: 0.125rem;
+}
+
+.asset-symbol {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.asset-holding {
+  font-family: "Inter", monospace;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: right;
+}
+
+.asset-price {
+  font-family: "Inter", monospace;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text);
+  text-align: right;
+}
+
+.asset-value {
+  font-family: "Inter", monospace;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--accent);
+  text-align: right;
+  font-size: 1.05rem;
+}
+
+.asset-change {
+  font-family: "Inter", monospace;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-align: right;
+}
+
+.positive {
+  color: var(--success);
+}
+
+.negative {
+  color: var(--danger);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .asset-list-container {
+    margin: 1rem;
+    padding: 0.75rem;
+  }
+  .asset-item {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+  .asset-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+  .asset-value {
+    font-size: 0.95rem;
+  }
+}
+@media (max-width: 480px) {
+  .asset-item {
+    grid-template-columns: 32px 1fr;
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+  .asset-icon {
+    width: 32px;
+    height: 32px;
+  }
+  .asset-holding,
+  .asset-price,
+  .asset-value,
+  .asset-change {
+    display: none;
+  }
+  .asset-info {
+    grid-column: 1/-1;
   }
 }
 /* ====== PROFESSIONAL FLASH MESSAGES ====== */

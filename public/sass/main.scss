@@ -3,6 +3,7 @@
   padding: 0;
   box-sizing: border-box;
   scroll-behavior: smooth;
+  font-family: "Inter", sans-serif;
 }
 
 html {
@@ -13,6 +14,7 @@ html {
 @import "variables";
 @import "home";
 @import "auth";
+@import "dashboard";
 
 /* ====== PROFESSIONAL FLASH MESSAGES ====== */
 .flash-messages-container {
