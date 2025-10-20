@@ -110,6 +110,45 @@
   </div>
 </nav>
 
+<!-- Mobile slide menu (duplicate of links but styled for slide) -->
+<nav id="mobileSlide" class="mobile-slide" aria-hidden="true">
+  <div class="mobile-slide-inner">
+    <div
+      class="mobile-header d-flex align-items-center justify-content-between mb-3"
+    >
+      <a class="navbar-brand d-flex align-items-center" href="/">
+        <i class="fas fa-chart-line text-accent me-2"></i>
+        <span class="fw-bold text-white fs-5">xInvest</span>
+      </a>
+      <button
+        class="btn btn-close btn-close-white"
+        id="mobileClose"
+        aria-label="Close"
+      ></button>
+    </div>
+
+    <ul class="mobile-nav list-unstyled mb-3">
+      <li><a class="mobile-link" href="/">Home</a></li>
+      <li><a class="mobile-link" href="/about">About Us</a></li>
+      <li><a class="mobile-link" href="/contact">Contact Us</a></li>
+      <li><a class="mobile-link" href="/careers">Careers</a></li>
+      <li><a class="mobile-link" href="/bots">Auto Invest</a></li>
+      <li><a class="mobile-link" href="/faqs">FAQs</a></li>
+    </ul>
+
+    <div class="mobile-account mt-auto">
+      <% if (user) { %>
+
+      <a class="mobile-link d-block" href="/dashboard">Dashboard</a>
+      <a class="mobile-link d-block" href="/auth/logout">Logout</a>
+      <% } else { %>
+      <a class="mobile-link d-block" href="/auth/login">Login</a>
+      <a class="mobile-link d-block" href="/auth/register">Register</a>
+      <% } %>
+    </div>
+  </div>
+</nav>
+
 <!-- Overlay -->
 <div id="mobileOverlay" class="mobile-overlay" aria-hidden="true"></div>
 
