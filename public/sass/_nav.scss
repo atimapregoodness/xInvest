@@ -99,6 +99,7 @@
   border-right: 1px solid var(--glass-border);
   z-index: 1080;
   display: flex;
+  // align-items: start;
   flex-direction: column;
   padding: 1.2rem;
   transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -109,7 +110,7 @@
 }
 
 .mobile-slide-inner {
-  display: flex;
+  padding-top: 1em;
   flex-direction: column;
   height: 100%;
   overflow-y: auto;
