@@ -617,6 +617,7 @@
   width: 100% !important;
   height: 45vh;
   max-height: 500px;
+  margin-left: 2em !important;
 }
 
 .transactions-table {
@@ -762,6 +763,9 @@
 
 /* TABLET MOBILE (481px - 768px) */
 @media (max-width: 768px) and (min-width: 481px) {
+  .transactions-table-container {
+    margin-left: 0em !important;
+  }
   .dashboard {
     padding: 0.25rem;
   }
