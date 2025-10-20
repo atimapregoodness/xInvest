@@ -34,6 +34,7 @@
           placeholder="Full Name"
           required
           minlength="2"
+          value="<%= formData?.fullName || '' %>"
         />
         <div class="invalid-feedback">Please enter your full name.</div>
       </div>
@@ -49,6 +50,7 @@
           class="form-control glass-input"
           placeholder="Email Address"
           required
+          value="<%= formData?.email || '' %>"
         />
         <div class="invalid-feedback">Please enter a valid email.</div>
       </div>
@@ -64,19 +66,8 @@
           id="countryInput"
           required
         >
-          <option value="" disabled selected>Select Country</option>
-          <% const countries = [ { name: "Nigeria", code: "+234" }, { name:
-          "United States", code: "+1" }, { name: "United Kingdom", code: "+44"
-          }, { name: "India", code: "+91" }, { name: "Canada", code: "+1" }, {
-          name: "South Africa", code: "+27" }, { name: "Ghana", code: "+233" },
-          { name: "Kenya", code: "+254" }, { name: "UAE", code: "+971" }, {
-          name: "Germany", code: "+49" }, { name: "France", code: "+33" }, {
-          name: "Brazil", code: "+55" }, { name: "Australia", code: "+61" } ];
-          %> <% countries.forEach(c => { %>
-          <option value="<%= c.name %>" data-code="<%= c.code %>">
-            <%= c.name %> (<%= c.code %>)
-          </option>
-          <% }) %>
+          <%- partial('partials/countrySelect', { selectedCountry:
+          formData?.country }) %>
         </select>
         <div class="invalid-feedback">Select your country.</div>
       </div>
@@ -94,6 +85,7 @@
           id="phoneNumberInput"
           required
           pattern="^[0-9]{7,15}$"
+          value="<%= formData?.phone || '' %>"
         />
         <div class="invalid-feedback">Enter a valid phone number.</div>
       </div>
@@ -111,7 +103,6 @@
           required
           minlength="8"
           id="passwordInput"
-          pattern="^(?=.*[A-Za-z])(?=.*\\d).{8,}$"
         />
         <div class="invalid-feedback">
           Password must be 8+ characters with letters and numbers.
@@ -183,13 +174,16 @@
 
     form.addEventListener("submit", (e) => {
       e.preventDefault();
+      countrySelect.classList.remove("is-invalid");
+      confirmPasswordInput.classList.remove("is-invalid");
+
       if (!form.checkValidity()) {
         form.classList.add("was-validated");
         return;
       }
 
       const countryCode =
-        countrySelect.options[countrySelect.selectedIndex]?.dataset.code || "";
+        countrySelect.options[countrySelect.selectedIndex]?.dataset.code;
       if (!countryCode) {
         countrySelect.classList.add("is-invalid");
         return;

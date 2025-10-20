@@ -5,14 +5,14 @@ const userSchema = new mongoose.Schema(
   {
     fullName: {
       type: String,
-      required: true,
+      required: [true, "Full Name is required"],
       trim: true,
-      maxlength: 100,
+      maxlength: [100, "Full Name cannot exceed 100 characters"],
     },
 
     email: {
       type: String,
-      required: true,
+      required: [true, "Email is required"],
       unique: true,
       trim: true,
       lowercase: true,
@@ -24,13 +24,21 @@ const userSchema = new mongoose.Schema(
 
     phone: {
       type: String,
+      required: [true, "Phone number is required"],
+      unique: true, // ✅ ADDED: Prevent duplicate phones
       trim: true,
-      match: [/^[0-9+\-()\s]*$/, "Invalid phone number"],
+      // ✅ FIXED: Accept international format (+1234567890)
+      match: [
+        /^[\+]?[1-9][\d]{0,15}$/,
+        "Phone number must be valid international format (e.g., +12025550123)",
+      ],
     },
 
     country: {
       type: String,
+      required: [true, "Country is required"],
       trim: true,
+      maxlength: 50,
     },
 
     wallet: {
@@ -39,20 +47,45 @@ const userSchema = new mongoose.Schema(
       ETH: { type: Number, default: 0 },
       USDT: { type: Number, default: 0 },
     },
+
+    // ✅ ADDED: Track user activity
+    lastLogin: { type: Date },
+    isActive: { type: Boolean, default: true },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    // ✅ FIXED: Remove username from indexes (passport handles it)
+  }
 );
 
-// passport-local-mongoose plugin
+// ✅ FIXED: Passport configuration
 userSchema.plugin(passportLocalMongoose, {
-  usernameField: "email", // login with email
+  usernameField: "email",
+  usernameLowercase: true, // ✅ ADDED: Force lowercase email
+  hashField: "hash", // ✅ ADDED: Explicit field names
+  saltField: "salt",
+
+  // ✅ FIXED: Custom error messages
   errorMessages: {
-    MissingPasswordError: "No password was given.",
-    IncorrectPasswordError: "Incorrect password or email.",
-    IncorrectUsernameError: "Incorrect password or email.",
-    MissingUsernameError: "No email was given.",
-    UserExistsError: "A user with that email already exists.",
+    MissingPasswordError: "Password is required.",
+    AttemptTooSoonError: "Too many failed login attempts. Try again later.",
+    TooManyAttemptsError:
+      "Account locked temporarily due to multiple failed attempts.",
+    NoSaltValueStoredError: "Authentication not possible.",
+    IncorrectPasswordError: "Incorrect password.",
+    IncorrectUsernameError: "Email not found.",
+    MissingUsernameError: "Email is required.",
+    UserExistsError: "Email already registered.",
   },
+});
+
+// ✅ ADDED: Pre-save hook to ensure phone format
+userSchema.pre("save", function (next) {
+  if (this.phone && !this.phone.startsWith("+")) {
+    // Add + if missing (handled in frontend, but backup)
+    this.phone = "+" + this.phone;
+  }
+  next();
 });
 
 module.exports = mongoose.model("User", userSchema);

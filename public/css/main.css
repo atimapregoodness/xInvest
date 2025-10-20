@@ -24,11 +24,26 @@ html {
   --glass-border: rgba(255, 255, 255, 0.1);
 }
 
-#dropdown {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* horizontal center */
-  justify-content: center; /* vertical center */
+/* ==========================================================================
+   TABLE OF CONTENTS
+   ==========================================================================
+
+   1. NAVBAR & DROPDOWN BASE
+   2. MOBILE SLIDE MENU
+   3. FLOATING NAVIGATION (BYBIT STYLE)
+   4. RESPONSIVE BREAKPOINTS
+   5. ANIMATIONS & TRANSITIONS
+   6. UTILITIES & HIDE ELEMENTS
+
+========================================================================== */
+/* ==========================================================================
+   1. NAVBAR & DROPDOWN BASE
+   ========================================================================== */
+.glass-nav {
+  background: var(--glass);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--glass-border);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 #accountDropdown {
@@ -37,40 +52,21 @@ html {
   border-radius: 12px;
   padding: 12px 30px;
   font-weight: 600;
-  transition: all 0.3s ease;
-  overflow: hidden;
   color: #000;
-}
-
-#acctContents {
-  margin-top: 0.2em;
-}
-
-#acctContents img {
-  object-fit: cover;
-  border: 2px solid #ccc;
-}
-
-#acctContents h6 {
-  font-weight: 600;
-}
-
-.glass-nav {
-  background: var(--glass);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--glass-border);
-  transition: background 0.4s ease, box-shadow 0.4s ease;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .navbar-brand i {
   font-size: 1.3rem;
   color: var(--accent);
+  transition: color 0.2s ease;
 }
 
 .nav-link {
   color: #f1f1f1;
   font-weight: 500;
-  transition: color 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .nav-link:hover {
@@ -81,10 +77,12 @@ html {
   background: rgba(15, 23, 42, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 10px;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .dropdown-item {
   color: #e0e0e0;
+  transition: all 0.2s ease;
 }
 
 .dropdown-item:hover {
@@ -92,22 +90,280 @@ html {
   color: var(--accent);
 }
 
-.btn-accent {
-  background: linear-gradient(135deg, var(--accent), var(--primary));
-  color: var(--dark);
-  font-weight: 600;
-  border-radius: 10px;
+#acctContents {
+  margin-top: 0.2em;
 }
 
+#acctContents img {
+  object-fit: cover;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+}
+
+#acctContents h6 {
+  font-weight: 600;
+  margin: 0;
+}
+
+/* ==========================================================================
+   2. MOBILE SLIDE MENU
+   ========================================================================== */
+.mobile-slide {
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 85%;
+  max-width: 320px;
+  height: 100vh;
+  background: var(--glass);
+  backdrop-filter: blur(16px);
+  border-right: 1px solid var(--glass-border);
+  z-index: 1080;
+  display: flex;
+  flex-direction: column;
+  padding: 1.2rem;
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobile-slide.open {
+  left: 0;
+}
+
+.mobile-slide-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.mobile-nav .mobile-link,
+.mobile-account .mobile-link {
+  display: block;
+  padding: 12px 0;
+  color: #e9eef5;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobile-nav .mobile-link:hover,
+.mobile-account .mobile-link:hover {
+  color: var(--accent);
+  transform: translateX(4px);
+}
+
+.mobile-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1070;
+}
+
+.mobile-overlay.show {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ==========================================================================
+   3. FLOATING NAVIGATION (BYBIT STYLE)
+   ========================================================================== */
+.floating-nav {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--glass);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 0.5rem;
+  display: none;
+  gap: 0.25rem;
+  z-index: 1000;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  min-width: 300px;
+  max-width: 90vw;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-item-mobile {
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  padding: 0.75rem 0.5rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 60px;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-item-mobile i {
+  font-size: 1.2rem;
+  margin-bottom: 0.25rem;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-item-mobile .nav-label {
+  font-size: 0.7rem;
+  font-weight: 500;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ACTIVE STATES */
+.nav-item-mobile.active {
+  background: rgba(0, 212, 170, 0.12);
+  color: var(--accent);
+}
+
+.nav-item-mobile.active i {
+  transform: translateY(-1px);
+  text-shadow: 0 0 4px rgba(0, 212, 170, 0.3);
+}
+
+.nav-item-mobile.active .nav-label {
+  font-weight: 600;
+}
+
+/* HOVER & FOCUS */
+.nav-item-mobile:hover:not(.active),
+.nav-item-mobile:focus:not(.active) {
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  transform: translateY(-1px);
+}
+
+/* NOTIFICATION BADGES */
+.nav-badge {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  background: var(--danger);
+  color: white;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  font-size: 0.6rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* LIVE INDICATOR */
+.nav-item-mobile[data-page=markets]::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: 6px;
+  height: 6px;
+  background: var(--success);
+  border-radius: 50%;
+}
+
+/* ==========================================================================
+   4. RESPONSIVE BREAKPOINTS
+   ========================================================================== */
+/* DESKTOP (>991px) */
+@media (min-width: 992px) {
+  .mobile-slide,
+  .mobile-overlay {
+    display: none !important;
+  }
+}
+/* TABLET (768px - 991px) */
 @media (max-width: 991px) {
   .navbar-nav {
     background: rgba(15, 23, 42, 0.97);
     backdrop-filter: blur(15px);
     border-radius: 12px;
     padding: 1rem;
+    gap: 0.75rem;
+  }
+  #navbarNav.collapse {
+    display: none !important;
+  }
+  .navbar-toggler {
+    z-index: 1100;
+  }
+  .btn-accent {
+    background: linear-gradient(135deg, var(--accent), var(--primary));
+    color: var(--dark);
+    font-weight: 600;
+    border-radius: 10px;
+    border: none;
+    transition: all 0.2s ease;
   }
 }
-/* Hide Google Translate bar & logo */
+/* MOBILE (≤768px) */
+@media (max-width: 768px) {
+  .floating-nav {
+    display: flex;
+  }
+  .nav-item-mobile {
+    padding: 0.6rem 0.4rem;
+    min-width: 55px;
+  }
+  .nav-item-mobile i {
+    font-size: 1.1rem;
+  }
+  .nav-item-mobile .nav-label {
+    font-size: 0.65rem;
+  }
+}
+/* SMALL MOBILE (≤480px) */
+@media (max-width: 480px) {
+  .floating-nav {
+    min-width: 280px;
+    padding: 0.4rem;
+    bottom: 1rem;
+  }
+  .nav-item-mobile {
+    padding: 0.5rem 0.3rem;
+    min-width: 50px;
+  }
+  .nav-item-mobile i {
+    font-size: 1rem;
+  }
+  .nav-item-mobile .nav-label {
+    font-size: 0.6rem;
+  }
+}
+/* ==========================================================================
+   5. ANIMATIONS & TRANSITIONS
+   ========================================================================== */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2);
+  }
+}
+.nav-item-mobile[data-page=markets]::before {
+  animation: pulse 2s infinite;
+}
+
+/* ==========================================================================
+   6. UTILITIES & HIDE ELEMENTS
+   ========================================================================== */
+/* Hide Google Translate */
 .goog-te-banner-frame.skiptranslate,
 .goog-te-gadget-icon,
 .goog-logo-link,
@@ -116,8 +372,8 @@ html {
 }
 
 .goog-te-gadget {
-  height: 0;
-  overflow: hidden;
+  height: 0 !important;
+  overflow: hidden !important;
 }
 
 :root {

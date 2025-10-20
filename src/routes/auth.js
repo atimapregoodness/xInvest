@@ -1,20 +1,38 @@
+// src/routes/auth.js
 const express = require("express");
 const router = express.Router();
-const authController = require("../controllers/AuthController"); // lowercase
+const passport = require("passport");
+const {
+  getLogin,
+  postLogin,
+  getRegister,
+  postRegister,
+  logout,
+  getForgotPassword,
+  postForgotPassword,
+} = require("../controllers/authController");
 
-// Login
-router.get("/login", authController.getLogin);
-router.post("/login", authController.postLogin);
+// --------------------
+// LOGIN ROUTES
+// --------------------
+router.get("/login", getLogin);
+router.post("/login", postLogin);
 
-// Register
-router.get("/register", authController.getRegister);
-router.post("/register", authController.postRegister);
+// --------------------
+// REGISTER ROUTES
+// --------------------
+router.get("/register", getRegister);
+router.post("/register", postRegister);
 
-// Logout
-router.get("/logout", authController.getLogout);
+// --------------------
+// LOGOUT
+// --------------------
+router.get("/logout", logout);
 
-// Forgot Password
-router.get("/forgot-password", authController.getForgotPassword);
-router.post("/forgot-password", authController.postForgotPassword);
+// --------------------
+// FORGOT PASSWORD
+// --------------------
+router.get("/forgot-password", getForgotPassword);
+router.post("/forgot-password", postForgotPassword);
 
 module.exports = router;

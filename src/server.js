@@ -295,6 +295,7 @@ app.use(
 app.use(compression());
 app.use(express.static(path.join(__dirname, "../public")));
 app.use(express.json({ limit: "10mb" }));
+
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
@@ -329,11 +330,14 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 app.use((req, res, next) => {
-  res.locals.user = req.user;
+  res.locals.user = req.user || null;
   res.locals.currentPath = req.path;
+
+  // Directly expose flash messages from req.flash()
   res.locals.success_msg = req.flash("success_msg");
   res.locals.error_msg = req.flash("error_msg");
   res.locals.error = req.flash("error");
+
   next();
 });
 

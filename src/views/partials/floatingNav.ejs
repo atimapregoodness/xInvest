@@ -1,0 +1,65 @@
+<!-- Floating Navigation - Only on Mobile -->
+<div class="floating-nav">
+  <button class="nav-item-mobile active" data-page="dashboard">
+    <i class="fas fa-home"></i>
+    <span class="nav-label">Home</span>
+  </button>
+
+  <button class="nav-item-mobile" data-page="trade">
+    <i class="fas fa-chart-line"></i>
+    <span class="nav-label">Trade</span>
+    <div class="nav-badge">3</div>
+  </button>
+
+  <button class="nav-item-mobile" data-page="bots">
+    <i class="fas fa-robot"></i>
+    <span class="nav-label">Bots</span>
+  </button>
+
+  <button class="nav-item-mobile" data-page="wallet">
+    <i class="fas fa-wallet"></i>
+    <span class="nav-label">Wallet</span>
+  </button>
+  <button class="nav-item-mobile" data-page="personal">
+    <i class="fas fa-user"></i>
+    <span class="nav-label">Personal</span>
+  </button>
+</div>
+
+<script>
+  // ==================== CLEAN MOBILE NAVIGATION ====================
+  document.addEventListener("DOMContentLoaded", () => {
+    const navItemsMobile = document.querySelectorAll(".nav-item-mobile");
+
+    navItemsMobile.forEach((item) => {
+      item.addEventListener("click", () => {
+        const page = item.getAttribute("data-page");
+
+        // Remove active class from all items
+        navItemsMobile.forEach((nav) => nav.classList.remove("active"));
+
+        // Add active class to clicked item
+        item.classList.add("active");
+
+        // Handle navigation (PLAIN)
+        handleNavigation(page);
+      });
+    });
+  });
+
+  // ==================== PLAIN NAVIGATION HANDLER ====================
+  function handleNavigation(page) {
+    console.log(`Navigating to: ${page}`);
+
+    // Switch Bootstrap tabs (if exists)
+    const tabButton = document.querySelector(`#${page}-tab`);
+    if (tabButton) {
+      tabButton.click();
+    }
+
+    // Scroll to top
+    document.querySelector(".dashboard-container")?.scrollIntoView({
+      behavior: "smooth",
+    });
+  }
+</script>
