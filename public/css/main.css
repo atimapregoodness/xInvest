@@ -2111,32 +2111,35 @@ a.text-accent:hover {
   padding: 0.5rem;
   max-width: 100%;
   margin: 0 auto;
+  width: 100%;
 }
 
-/* COMPACT PAGE HEADER */
+/* ==========================================================================
+// 1. PERFECT PAGE HEADER
+// ========================================================================== */
 .page-header {
   text-align: center;
   margin-bottom: 1.5rem;
   padding: 1rem;
   background: var(--glass);
-  border-radius: 12px;
+  backdrop-filter: blur(15px);
   border: 1px solid var(--glass-border);
+  border-radius: 12px;
 }
 .page-header h1 {
   font-size: 1.75rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #00d4aa, #627eea);
+  background: linear-gradient(135deg, var(--success), var(--accent));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-bottom: 0.25rem;
+  background-clip: text;
+  margin: 0 0 0.25rem 0;
 }
 .page-header p {
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 1rem;
+  margin: 0 auto 1rem;
   max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
 }
 .page-header .stats-bar {
   display: flex;
@@ -2154,14 +2157,18 @@ a.text-accent:hover {
 }
 .page-header .stats-bar .stat i {
   font-size: 0.9rem;
+  color: var(--success);
 }
 
-/* COMPACT PLANS GRID */
+/* ==========================================================================
+// 2. PERFECT PLANS GRID
+// ========================================================================== */
 .bots-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1rem;
   margin-bottom: 2rem;
+  width: 100%;
 }
 
 .bot-card {
@@ -2172,18 +2179,24 @@ a.text-accent:hover {
   padding: 1rem;
   position: relative;
   transition: all 0.2s ease;
+  width: 100%;
 }
 .bot-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 .bot-card .popular-badge {
+  position: absolute;
   top: -6px;
   left: 50%;
   transform: translateX(-50%);
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  color: var(--dark);
   padding: 0.25rem 0.75rem;
   border-radius: 15px;
   font-size: 0.7rem;
+  font-weight: 700;
+  z-index: 10;
 }
 .bot-card .bot-header {
   display: flex;
@@ -2193,9 +2206,10 @@ a.text-accent:hover {
 }
 .bot-card .bot-header i {
   font-size: 1.5rem;
-  background: linear-gradient(135deg, #00d4aa, #627eea);
+  background: linear-gradient(135deg, var(--success), var(--accent));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 .bot-card .bot-header h3 {
   margin: 0;
@@ -2214,14 +2228,17 @@ a.text-accent:hover {
 .bot-card .bot-header .risk-level.low {
   background: rgba(0, 212, 170, 0.1);
   color: var(--success);
+  border: 1px solid var(--success);
 }
 .bot-card .bot-header .risk-level.medium {
   background: rgba(99, 126, 234, 0.1);
   color: #627eea;
+  border: 1px solid #627eea;
 }
 .bot-card .bot-header .risk-level.high {
   background: rgba(247, 147, 26, 0.1);
   color: #f7931a;
+  border: 1px solid #f7931a;
 }
 .bot-card .bot-features {
   margin-bottom: 1rem;
@@ -2237,6 +2254,7 @@ a.text-accent:hover {
 .bot-card .bot-features .feature i {
   font-size: 0.7rem;
   width: 14px;
+  flex-shrink: 0;
 }
 .bot-card .bot-features .feature i.fa-check {
   color: var(--success);
@@ -2254,6 +2272,7 @@ a.text-accent:hover {
   background: linear-gradient(135deg, var(--success), #00a085);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  background-clip: text;
   display: block;
 }
 .bot-card .bot-price .price-period {
@@ -2274,13 +2293,14 @@ a.text-accent:hover {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  text-decoration: none;
 }
 .bot-card .buy-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 212, 170, 0.3);
 }
 .bot-card.beginner-plan .buy-btn {
-  background: linear-gradient(135deg, #00d4aa, #00a085);
+  background: linear-gradient(135deg, var(--success), #00a085);
   color: white;
 }
 .bot-card.professional-plan .buy-btn {
@@ -2292,17 +2312,23 @@ a.text-accent:hover {
   color: white;
 }
 
-/* COMPACT HOW IT WORKS */
+/* ==========================================================================
+// 3. PERFECT HOW IT WORKS
+// ========================================================================== */
 .how-it-works {
   background: var(--glass);
+  backdrop-filter: blur(15px);
+  border: 1px solid var(--glass-border);
   padding: 1.5rem;
   border-radius: 12px;
   text-align: center;
+  margin-top: 1rem;
 }
 .how-it-works h2 {
   font-size: 1.5rem;
   margin-bottom: 1.25rem;
   color: var(--text);
+  font-weight: 700;
 }
 .how-it-works .works-grid {
   display: grid;
@@ -2312,31 +2338,48 @@ a.text-accent:hover {
 .how-it-works .works-grid .work-step .step-number {
   width: 36px;
   height: 36px;
+  background: linear-gradient(135deg, var(--accent), var(--success));
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 1.125rem;
+  font-weight: 700;
+  color: white;
   margin: 0 auto 0.75rem;
-  background-color: var(--glass);
-  padding: 0.3em;
-  padding: 0.3em;
-  border-radius: 2em;
 }
 .how-it-works .works-grid .work-step h4 {
   font-size: 1rem;
   margin-bottom: 0.25rem;
   color: var(--text);
+  font-weight: 600;
 }
 .how-it-works .works-grid .work-step p {
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.8);
 }
 
-/* COMPACT MODAL */
+/* ==========================================================================
+// 4. PERFECT MODAL
+// ========================================================================== */
 .bot-modal {
-  background: var(--glass);
-  backdrop-filter: blur(15px);
-  border: 1px solid var(--glass-border);
-  border-radius: 12px;
+  background: var(--glass) !important;
+  backdrop-filter: blur(15px) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 12px !important;
+}
+.bot-modal .modal-header {
+  background: rgba(0, 212, 170, 0.05);
+  border-bottom: 1px solid var(--glass-border);
+  border-radius: 12px 12px 0 0 !important;
+}
+.bot-modal .modal-header .modal-title {
+  color: var(--text);
+  font-weight: 700;
+  font-size: 1.1rem;
 }
 .bot-modal .investment-summary {
+  background: rgba(0, 212, 170, 0.05);
   padding: 0.75rem;
   border-radius: 8px;
   margin-bottom: 1rem;
@@ -2344,38 +2387,163 @@ a.text-accent:hover {
 }
 .bot-modal .investment-summary h6 {
   margin-bottom: 0.75rem;
+  color: var(--text);
+  font-weight: 700;
   font-size: 0.95rem;
 }
 .bot-modal .investment-summary .summary-item {
-  font-size: 0.85rem;
+  display: flex;
+  justify-content: space-between;
   margin-bottom: 0.375rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+.bot-modal .investment-summary .summary-item .success {
+  color: var(--success);
+}
+.bot-modal .nav-tabs {
+  border: none;
+  margin-bottom: 1rem;
+}
+.bot-modal .nav-tabs .nav-link {
+  border: none;
+  padding: 0.5rem 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  border-radius: 8px 8px 0 0;
+  margin-right: 0.25rem;
+  background: transparent;
+}
+.bot-modal .nav-tabs .nav-link.active {
+  background: var(--glass);
+  color: var(--text);
+  border-bottom: 2px solid var(--accent);
 }
 .bot-modal .crypto-options .crypto-item {
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
   padding: 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 0.5rem;
+}
+.bot-modal .crypto-options .crypto-item.active {
+  border-color: var(--accent);
+  box-shadow: 0 4px 12px rgba(0, 212, 170, 0.15);
+}
+.bot-modal .crypto-options .crypto-item i {
+  font-size: 1.25rem;
+  margin-right: 0.5rem;
+}
+.bot-modal .crypto-options .crypto-item .crypto-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
 }
 .bot-modal .crypto-options .crypto-item .crypto-details .address {
+  font-family: "Courier New", monospace;
   font-size: 0.75rem;
+  color: var(--accent);
+  flex: 1;
+  word-break: break-all;
+  margin-right: 0.5rem;
 }
-.bot-modal .crypto-options .crypto-item .copy-btn {
+.bot-modal .crypto-options .crypto-item .crypto-details .copy-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
   padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.bot-modal .giftcard-options .giftcard-item {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.bot-modal .giftcard-options .giftcard-item img {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+}
+.bot-modal .giftcard-options .giftcard-item .giftcard-details h6 {
+  margin: 0 0 0.25rem 0;
+  font-size: 0.85rem;
+  color: var(--text);
+}
+.bot-modal .giftcard-options .giftcard-item .form-control {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: var(--text);
+  font-size: 0.8rem;
+  padding: 0.25rem;
+}
+.bot-modal .upload-slip {
+  margin-top: 1rem;
+}
+.bot-modal .upload-slip label {
+  display: block;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+  font-size: 0.85rem;
+}
+.bot-modal .upload-slip .file-upload .upload-btn {
+  background: linear-gradient(135deg, var(--accent), var(--success));
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  font-size: 0.85rem;
+}
+.bot-modal .upload-slip .file-upload .upload-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 212, 170, 0.3);
+}
+.bot-modal .upload-slip .file-upload .file-name {
+  margin: 0.25rem 0;
+  font-size: 0.8rem;
+  color: var(--text);
+}
+.bot-modal .upload-slip .file-upload small {
+  color: rgba(255, 255, 255, 0.6);
   font-size: 0.7rem;
 }
-.bot-modal .upload-btn {
-  padding: 0.5rem 1rem;
-  font-size: 0.85rem;
+.bot-modal .modal-footer {
+  border-top: 1px solid var(--glass-border);
+  background: rgba(0, 212, 170, 0.05);
+  gap: 0.5rem;
+}
+.bot-modal .modal-footer .btn-success {
+  background: linear-gradient(135deg, var(--success), #00a085);
+  border: none;
+  padding: 0.5rem 1.5rem;
+  font-weight: 600;
+  border-radius: 8px;
+  font-size: 0.9rem;
 }
 
 /* ==========================================================================
-// RESPONSIVE - PERFECT FIT ALL SCREENS
+// 5. PERFECT RESPONSIVE
 // ========================================================================== */
-/* LAPTOP (1366px) */
 @media (max-width: 1366px) {
   .bots-grid {
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 0.75rem;
   }
 }
-/* TABLET (768px) */
 @media (max-width: 768px) {
   .bots-page {
     padding: 0.25rem;
@@ -2400,8 +2568,11 @@ a.text-accent:hover {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
   }
+  .modal-dialog {
+    margin: 0.25rem;
+    max-width: calc(100% - 0.5rem);
+  }
 }
-/* MOBILE (480px) */
 @media (max-width: 480px) {
   .page-header h1 {
     font-size: 1.5rem;
@@ -2424,7 +2595,6 @@ a.text-accent:hover {
     gap: 0.5rem;
   }
 }
-/* EXTRA SMALL (360px) */
 @media (max-width: 360px) {
   .page-header {
     padding: 0.5rem;
