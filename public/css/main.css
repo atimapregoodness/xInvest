@@ -2316,6 +2316,7 @@ a.text-accent:hover {
   margin: 0 auto 0.75rem;
   background-color: var(--glass);
   padding: 0.3em;
+  padding: 0.3em;
   border-radius: 2em;
 }
 .how-it-works .works-grid .work-step h4 {
