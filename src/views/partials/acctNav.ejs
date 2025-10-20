@@ -66,10 +66,6 @@
             aria-labelledby="accountDropdown"
             id="acctContents"
           >
-            <% if (user) { %>
-            <li class="nav-item">
-              <a class="nav-link" href="/bots">Auto Invest</a>
-            </li>
             <li class="px-3 py-2 text-center">
               <img
                 src="<%= user.profileImage || '/images/default-avatar.png' %>"
@@ -83,7 +79,8 @@
                 ><%= user.country || 'Unknown Country' %></small
               >
             </li>
-            <li><hr class="dropdown-divider" /></li>
+            <li class="py-4"><hr class="dropdown-divider" /></li>
+
             <li>
               <a class="dropdown-item" href="/dashboard"
                 ><i class="fas fa-user me-2 text-accent"></i>Dashboard</a
@@ -94,19 +91,6 @@
                 ><i class="fas fa-sign-out-alt me-2 text-accent"></i>Logout</a
               >
             </li>
-
-            <% } else { %>
-            <li>
-              <a class="dropdown-item" href="/auth/login"
-                ><i class="fas fa-sign-in-alt me-2 text-accent"></i>Login</a
-              >
-            </li>
-            <li>
-              <a class="dropdown-item" href="/auth/register"
-                ><i class="fas fa-user-plus me-2 text-accent"></i>Register</a
-              >
-            </li>
-            <% } %>
           </ul>
         </li>
       </ul>
@@ -141,14 +125,14 @@
     </ul>
 
     <div class="mobile-account mt-auto">
-      <% if (user) { %>
-
-      <a class="mobile-link d-block" href="/dashboard">Dashboard</a>
-      <a class="mobile-link d-block" href="/auth/logout">Logout</a>
-      <% } else { %>
-      <a class="mobile-link d-block" href="/auth/login">Login</a>
-      <a class="mobile-link d-block" href="/auth/register">Register</a>
-      <% } %>
+      <li class="py-3"><hr class="dropdown-divider" /></li>
+      <a class="mobile-link d-block" href="/dashboard"> Dashboard </a>
+      <a
+        class="mobile-link d-block logout-link text-danger"
+        href="/auth/logout"
+      >
+        <i class="fas fa-sign-out-alt me-2"></i> Logout
+      </a>
     </div>
   </div>
 </nav>
