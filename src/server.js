@@ -22,6 +22,15 @@ const app = express();
 const isVercel = process.env.VERCEL || false;
 let server, io;
 
+// ================== DATABASE & MIDDLEWARE (Keep existing setup) ==================
+mongoose
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("✅ MongoDB connected successfully"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
+
 if (!isVercel) {
   // Create HTTP server for local development to support WebSockets
   server = http.createServer(app);
