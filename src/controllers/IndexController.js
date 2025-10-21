@@ -34,10 +34,6 @@ exports.getContact = (req, res) => {
   res.render("contact", { title: "Contact" });
 };
 
-exports.getFaq = (req, res) => {
-  res.render("faq", { title: "FAQ" });
-};
-
 exports.getSupport = (req, res) => {
   res.render("support", { title: "Support" });
 };

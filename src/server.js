@@ -331,8 +331,6 @@ app.set("views", path.join(__dirname, "views"));
 
 app.use((req, res, next) => {
   res.locals.user = req.user || null;
-  res.locals.wallet = req.user.wallet || null;
-  res.locals.transactions = req.user.transactions || [];
 
   res.locals.currentPath = req.path;
 
@@ -340,20 +338,32 @@ app.use((req, res, next) => {
   res.locals.success_msg = req.flash("success_msg");
   res.locals.error_msg = req.flash("error_msg");
   res.locals.error = req.flash("error");
+  res.locals.transactions = req.user.transactions;
 
   next();
 });
 
+const { ensureWallet } = require("./middleware/wallet");
+
+const { ensureAuthenticated } = require("./middleware/auth");
+
 // ================== ROUTES ==================
 app.use("/", require("./routes/index"));
 app.use("/auth", require("./routes/auth"));
-app.use("/dashboard", require("./routes/dashboard"));
+app.use(
+  "/dashboard",
+  ensureAuthenticated,
+  ensureWallet,
+  require("./routes/dashboard")
+);
 app.use("/admin", require("./routes/admin"));
 app.use("/contact", require("./routes/contact"));
-app.use("/faq", require("./routes/faq"));
+
 app.use("/privacy", require("./routes/privacy"));
 app.use("/invest", require("./routes/invest"));
 app.use("/terms", require("./routes/terms"));
+
+app.use("/dashboard/wallet", require("./routes/wallet"));
 
 // API Routes
 app.get("/api/forex", (req, res) => {

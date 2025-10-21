@@ -9,8 +9,6 @@ router.use(ensureAuthenticated);
 // Dashboard main page
 router.get("/", DashboardController.getDashboard);
 
-router.get("/wallet", DashboardController.getWallet);
-
 // Investment routes
 router.get("/investments", DashboardController.getInvestments);
 

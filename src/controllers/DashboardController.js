@@ -7,9 +7,9 @@ exports.getDashboard = async (req, res) => {
     const userId = req.user._id;
 
     // Get user with populated data
-    const user = await User.findById(userId).select(
-      "-password -security.activityLog"
-    );
+    const user = await User.findById(userId)
+      .select("-password -security.activityLog")
+      .populate("wallet");
 
     // Get investments
     const investments = await Investment.find({ user: userId })
@@ -37,6 +37,9 @@ exports.getDashboard = async (req, res) => {
       user: userId,
       status: "active",
     });
+
+    res.locals.wallet = user.wallet;
+    res.locals.transactions = user.wallet.transactions || [];
 
     res.render("user/user_dashboard", {
       title: "Dashboard",
@@ -127,31 +130,6 @@ exports.updateProfile = async (req, res) => {
     console.error("Profile update error:", error);
     req.flash("error_msg", "Error updating profile");
     res.redirect("/dashboard/profile");
-  }
-};
-
-// Get wallet with LIVE prices
-exports.getWallet = async (req, res) => {
-  try {
-    const user = await User.findById(req.user._id);
-
-    if (!user || !user.wallet) {
-      return res.status(404).json({
-        success: false,
-        message: "Wallet not found",
-      });
-    }
-
-    res.render("user/wallet", {
-      title: "Wallet",
-      wallet: user.wallet,
-    });
-  } catch (error) {
-    console.error("Get wallet error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-    });
   }
 };
 

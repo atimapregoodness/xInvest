@@ -20,93 +20,117 @@ partial("partials/floatingNav") %> <%- partial('partials/sideBar') %>
   </div>
   <% } %>
 
-  <section class="dashboard-stats">
-    <!-- BALANCE CARD -->
-    <div class="stat-card balance-card">
-      <div class="stat-header">
-        <i class="fas fa-wallet"></i>
-        <h3>BALANCE</h3>
+<section class="dashboard-stats">
+  <!-- BALANCE CARD -->
+  <div class="stat-card balance-card glass-card">
+    <div class="stat-header">
+      <i class="fas fa-wallet"></i>
+      <h3>BALANCE</h3>
+    </div>
+    <div class="stat-value text-white">
+      $<span id="balanceAmount"><%= wallet.totalBalance?.toLocaleString() || "0.00" %></span>
+    </div>
+    <div class="crypto-breakdown text-muted small">
+      <div class="crypto-item">
+        <i class="fab fa-bitcoin text-warning"></i>
+        Bitcoin: <strong id="btc-holding"><%= wallet.BTC.toLocaleString()  || "0.00" %></strong>
       </div>
-      <div class="stat-value">
-        $<span id="balanceAmount">0.00</span>
+      <div class="crypto-item">
+        <i class="fab fa-ethereum text-primary"></i>
+        Ethereum: <strong id="eth-holding"><%= wallet.ETH.toLocaleString()  || "0.00" %></strong>
       </div>
-      <div class="crypto-breakdown">
-        <div class="crypto-item">
-          <i class="fab fa-bitcoin"></i>
-          <span>Bitcoin: <strong id="btc-holding">0</strong></span>
+      <div class="crypto-item">
+        <i class="fas fa-dollar-sign text-success"></i>
+        USDT: <strong id="usdt-holding"><%= wallet.USDT?.toLocaleString() || "0.00" %></strong>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PROFIT RETURN CARD -->
+  <div class="stat-card profit-card glass-card">
+    <div class="stat-header">
+      <i class="fas fa-chart-line"></i>
+      <h3>PROFIT RETURN</h3>
+    </div>
+    <div class="stat-value text-white">
+      $<span id="profit-return"><%= wallet.profit?.toFixed(2) || "0.00" %></span>
+    </div>
+  </div>
+
+  <!-- BONUS CARD -->
+  <div class="stat-card bonus-card glass-card">
+    <div class="stat-header">
+      <i class="fas fa-gift"></i>
+      <h3>BONUS</h3>
+    </div>
+    <div class="stat-value text-white">
+      $<span id="bonus-amount"><%= wallet.bonus?.totalBonus?.toFixed(2) || "0.00" %></span>
+    </div>
+    <div class="crypto-breakdown text-muted small">
+      <div class="crypto-item">
+        <i class="fab fa-bitcoin text-warning"></i>
+        Bitcoin: <strong id="bonus-btc"><%= wallet.bonus?.BTC || 0 %></strong>
+      </div>
+      <div class="crypto-item">
+        <i class="fab fa-ethereum text-primary"></i>
+        Ethereum: <strong id="bonus-eth"><%= wallet.bonus?.ETH || 0 %></strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== INVESTMENT STATS ===================== -->
+<section class="investment-stats py-4">
+  <div class="stat-row">
+    <!-- TOTAL DEPOSIT -->
+    <div class="stat-card deposit-card glass-card">
+      <div class="stat-header d-flex align-items-center justify-content-between">
+        <h3 class="fw-bold text-success"><i class="fas fa-arrow-down me-2"></i> TOTAL DEPOSIT</h3>
+        <i class="fas fa-wallet text-muted"></i>
+      </div>
+      <div class="stat-value display-6 fw-bold mt-2 text-white">
+        $<%= wallet.investmentStats?.totalDeposit?.toFixed(2) || "0.00" %>
+      </div>
+      <hr class="my-3 text-secondary opacity-25" />
+      <div class="crypto-breakdown text-muted small">
+        <div class="crypto-item mb-1">
+          <i class="fab fa-bitcoin text-warning"></i>
+          Bitcoin: <strong><%= wallet.investmentStats?.depositBreakdown?.BTC || 0 %></strong>
         </div>
         <div class="crypto-item">
-          <i class="fab fa-ethereum"></i>
-          <span>Ethereum: <strong id="eth-holding">0</strong></span>
+          <i class="fab fa-ethereum text-primary"></i>
+          Ethereum: <strong><%= wallet.investmentStats?.depositBreakdown?.ETH || 0 %></strong>
         </div>
       </div>
     </div>
 
-    <!-- PROFIT RETURN CARD -->
-    <div class="stat-card profit-card">
-      <div class="stat-header">
-        <i class="fas fa-chart-line"></i>
-        <h3>PROFIT RETURN</h3>
+    <!-- TOTAL WITHDRAWAL -->
+    <div class="stat-card withdrawal-card glass-card">
+      <div class="stat-header d-flex align-items-center justify-content-between">
+        <h3 class="fw-bold text-danger"><i class="fas fa-arrow-up me-2"></i> TOTAL WITHDRAWAL</h3>
+        <i class="fas fa-university text-muted"></i>
       </div>
-      <div class="stat-value profit-value">
-        $<span id="profit-return">0.00</span>
+      <div class="stat-value display-6 fw-bold mt-2 text-white">
+        $<%= wallet.investmentStats?.totalWithdrawal?.toFixed(2) || "0.00" %>
       </div>
-    </div>
-
-    <!-- BONUS CARD -->
-    <div class="stat-card bonus-card">
-      <div class="stat-header">
-        <i class="fas fa-gift"></i>
-        <h3>BONUS</h3>
-      </div>
-      <div class="stat-value bonus-value">
-        $<span id="bonus-amount">0.00</span>
-      </div>
-      <div class="crypto-breakdown">
-        <div class="crypto-item">
-          <i class="fab fa-bitcoin"></i>
-          <span>Bitcoin: <strong id="bonus-btc">0</strong></span>
+      <hr class="my-3 text-secondary opacity-25" />
+      <div class="crypto-breakdown text-muted small">
+        <div class="crypto-item mb-1">
+          <i class="fab fa-bitcoin text-warning"></i>
+          Bitcoin: <strong><%= wallet.investmentStats?.withdrawalBreakdown?.BTC || 0 %></strong>
         </div>
         <div class="crypto-item">
-          <i class="fab fa-ethereum"></i>
-          <span>Ethereum: <strong id="bonus-eth">0</strong></span>
+          <i class="fab fa-ethereum text-primary"></i>
+          Ethereum: <strong><%= wallet.investmentStats?.withdrawalBreakdown?.ETH || 0 %></strong>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- INVESTMENT STATS -->
-  <section class="investment-stats">
-    <div class="stat-row">
-      <div class="stat-card deposit-card">
-        <div class="stat-header">
-          <i class="fas fa-arrow-down"></i>
-          <h3>TOTAL DEPOSIT</h3>
-        </div>
-        <div class="stat-value">
-          $<span id="total-deposit">0.00</span>
-        </div>
-        <div class="crypto-breakdown">
-          <div class="crypto-item"><i class="fab fa-bitcoin"></i> Bitcoin: <strong id="deposit-btc">0</strong></div>
-          <div class="crypto-item"><i class="fab fa-ethereum"></i> Ethereum: <strong id="deposit-eth">0</strong></div>
-        </div>
-      </div>
 
-      <div class="stat-card withdrawal-card">
-        <div class="stat-header">
-          <i class="fas fa-arrow-up"></i>
-          <h3>TOTAL WITHDRAWAL</h3>
-        </div>
-        <div class="stat-value">
-          $<span id="total-withdrawal">0.00</span>
-        </div>
-        <div class="crypto-breakdown">
-          <div class="crypto-item"><i class="fab fa-bitcoin"></i> Bitcoin: <strong id="withdrawal-btc">0</strong></div>
-          <div class="crypto-item"><i class="fab fa-ethereum"></i> Ethereum: <strong id="withdrawal-eth">0</strong></div>
-        </div>
-      </div>
-    </div>
-  </section>
+
 
   <!-- QUICK ACTIONS -->
   <section class="quick-actions">

@@ -14,7 +14,7 @@ exports.getLogin = (req, res) => {
 };
 
 // --------------------
-// POST: Handle Login (Passport Middleware)
+// POST: Handle Login
 // --------------------
 exports.postLogin = (req, res, next) => {
   passport.authenticate("local", {
@@ -43,7 +43,7 @@ exports.postRegister = async (req, res) => {
       req.body;
     let error = null;
 
-    // REQUIRED FIELDS
+    // 🧩 Validate Required Fields
     if (!fullName) error = "Full Name is required.";
     else if (!email) error = "Email is required.";
     else if (!country) error = "Country is required.";
@@ -51,9 +51,10 @@ exports.postRegister = async (req, res) => {
     else if (!password) error = "Password is required.";
     else if (!confirmPassword) error = "Confirm Password is required.";
 
-    // VALIDATION
+    // 🧩 Field Validations
     if (!error && !validator.isEmail(email))
       error = "Please enter a valid email address.";
+
     if (
       !error &&
       !validator.isStrongPassword(password, {
@@ -66,20 +67,21 @@ exports.postRegister = async (req, res) => {
     )
       error =
         "Password must be at least 8 characters and include letters and numbers.";
+
     if (!error && password !== confirmPassword)
       error = "Passwords do not match.";
+
     if (!error && !validator.isMobilePhone(phone, "any"))
       error = "Please enter a valid phone number.";
 
-    // CHECK EXISTING USER
+    // 🧩 Check Existing User
     if (!error) {
       const existingUser = await User.findOne({ email });
       if (existingUser)
-        error =
-          "Email is already registered. Please login or use another email.";
+        error = "Email is already registered. Please log in instead.";
     }
 
-    // SHOW FIRST ERROR
+    // 🧩 If Error, Re-render Form
     if (error) {
       return res.render("auth/register", {
         title: "xInvest - Sign Up",
@@ -88,24 +90,25 @@ exports.postRegister = async (req, res) => {
       });
     }
 
-    // CREATE NEW USER
+    // ✅ Create and Register New User
     const newUser = new User({
       fullName,
       email,
       country,
-      phone: phone, // Use phone from form
+      phone,
     });
 
     await User.register(newUser, password);
 
-    // AUTO-LOGIN
-    req.login(newUser, (err) => {
+    // ✅ Auto-login after registration
+    req.login(newUser, async (err) => {
       if (err) {
         console.error("Auto-login error:", err);
         req.flash("success_msg", "Account created! Please log in manually.");
         return res.redirect("/auth/login");
       }
 
+      // Send welcome email (non-blocking)
       sendWelcomeEmail?.(newUser.email, newUser.fullName).catch(() => {});
 
       req.flash(
@@ -159,18 +162,18 @@ exports.postForgotPassword = async (req, res) => {
 
     const user = await User.findOne({ email });
     if (user) {
-      // TODO: Send reset email
-      console.log(`Reset email sent to: ${email}`);
+      // TODO: Implement real reset email logic
+      console.log(`Password reset email would be sent to: ${email}`);
     }
 
     req.flash(
       "success_msg",
       "If an account exists, reset instructions have been sent to your email."
     );
-    return res.redirect("/auth/login");
+    res.redirect("/auth/login");
   } catch (err) {
     console.error("Forgot password error:", err);
     req.flash("error_msg", "Error processing request. Please try again later.");
-    return res.redirect("/auth/forgot-password");
+    res.redirect("/auth/forgot-password");
   }
 };
