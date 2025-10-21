@@ -6,22 +6,57 @@ const passport = require("passport");
 const helmet = require("helmet");
 const compression = require("compression");
 const rateLimit = require("express-rate-limit");
+const path = require("path");
 const flash = require("connect-flash");
 const methodOverride = require("method-override");
 const csrf = require("csurf");
 const ejsMate = require("ejs-mate");
+const socketIo = require("socket.io");
+const http = require("http");
 require("dotenv").config();
 require("./config/passport");
 const User = require("./models/User");
 
-// Express app
+// Express app & conditional Socket.IO setup
 const app = express();
+const isVercel = process.env.VERCEL || false;
+let server, io;
+
+if (!isVercel) {
+  // Create HTTP server for local development to support WebSockets
+  server = http.createServer(app);
+  io = socketIo(server);
+} else {
+  // Use app directly for Vercel serverless
+  server = app;
+}
 
 // ================== ENHANCED FOREX DATA SETUP ==================
 let lastGoodForexData = generateProfessionalForexData();
 let apiStatus = { successes: 0, errors: 0, lastSuccess: null };
 
 // Professional Forex Data with Realistic Simulation
+async function fetchForexData() {
+  console.log("🔄 Fetching professional forex data...");
+
+  const updatedData = updateProfessionalForexData(lastGoodForexData);
+  lastGoodForexData = updatedData;
+
+  if (!isVercel && io) {
+    // Emit via WebSocket for local development
+    io.emit("forexUpdate", {
+      ...updatedData,
+      ts: Date.now(),
+      live: false,
+      simulated: true,
+      apiStatus: apiStatus,
+      message: "Professional simulated data - Real market conditions",
+    });
+  }
+
+  console.log("✅ Professional forex data updated");
+}
+
 function generateProfessionalForexData() {
   const baseRates = {
     EURUSD: { price: 1.0874, volatility: 0.08 },
@@ -143,6 +178,13 @@ function getProfessionalSpread(pair) {
   return spreads[pair] || "1.0 pips";
 }
 
+// Start forex data updates for local development
+if (!isVercel) {
+  const FETCH_INTERVAL = 3000;
+  setInterval(fetchForexData, FETCH_INTERVAL);
+  fetchForexData();
+}
+
 // ================== DATABASE CONNECTION ==================
 async function connectToMongo() {
   if (mongoose.connection.readyState === 0) {
@@ -216,6 +258,8 @@ app.use(
         ],
         connectSrc: [
           "'self'",
+          !isVercel ? "ws://localhost:3000" : "",
+          !isVercel ? "wss://localhost:3000" : "",
           "https://api.binance.com",
           "https://api1.binance.com",
           "https://api2.binance.com",
@@ -258,7 +302,9 @@ app.use(
 );
 
 app.use(compression());
-app.use(express.static("public"));
+app.use(
+  express.static(isVercel ? "public" : path.join(__dirname, "../public"))
+);
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
@@ -275,7 +321,7 @@ app.use(
     }),
     cookie: {
       maxAge: 1000 * 60 * 60 * 24 * 7,
-      secure: process.env.NODE_ENV === "production",
+      secure: process.env.NODE_ENV === "production" && isVercel,
       httpOnly: true,
     },
   })
@@ -287,12 +333,13 @@ app.use(passport.session());
 app.use(csrf());
 app.use((req, res, next) => {
   res.locals.csrfToken = req.csrfToken();
+  res.locals.isVercel = isVercel; // Pass environment to views
   next();
 });
 
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
-app.set("views", "views");
+app.set("views", isVercel ? "views" : path.join(__dirname, "views"));
 
 app.use((req, res, next) => {
   res.locals.user = req.user || null;
@@ -351,6 +398,7 @@ app.get("/api/health", async (req, res) => {
     service: "Professional Forex Investment Platform",
     data: "Professional simulated market data",
     uptime: process.uptime(),
+    environment: isVercel ? "vercel" : "local",
   });
 });
 
@@ -362,6 +410,23 @@ const limiter = rateLimit({
   legacyHeaders: false,
 });
 app.use(limiter);
+
+// ================== SOCKET.IO (Local Only) ==================
+if (!isVercel && io) {
+  io.on("connection", (socket) => {
+    console.log("✅ Professional trader connected");
+
+    socket.emit("forexUpdate", {
+      ...lastGoodForexData,
+      ts: Date.now(),
+      live: false,
+      simulated: true,
+    });
+
+    socket.on("subscribe", (symbol) => socket.join(symbol));
+    socket.on("disconnect", () => console.log("❌ Trader disconnected"));
+  });
+}
 
 // ================== ERROR HANDLERS ==================
 app.use((req, res) => {
@@ -382,6 +447,19 @@ app.use((err, req, res, next) => {
     error: process.env.NODE_ENV === "development" ? err : {},
   });
 });
+
+// ================== SERVER START (Local Only) ==================
+if (!isVercel) {
+  const PORT = process.env.PORT || 3000;
+  server.listen(PORT, () => {
+    console.log(
+      `🚀 Professional Forex Investment Platform running on port ${PORT}`
+    );
+    console.log(`📊 Environment: ${process.env.NODE_ENV || "development"}`);
+    console.log(`🌐 Visit: http://localhost:${PORT}`);
+    console.log(`💹 Real-time professional market data active`);
+  });
+}
 
 // Export for Vercel serverless
 module.exports = app;
