@@ -31,7 +31,6 @@ mongoose
   });
 
 app.set("trust proxy", 1);
-app.use(csrf());
 
 const isVercel = process.env.VERCEL || false;
 let server, io;
@@ -319,6 +318,20 @@ app.use(
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
+
+const csrfProtection = csrf();
+app.use((req, res, next) => {
+  // Disable CSRF for API routes or JSON endpoints (optional)
+  if (req.path.startsWith("/api/")) return next();
+  return csrfProtection(req, res, next);
+});
+
+app.use((req, res, next) => {
+  if (req.csrfToken) {
+    res.locals.csrfToken = req.csrfToken();
+  }
+  next();
+});
 
 app.use((req, res, next) => {
   res.locals.csrfToken = req.csrfToken();
