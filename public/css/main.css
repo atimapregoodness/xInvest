@@ -2869,7 +2869,6 @@ a.text-accent:hover {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   display: block;
-  animation: spin 2s linear infinite;
 }
 .page-loader .loader-logo h3 {
   margin: 0.5rem 0 0 0;
