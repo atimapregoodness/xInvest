@@ -17,6 +17,8 @@ require("dotenv").config();
 require("./config/passport");
 const User = require("./models/User");
 
+const app = express();
+
 mongoose
   .connect(process.env.MONGODB_URI || "mongodb://localhost:27017/xInvest", {
     useNewUrlParser: true,
@@ -28,7 +30,9 @@ mongoose
     process.exit(1);
   });
 
-const app = express();
+app.set("trust proxy", 1);
+app.use(csrf());
+
 const isVercel = process.env.VERCEL || false;
 let server, io;
 
@@ -307,7 +311,7 @@ app.use(
       maxAge: 1000 * 60 * 60 * 24 * 7,
       secure: process.env.NODE_ENV === "production" && isVercel,
       httpOnly: true,
-      sameSite: "strict",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     },
   })
 );
@@ -315,7 +319,7 @@ app.use(
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(csrf());
+
 app.use((req, res, next) => {
   res.locals.csrfToken = req.csrfToken();
   res.locals.user = req.user || null;
@@ -434,6 +438,15 @@ if (!isVercel && io) {
     socket.on("disconnect", () => console.log("❌ Trader disconnected"));
   });
 }
+
+app.use((err, req, res, next) => {
+  if (err.code === "EBADCSRFTOKEN") {
+    return res.status(403).render("error", {
+      message: "Invalid CSRF token. Please try again.",
+    });
+  }
+  next(err);
+});
 
 app.use((req, res) => {
   res.status(404).render("error/err", {
