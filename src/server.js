@@ -6,47 +6,22 @@ const passport = require("passport");
 const helmet = require("helmet");
 const compression = require("compression");
 const rateLimit = require("express-rate-limit");
-const path = require("path");
-const socketIo = require("socket.io");
-const http = require("http");
 const flash = require("connect-flash");
 const methodOverride = require("method-override");
 const csrf = require("csurf");
 const ejsMate = require("ejs-mate");
-const axios = require("axios");
 require("dotenv").config();
 require("./config/passport");
 const User = require("./models/User");
 
-// Express app & Socket setup
+// Express app
 const app = express();
-const server = http.createServer(app);
-const io = socketIo(server);
 
 // ================== ENHANCED FOREX DATA SETUP ==================
 let lastGoodForexData = generateProfessionalForexData();
 let apiStatus = { successes: 0, errors: 0, lastSuccess: null };
 
 // Professional Forex Data with Realistic Simulation
-async function fetchForexData() {
-  console.log("🔄 Fetching professional forex data...");
-
-  // Enhanced simulated data with market patterns
-  const updatedData = updateProfessionalForexData(lastGoodForexData);
-  lastGoodForexData = updatedData;
-
-  io.emit("forexUpdate", {
-    ...updatedData,
-    ts: Date.now(),
-    live: false,
-    simulated: true,
-    apiStatus: apiStatus,
-    message: "Professional simulated data - Real market conditions",
-  });
-
-  console.log("✅ Professional forex data updated");
-}
-
 function generateProfessionalForexData() {
   const baseRates = {
     EURUSD: { price: 1.0874, volatility: 0.08 },
@@ -100,13 +75,12 @@ function generateProfessionalPairData(pair, basePrice, volatility) {
 
 function updateProfessionalForexData(previousData) {
   const updatedData = { pairs: {} };
-  const marketTrend = Math.random() > 0.6 ? (Math.random() > 0.5 ? 1 : -1) : 0; // 40% chance of trend
+  const marketTrend = Math.random() > 0.6 ? (Math.random() > 0.5 ? 1 : -1) : 0;
 
   for (const [pair, data] of Object.entries(previousData.pairs)) {
     const volatility = getVolatilityForPair(pair);
     let change = (Math.random() * volatility * 2 - volatility).toFixed(2);
 
-    // Add market trend influence
     if (marketTrend !== 0) {
       change = (parseFloat(change) + marketTrend * volatility * 0.3).toFixed(2);
     }
@@ -169,28 +143,29 @@ function getProfessionalSpread(pair) {
   return spreads[pair] || "1.0 pips";
 }
 
-// Fetch data every 3 seconds for real-time feel
-const FETCH_INTERVAL = 3000;
-setInterval(fetchForexData, FETCH_INTERVAL);
-fetchForexData();
+// ================== DATABASE CONNECTION ==================
+async function connectToMongo() {
+  if (mongoose.connection.readyState === 0) {
+    try {
+      await mongoose.connect(process.env.MONGODB_URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        serverSelectionTimeoutMS: 5000,
+      });
+      console.log("✅ MongoDB connected successfully");
+    } catch (err) {
+      console.error("❌ MongoDB connection error:", err);
+      throw err;
+    }
+  }
+}
 
-console.log(`💹 Professional forex data service started`);
-
-// ================== DATABASE & MIDDLEWARE (Keep existing setup) ==================
-mongoose
-  .connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("✅ MongoDB connected successfully"))
-  .catch((err) => console.error("❌ MongoDB connection error:", err));
-
+// ================== MIDDLEWARE SETUP ==================
 app.use(
   helmet({
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-
         styleSrc: [
           "'self'",
           "'unsafe-inline'",
@@ -203,7 +178,6 @@ app.use(
           "https://www.tradingview.com",
           "https://static.tradingview.com",
         ],
-
         scriptSrc: [
           "'self'",
           "'unsafe-inline'",
@@ -216,20 +190,18 @@ app.use(
           "https://widget.tradingview.com",
           "https://platform.forex",
           "https://cdn.tradingview.com",
-          "https://kit.fontawesome.com", // ✅ your Font Awesome kit script
-          "https://ka-f.fontawesome.com", // ✅ Font Awesome asset host
+          "https://kit.fontawesome.com",
+          "https://ka-f.fontawesome.com",
         ],
-
         fontSrc: [
           "'self'",
           "data:",
           "https://fonts.gstatic.com",
           "https://cdnjs.cloudflare.com",
           "https://cdn.jsdelivr.net",
-          "https://ka-f.fontawesome.com", // ✅ Font Awesome fonts
+          "https://ka-f.fontawesome.com",
           "https://static.tradingview.com",
         ],
-
         imgSrc: [
           "'self'",
           "data:",
@@ -240,15 +212,10 @@ app.use(
           "https://cdn.tradingview.com",
           "https://www.tradingview.com",
           "https://static.tradingview.com",
-          "https://ka-f.fontawesome.com", // ✅ Font Awesome internal SVGs
+          "https://ka-f.fontawesome.com",
         ],
-
         connectSrc: [
           "'self'",
-          "wss://stream.binance.com:9443",
-          "wss://fstream.binance.com",
-          "wss://data.tradingview.com",
-          "wss://widgetdata.tradingview.com",
           "https://api.binance.com",
           "https://api1.binance.com",
           "https://api2.binance.com",
@@ -270,9 +237,8 @@ app.use(
           "https://data.tradingview.com",
           "https://widget.tradingview.com",
           "https://www.tradingview.com",
-          "https://ka-f.fontawesome.com", // ✅ Allow fontawesome’s live kit connections
+          "https://ka-f.fontawesome.com",
         ],
-
         frameSrc: [
           "'self'",
           "https://s.tradingview.com",
@@ -280,7 +246,6 @@ app.use(
           "https://widget.tradingview.com",
           "https://cdn.tradingview.com",
         ],
-
         mediaSrc: ["'self'", "blob:", "data:"],
         objectSrc: ["'none'"],
         upgradeInsecureRequests: [],
@@ -293,9 +258,8 @@ app.use(
 );
 
 app.use(compression());
-app.use(express.static(path.join(__dirname, "../public")));
+app.use(express.static("public"));
 app.use(express.json({ limit: "10mb" }));
-
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
@@ -307,6 +271,7 @@ app.use(
     store: MongoStore.create({
       mongoUrl: process.env.MONGODB_URI,
       collectionName: "sessions",
+      ttl: 7 * 24 * 60 * 60, // 7 days
     }),
     cookie: {
       maxAge: 1000 * 60 * 60 * 24 * 7,
@@ -327,24 +292,19 @@ app.use((req, res, next) => {
 
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+app.set("views", "views");
 
 app.use((req, res, next) => {
   res.locals.user = req.user || null;
-
   res.locals.currentPath = req.path;
-
-  // Directly expose flash messages from req.flash()
   res.locals.success_msg = req.flash("success_msg");
   res.locals.error_msg = req.flash("error_msg");
   res.locals.error = req.flash("error");
-  res.locals.transactions = req.user.transactions;
-
+  res.locals.transactions = req.user ? req.user.transactions : [];
   next();
 });
 
 const { ensureWallet } = require("./middleware/wallet");
-
 const { ensureAuthenticated } = require("./middleware/auth");
 
 // ================== ROUTES ==================
@@ -358,21 +318,24 @@ app.use(
 );
 app.use("/admin", require("./routes/admin"));
 app.use("/contact", require("./routes/contact"));
-
 app.use("/privacy", require("./routes/privacy"));
 app.use("/invest", require("./routes/invest"));
 app.use("/terms", require("./routes/terms"));
-
 app.use("/dashboard/wallet", require("./routes/wallet"));
 
 // API Routes
-app.get("/api/forex", (req, res) => {
+app.get("/api/forex", async (req, res) => {
+  await connectToMongo();
+  lastGoodForexData = updateProfessionalForexData(lastGoodForexData);
+  apiStatus.successes++;
+  apiStatus.lastSuccess = Date.now();
   res.json({
     success: true,
     data: lastGoodForexData,
     live: false,
     simulated: true,
     timestamp: new Date().toISOString(),
+    apiStatus,
   });
 });
 
@@ -381,7 +344,8 @@ app.get("/set-lang/:lang", (req, res) => {
   res.redirect("back");
 });
 
-app.get("/api/health", (req, res) => {
+app.get("/api/health", async (req, res) => {
+  await connectToMongo();
   res.json({
     status: "healthy",
     service: "Professional Forex Investment Platform",
@@ -394,6 +358,8 @@ const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
   message: "Too many requests from this IP, please try again later.",
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 app.use(limiter);
 
@@ -417,28 +383,5 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ================== SOCKET.IO ==================
-io.on("connection", (socket) => {
-  console.log("✅ Professional trader connected");
-
-  socket.emit("forexUpdate", {
-    ...lastGoodForexData,
-    ts: Date.now(),
-    live: false,
-    simulated: true,
-  });
-
-  socket.on("subscribe", (symbol) => socket.join(symbol));
-  socket.on("disconnect", () => console.log("❌ Trader disconnected"));
-});
-
-// ================== SERVER START ==================
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-  console.log(
-    `🚀 Professional Forex Investment Platform running on port ${PORT}`
-  );
-  console.log(`📊 Environment: ${process.env.NODE_ENV}`);
-  console.log(`🌐 Visit: http://localhost:${PORT}`);
-  console.log(`💹 Real-time professional market data active`);
-});
+// Export for Vercel serverless
+module.exports = app;

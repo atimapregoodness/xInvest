@@ -40,6 +40,8 @@
       this.progressBar = document.querySelector(".progress-fill");
       this.progressText = document.querySelector(".progress-text");
       this.statusText = document.querySelector(".status-text");
+      this.progressInterval = null;
+      this.currentProgress = 0;
 
       this.init();
     }
@@ -51,7 +53,7 @@
 
       // Hide after content loads
       window.addEventListener("load", () => {
-        setTimeout(() => this.hide(), 800);
+        this.completeProgress();
       });
 
       // Track ALL HTTP requests
@@ -65,15 +67,52 @@
     show() {
       this.loader.classList.remove("hidden");
       document.body.style.overflow = "hidden";
+      this.resetProgress();
+      this.startProgress();
     }
 
     // 3. HIDE LOADER
     hide() {
-      this.loader.classList.add("hidden");
-      document.body.style.overflow = "";
+      this.completeProgress();
+      setTimeout(() => {
+        this.loader.classList.add("hidden");
+        document.body.style.overflow = "";
+        this.stopProgress();
+      }, 300);
     }
 
-    // 4. INTERCEPT ALL HTTP REQUESTS (GET/POST/PUT/DELETE)
+    // 4. PROGRESS SIMULATION
+    startProgress() {
+      this.stopProgress(); // Clear any existing interval
+      this.currentProgress = 0;
+      this.progressInterval = setInterval(() => {
+        if (this.currentProgress < 90) {
+          // Cap at 90% until request completes
+          this.currentProgress += Math.random() * 10; // Random increments for smooth effect
+          this.currentProgress = Math.min(this.currentProgress, 90);
+          this.updateProgress(this.currentProgress);
+        }
+      }, 200);
+    }
+
+    stopProgress() {
+      if (this.progressInterval) {
+        clearInterval(this.progressInterval);
+        this.progressInterval = null;
+      }
+    }
+
+    resetProgress() {
+      this.currentProgress = 0;
+      this.updateProgress(0);
+    }
+
+    completeProgress() {
+      this.currentProgress = 100;
+      this.updateProgress(100);
+    }
+
+    // 5. INTERCEPT ALL HTTP REQUESTS (GET/POST/PUT/DELETE)
     interceptRequests() {
       // FETCH API INTERCEPTOR
       const originalFetch = window.fetch;
@@ -81,7 +120,7 @@
         this.show();
         try {
           const response = await originalFetch(...args);
-          this.updateProgress(100);
+          this.completeProgress();
           return response;
         } catch (error) {
           this.hide();
@@ -96,12 +135,20 @@
       const originalXHRSend = XMLHttpRequest.prototype.send;
 
       XMLHttpRequest.prototype.open = function (method, url, ...args) {
+        this._loader = this; // Store reference for progress tracking
         this.addEventListener("loadstart", () => this.show());
+        this.addEventListener("progress", (e) => {
+          if (e.lengthComputable) {
+            const percent = (e.loaded / e.total) * 90; // Use 90% max for real progress
+            this.updateProgress(percent);
+          }
+        });
         return originalXHROpen.apply(this, [method, url, ...args]);
       };
 
       XMLHttpRequest.prototype.send = function (...args) {
         this.addEventListener("loadend", () => {
+          this.completeProgress();
           setTimeout(() => this.hide(), 300);
         });
         return originalXHRSend.apply(this, args);
@@ -125,13 +172,13 @@
       });
     }
 
-    // 5. UPDATE PROGRESS BAR
+    // 6. UPDATE PROGRESS BAR
     updateProgress(percent) {
       this.progressBar.style.width = `${percent}%`;
-      this.progressText.textContent = `Loading... ${percent}%`;
+      this.progressText.textContent = `Loading... ${Math.round(percent)}%`;
     }
 
-    // 6. DYNAMIC STATUS MESSAGES
+    // 7. DYNAMIC STATUS MESSAGES
     updateStatusMessages() {
       const messages = [
         "Initializing Trading Dashboard",
@@ -157,13 +204,22 @@
       });
     }
 
-    // 7. MANUAL SHOW/HIDE (For custom use)
+    // 8. MANUAL SHOW/HIDE (For custom use)
     static showLoader() {
-      document.getElementById("pageLoader").classList.remove("hidden");
+      const loader = document.getElementById("pageLoader");
+      loader.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+      const instance = new PageLoader();
+      instance.startProgress();
     }
 
     static hideLoader() {
-      document.getElementById("pageLoader").classList.add("hidden");
+      const loader = document.getElementById("pageLoader");
+      loader.classList.add("hidden");
+      document.body.style.overflow = "";
+      const instance = new PageLoader();
+      instance.completeProgress();
+      instance.stopProgress();
     }
   }
 
