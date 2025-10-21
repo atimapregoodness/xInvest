@@ -127,13 +127,14 @@
         aria-label="Close"
       ></button>
     </div>
+
+    <% if (user) { %>
     <div class="mobile-account">
       <!-- User Profile Section -->
       <div class="user-profile">
-        <div class="user-avatar">JD</div>
         <div class="user-info">
-          <div class="user-name">John Doe</div>
-          <div class="user-email">john.doe@example.com</div>
+          <div class="user-name"><%= user.fullName || 'John Doe' %></div>
+          <div class="user-email"><%= user.fullName || "my Email" %></div>
           <div class="user-status">
             <div class="status-dot"></div>
             Online • Pro Trader
@@ -153,6 +154,7 @@
         Logout
       </a>
     </div>
+    <% } %>
 
     <ul class="mobile-nav list-unstyled mb-3">
       <li><a class="mobile-link" href="/">Home</a></li>

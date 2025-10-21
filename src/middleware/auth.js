@@ -4,7 +4,7 @@ exports.ensureAuthenticated = (req, res, next) => {
   }
 
   req.flash("error_msg", "You must be logged in to access this page.");
-  return res.redirect("/login");
+  return res.redirect("/auth/login");
 };
 
 exports.ensureVerified = (req, res, next) => {

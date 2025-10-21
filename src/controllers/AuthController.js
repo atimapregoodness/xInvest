@@ -4,11 +4,17 @@ const User = require("../models/User");
 const { sendWelcomeEmail } = require("../utils/emailService");
 
 exports.getLogin = (req, res) => {
-  res.render("auth/login", {
-    title: "xInvest - Login",
-    formData: { email: "" },
-    csrfToken: req.csrfToken(),
-  });
+  if (req.isAuthenticated() && req.user.isAdmin) {
+    return res.redirect("/admin/dashboard");
+  } else if (req.isAuthenticated() && req.user) {
+    return res.redirect("/dashboard");
+  } else {
+    res.render("auth/login", {
+      title: "xInvest - Login",
+      formData: { email: "" },
+      csrfToken: req.csrfToken(),
+    });
+  }
 };
 
 exports.postLogin = async (req, res, next) => {
@@ -53,11 +59,17 @@ exports.postLogin = async (req, res, next) => {
 };
 
 exports.getRegister = (req, res) => {
-  res.render("auth/register", {
-    title: "xInvest - Sign Up",
-    formData: { fullName: "", email: "", country: "", phone: "" },
-    csrfToken: req.csrfToken(),
-  });
+  if (req.isAuthenticated() && req.user.isAdmin) {
+    return res.redirect("/admin/dashboard");
+  } else if (req.isAuthenticated() && req.user) {
+    return res.redirect("/dashboard");
+  } else {
+    res.render("auth/register", {
+      title: "xInvest - Sign Up",
+      formData: { fullName: "", email: "", country: "", phone: "" },
+      csrfToken: req.csrfToken(),
+    });
+  }
 };
 
 exports.postRegister = async (req, res) => {

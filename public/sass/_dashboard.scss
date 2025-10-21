@@ -871,6 +871,9 @@
 
 /* EXTRA SMALL MOBILE (≤360px) */
 @media (max-width: 360px) {
+  .transactions-table-container {
+    margin: 0em !important;
+  }
   .dashboard {
     padding: 0.125rem;
   }
