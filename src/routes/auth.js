@@ -10,7 +10,7 @@ const {
   logout,
   getForgotPassword,
   postForgotPassword,
-} = require("../controllers/authController");
+} = require("../controllers/AuthController");
 
 // --------------------
 // LOGIN ROUTES

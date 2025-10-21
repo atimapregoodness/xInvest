@@ -5,22 +5,31 @@
   <section class="users card">
     <h3>Users</h3>
     <table>
-      <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Actions</th></tr></thead>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
       <tbody>
         <% users.forEach(u => { %>
-          <tr>
-            <td><%= u.name %></td>
-            <td><%= u.email %></td>
-            <td><%= u.role %></td>
-            <td>
-              <% if (u.role !== 'admin') { %>
-                <form action="/admin/make-admin/<%= u._id %>" method="POST">
-                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                  <button type="submit" class="btn small holographic">Make Admin</button>
-                </form>
-              <% } %>
-            </td>
-          </tr>
+        <tr>
+          <td><%= u.name %></td>
+          <td><%= u.email %></td>
+          <td><%= u.role %></td>
+          <td>
+            <% if (u.role !== 'admin') { %>
+            <form action="/admin/make-admin/<%= u._id %>" method="POST">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+              <button type="submit" class="btn small holographic">
+                Make Admin
+              </button>
+            </form>
+            <% } %>
+          </td>
+        </tr>
         <% }) %>
       </tbody>
     </table>
@@ -29,16 +38,24 @@
   <section class="investments card">
     <h3>Investments</h3>
     <table>
-      <thead><tr><th>User</th><th>Crypto</th><th>Amount</th><th>Price</th><th>Yield</th></tr></thead>
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Crypto</th>
+          <th>Amount</th>
+          <th>Price</th>
+          <th>Yield</th>
+        </tr>
+      </thead>
       <tbody>
         <% investments.forEach(inv => { %>
-          <tr>
-            <td><%= inv.user.name %></td>
-            <td><%= inv.crypto %></td>
-            <td><%= inv.amount %></td>
-            <td>$<%= inv.price %></td>
-            <td><%= inv.yield ? inv.yield.toFixed(2) + '%' : 'N/A' %></td>
-          </tr>
+        <tr>
+          <td><%= inv.user.name %></td>
+          <td><%= inv.crypto %></td>
+          <td><%= inv.amount %></td>
+          <td>$<%= inv.price %></td>
+          <td><%= inv.yield ? inv.yield.toFixed(2) + '%' : 'N/A' %></td>
+        </tr>
         <% }) %>
       </tbody>
     </table>
@@ -47,27 +64,44 @@
   <section class="transactions card">
     <h3>Transactions</h3>
     <table class="explorer-table">
-      <thead><tr><th>User</th><th>Type</th><th>Crypto</th><th>Amount</th><th>Hash</th><th>Block</th><th>Conf</th><th>Status</th><th>Action</th></tr></thead>
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Type</th>
+          <th>Crypto</th>
+          <th>Amount</th>
+          <th>Hash</th>
+          <th>Block</th>
+          <th>Conf</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
       <tbody>
         <% transactions.forEach(tx => { %>
-          <tr>
-            <td><%= tx.user ? tx.user.name : '—' %></td>
-            <td><%= tx.type %></td>
-            <td><%= tx.crypto %></td>
-            <td><%= tx.amount %></td>
-            <td><%= tx.txHash.substring(0,6) %>...<%= tx.txHash.substring(tx.txHash.length-6) %></td>
-            <td><%= tx.block %></td>
-            <td><%= tx.confirmations %></td>
-            <td><%= tx.status %></td>
-            <td>
-              <% if (tx.status === 'pending') { %>
-                <form action="/admin/confirm-tx/<%= tx._id %>" method="POST">
-                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                  <button type="submit" class="btn small holographic">Confirm</button>
-                </form>
-              <% } %>
-            </td>
-          </tr>
+        <tr>
+          <td><%= tx.user ? tx.user.name : '—' %></td>
+          <td><%= tx.type %></td>
+          <td><%= tx.crypto %></td>
+          <td><%= tx.amount %></td>
+          <td>
+            <%= tx.txHash.substring(0,6) %>...<%=
+            tx.txHash.substring(tx.txHash.length-6) %>
+          </td>
+          <td><%= tx.block %></td>
+          <td><%= tx.confirmations %></td>
+          <td><%= tx.status %></td>
+          <td>
+            <% if (tx.status === 'pending') { %>
+            <form action="/admin/confirm-tx/<%= tx._id %>" method="POST">
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+              <button type="submit" class="btn small holographic">
+                Confirm
+              </button>
+            </form>
+            <% } %>
+          </td>
+        </tr>
         <% }) %>
       </tbody>
     </table>
