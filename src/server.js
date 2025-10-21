@@ -17,42 +17,37 @@ require("dotenv").config();
 require("./config/passport");
 const User = require("./models/User");
 
-// Express app & conditional Socket.IO setup
+mongoose
+  .connect(process.env.MONGODB_URI || "mongodb://localhost:27017/xInvest", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch((err) => {
+    console.error("❌ MongoDB connection failed:", err.message);
+    process.exit(1);
+  });
+
 const app = express();
 const isVercel = process.env.VERCEL || false;
 let server, io;
 
-// ================== DATABASE & MIDDLEWARE (Keep existing setup) ==================
-mongoose
-  .connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("✅ MongoDB connected successfully"))
-  .catch((err) => console.error("❌ MongoDB connection error:", err));
-
 if (!isVercel) {
-  // Create HTTP server for local development to support WebSockets
   server = http.createServer(app);
   io = socketIo(server);
 } else {
-  // Use app directly for Vercel serverless
   server = app;
 }
 
-// ================== ENHANCED FOREX DATA SETUP ==================
 let lastGoodForexData = generateProfessionalForexData();
 let apiStatus = { successes: 0, errors: 0, lastSuccess: null };
 
-// Professional Forex Data with Realistic Simulation
 async function fetchForexData() {
   console.log("🔄 Fetching professional forex data...");
-
   const updatedData = updateProfessionalForexData(lastGoodForexData);
   lastGoodForexData = updatedData;
 
   if (!isVercel && io) {
-    // Emit via WebSocket for local development
     io.emit("forexUpdate", {
       ...updatedData,
       ts: Date.now(),
@@ -187,31 +182,12 @@ function getProfessionalSpread(pair) {
   return spreads[pair] || "1.0 pips";
 }
 
-// Start forex data updates for local development
 if (!isVercel) {
   const FETCH_INTERVAL = 3000;
   setInterval(fetchForexData, FETCH_INTERVAL);
   fetchForexData();
 }
 
-// ================== DATABASE CONNECTION ==================
-async function connectToMongo() {
-  if (mongoose.connection.readyState === 0) {
-    try {
-      await mongoose.connect(process.env.MONGODB_URI, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        serverSelectionTimeoutMS: 5000,
-      });
-      console.log("✅ MongoDB connected successfully");
-    } catch (err) {
-      console.error("❌ MongoDB connection error:", err);
-      throw err;
-    }
-  }
-}
-
-// ================== MIDDLEWARE SETUP ==================
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -243,6 +219,7 @@ app.use(
           "https://cdn.tradingview.com",
           "https://kit.fontawesome.com",
           "https://ka-f.fontawesome.com",
+          !isVercel ? "http://localhost:3000" : "",
         ],
         fontSrc: [
           "'self'",
@@ -311,9 +288,7 @@ app.use(
 );
 
 app.use(compression());
-app.use(
-  express.static(isVercel ? "public" : path.join(__dirname, "../public"))
-);
+app.use(express.static(path.join(__dirname, "../public")));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
@@ -326,12 +301,13 @@ app.use(
     store: MongoStore.create({
       mongoUrl: process.env.MONGODB_URI,
       collectionName: "sessions",
-      ttl: 7 * 24 * 60 * 60, // 7 days
+      ttl: 7 * 24 * 60 * 60,
     }),
     cookie: {
       maxAge: 1000 * 60 * 60 * 24 * 7,
       secure: process.env.NODE_ENV === "production" && isVercel,
       httpOnly: true,
+      sameSite: "strict",
     },
   })
 );
@@ -342,28 +318,23 @@ app.use(passport.session());
 app.use(csrf());
 app.use((req, res, next) => {
   res.locals.csrfToken = req.csrfToken();
-  res.locals.isVercel = isVercel; // Pass environment to views
-  next();
-});
-
-app.engine("ejs", ejsMate);
-app.set("view engine", "ejs");
-app.set("views", isVercel ? "views" : path.join(__dirname, "views"));
-
-app.use((req, res, next) => {
   res.locals.user = req.user || null;
   res.locals.currentPath = req.path;
   res.locals.success_msg = req.flash("success_msg");
   res.locals.error_msg = req.flash("error_msg");
   res.locals.error = req.flash("error");
   res.locals.transactions = req.user ? req.user.transactions : [];
+  res.locals.isVercel = isVercel;
   next();
 });
+
+app.engine("ejs", ejsMate);
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
 const { ensureWallet } = require("./middleware/wallet");
 const { ensureAuthenticated } = require("./middleware/auth");
 
-// ================== ROUTES ==================
 app.use("/", require("./routes/index"));
 app.use("/auth", require("./routes/auth"));
 app.use(
@@ -379,20 +350,33 @@ app.use("/invest", require("./routes/invest"));
 app.use("/terms", require("./routes/terms"));
 app.use("/dashboard/wallet", require("./routes/wallet"));
 
-// API Routes
 app.get("/api/forex", async (req, res) => {
-  await connectToMongo();
-  lastGoodForexData = updateProfessionalForexData(lastGoodForexData);
-  apiStatus.successes++;
-  apiStatus.lastSuccess = Date.now();
-  res.json({
-    success: true,
-    data: lastGoodForexData,
-    live: false,
-    simulated: true,
-    timestamp: new Date().toISOString(),
-    apiStatus,
-  });
+  try {
+    await connectToMongo();
+    lastGoodForexData = updateProfessionalForexData(lastGoodForexData);
+    apiStatus.successes++;
+    apiStatus.lastSuccess = Date.now();
+    res.json({
+      success: true,
+      data: lastGoodForexData,
+      live: false,
+      simulated: true,
+      timestamp: new Date().toISOString(),
+      apiStatus,
+    });
+  } catch (err) {
+    console.error("Forex API error:", err);
+    apiStatus.errors++;
+    res.json({
+      success: true,
+      data: lastGoodForexData,
+      live: false,
+      simulated: true,
+      timestamp: new Date().toISOString(),
+      apiStatus,
+      message: "Using cached data due to database issue",
+    });
+  }
 });
 
 app.get("/set-lang/:lang", (req, res) => {
@@ -401,14 +385,31 @@ app.get("/set-lang/:lang", (req, res) => {
 });
 
 app.get("/api/health", async (req, res) => {
-  await connectToMongo();
-  res.json({
-    status: "healthy",
-    service: "Professional Forex Investment Platform",
-    data: "Professional simulated market data",
-    uptime: process.uptime(),
-    environment: isVercel ? "vercel" : "local",
-  });
+  try {
+    await connectToMongo();
+    res.json({
+      status: "healthy",
+      service: "Professional Forex Investment Platform",
+      data: "Professional simulated market data",
+      uptime: process.uptime(),
+      environment: isVercel ? "vercel" : "local",
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: "unhealthy",
+      error: "Database connection failed",
+    });
+  }
+});
+
+app.get("/api/test-user", async (req, res) => {
+  try {
+    await connectToMongo();
+    const user = await User.findOne({});
+    res.json({ success: true, user });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 const limiter = rateLimit({
@@ -420,24 +421,20 @@ const limiter = rateLimit({
 });
 app.use(limiter);
 
-// ================== SOCKET.IO (Local Only) ==================
 if (!isVercel && io) {
   io.on("connection", (socket) => {
     console.log("✅ Professional trader connected");
-
     socket.emit("forexUpdate", {
       ...lastGoodForexData,
       ts: Date.now(),
       live: false,
       simulated: true,
     });
-
     socket.on("subscribe", (symbol) => socket.join(symbol));
     socket.on("disconnect", () => console.log("❌ Trader disconnected"));
   });
 }
 
-// ================== ERROR HANDLERS ==================
 app.use((req, res) => {
   res.status(404).render("error/err", {
     title: "404 - Page Not Found",
@@ -448,6 +445,14 @@ app.use((req, res) => {
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
+  if (err.code === "EBADCSRFTOKEN") {
+    return res.status(403).render("error/err", {
+      title: "403 - Forbidden",
+      status: 403,
+      message: "Invalid CSRF token. Please try again.",
+      error: process.env.NODE_ENV === "development" ? err : {},
+    });
+  }
   const status = err.status || 500;
   res.status(status).render("error/err", {
     title: `${status} - Server Error`,
@@ -457,7 +462,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ================== SERVER START (Local Only) ==================
 if (!isVercel) {
   const PORT = process.env.PORT || 3000;
   server.listen(PORT, () => {
@@ -470,5 +474,4 @@ if (!isVercel) {
   });
 }
 
-// Export for Vercel serverless
 module.exports = app;

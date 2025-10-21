@@ -9,7 +9,6 @@ const userSchema = new mongoose.Schema(
     email: {
       type: String,
       required: [true, "Email is required"],
-      unique: true,
       lowercase: true,
       trim: true,
       match: [
@@ -41,6 +40,7 @@ const userSchema = new mongoose.Schema(
 
     // ===================== ACCOUNT STATUS =====================
     isVerified: { type: Boolean, default: false },
+    isAdmin: { type: Boolean, default: false },
     isRestricted: { type: Boolean, default: false },
     restrictionReason: { type: String, default: null },
 

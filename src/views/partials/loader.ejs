@@ -30,155 +30,126 @@
 </div>
 
 <script>
-  // ==========================================================================
-  // FANCY PAGE LOADER - ALL HTTP REQUESTS
-  // ==========================================================================
-
   class PageLoader {
     constructor() {
       this.loader = document.getElementById("pageLoader");
-      this.progressBar = document.querySelector(".progress-fill");
-      this.progressText = document.querySelector(".progress-text");
-      this.statusText = document.querySelector(".status-text");
-      this.progressInterval = null;
-      this.currentProgress = 0;
+      this.progressBar = this.loader.querySelector(".progress-fill");
+      this.progressText = this.loader.querySelector(".progress-text");
+      this.statusText = this.loader.querySelector(".status-text");
+      this.progress = 0;
+      this.progressTimer = null;
+      this.activeRequests = 0;
+      this.isVisible = false;
 
       this.init();
     }
 
-    // 1. INITIALIZE ON PAGE LOAD
     init() {
-      // Show loader on page load
+      // Show immediately on page load
       this.show();
 
-      // Hide after content loads
-      window.addEventListener("load", () => {
-        this.completeProgress();
-      });
+      // Hide when window finishes loading
+      window.addEventListener("load", () => this.complete());
 
-      // Track ALL HTTP requests
+      // Monitor HTTP requests
       this.interceptRequests();
 
-      // Update status messages
+      // Animate rotating status messages
       this.updateStatusMessages();
     }
 
-    // 2. SHOW LOADER
     show() {
+      if (this.isVisible) return; // Avoid multiple triggers
+      this.isVisible = true;
       this.loader.classList.remove("hidden");
       document.body.style.overflow = "hidden";
-      this.resetProgress();
-      this.startProgress();
+
+      this.progress = 0;
+      this.updateProgress(0);
+      this.simulateProgress();
     }
 
-    // 3. HIDE LOADER
     hide() {
-      this.completeProgress();
+      if (!this.isVisible) return;
+      this.isVisible = false;
+      this.stopSimulatedProgress();
+
+      this.progress = 100;
+      this.updateProgress(100);
+
       setTimeout(() => {
         this.loader.classList.add("hidden");
         document.body.style.overflow = "";
-        this.stopProgress();
-      }, 300);
+      }, 400); // smooth fade
     }
 
-    // 4. PROGRESS SIMULATION
-    startProgress() {
-      this.stopProgress(); // Clear any existing interval
-      this.currentProgress = 0;
-      this.progressInterval = setInterval(() => {
-        if (this.currentProgress < 90) {
-          // Cap at 90% until request completes
-          this.currentProgress += Math.random() * 10; // Random increments for smooth effect
-          this.currentProgress = Math.min(this.currentProgress, 90);
-          this.updateProgress(this.currentProgress);
+    simulateProgress() {
+      this.stopSimulatedProgress();
+      this.progressTimer = setInterval(() => {
+        if (this.progress < 90) {
+          this.progress += Math.random() * 8; // natural step
+          this.updateProgress(this.progress);
         }
-      }, 200);
+      }, 180);
     }
 
-    stopProgress() {
-      if (this.progressInterval) {
-        clearInterval(this.progressInterval);
-        this.progressInterval = null;
+    stopSimulatedProgress() {
+      if (this.progressTimer) {
+        clearInterval(this.progressTimer);
+        this.progressTimer = null;
       }
     }
 
-    resetProgress() {
-      this.currentProgress = 0;
-      this.updateProgress(0);
-    }
-
-    completeProgress() {
-      this.currentProgress = 100;
+    complete() {
+      this.stopSimulatedProgress();
       this.updateProgress(100);
+      setTimeout(() => this.hide(), 600);
     }
 
-    // 5. INTERCEPT ALL HTTP REQUESTS (GET/POST/PUT/DELETE)
+    updateProgress(value) {
+      this.progressBar.style.width = `${value}%`;
+      this.progressText.textContent = `Loading... ${Math.round(value)}%`;
+    }
+
     interceptRequests() {
-      // FETCH API INTERCEPTOR
+      // FETCH INTERCEPTOR
       const originalFetch = window.fetch;
       window.fetch = async (...args) => {
+        this.activeRequests++;
         this.show();
+
         try {
           const response = await originalFetch(...args);
-          this.completeProgress();
           return response;
-        } catch (error) {
-          this.hide();
-          throw error;
         } finally {
-          setTimeout(() => this.hide(), 500);
+          this.activeRequests--;
+          if (this.activeRequests <= 0) this.complete();
         }
       };
 
-      // XMLHTTPREQUEST INTERCEPTOR
-      const originalXHROpen = XMLHttpRequest.prototype.open;
-      const originalXHRSend = XMLHttpRequest.prototype.send;
+      // XHR INTERCEPTOR
+      const open = XMLHttpRequest.prototype.open;
+      const send = XMLHttpRequest.prototype.send;
+      const self = this;
 
-      XMLHttpRequest.prototype.open = function (method, url, ...args) {
-        this._loader = this; // Store reference for progress tracking
-        this.addEventListener("loadstart", () => this.show());
-        this.addEventListener("progress", (e) => {
-          if (e.lengthComputable) {
-            const percent = (e.loaded / e.total) * 90; // Use 90% max for real progress
-            this.updateProgress(percent);
-          }
-        });
-        return originalXHROpen.apply(this, [method, url, ...args]);
+      XMLHttpRequest.prototype.open = function (...args) {
+        open.apply(this, args);
+        this._tracked = true;
       };
 
       XMLHttpRequest.prototype.send = function (...args) {
-        this.addEventListener("loadend", () => {
-          this.completeProgress();
-          setTimeout(() => this.hide(), 300);
-        });
-        return originalXHRSend.apply(this, args);
+        if (this._tracked) {
+          self.activeRequests++;
+          self.show();
+          this.addEventListener("loadend", () => {
+            self.activeRequests--;
+            if (self.activeRequests <= 0) self.complete();
+          });
+        }
+        send.apply(this, args);
       };
-
-      // FORM SUBMIT INTERCEPTOR
-      document.addEventListener("submit", (e) => {
-        if (!e.target.closest(".no-loader")) {
-          this.show();
-        }
-      });
-
-      // LINK CLICK INTERCEPTOR
-      document.addEventListener("click", (e) => {
-        if (e.target.closest("a[href]") && !e.target.closest(".no-loader")) {
-          const link = e.target.closest("a");
-          if (link.href && !link.href.includes("#")) {
-            this.show();
-          }
-        }
-      });
     }
 
-    // 6. UPDATE PROGRESS BAR
-    updateProgress(percent) {
-      this.progressBar.style.width = `${percent}%`;
-      this.progressText.textContent = `Loading... ${Math.round(percent)}%`;
-    }
-
-    // 7. DYNAMIC STATUS MESSAGES
     updateStatusMessages() {
       const messages = [
         "Initializing Trading Dashboard",
@@ -191,48 +162,29 @@
       ];
 
       let index = 0;
-      const interval = setInterval(() => {
+      setInterval(() => {
+        if (!this.isVisible) return;
         this.statusText.textContent = messages[index];
         index = (index + 1) % messages.length;
       }, 2000);
-
-      // Stop when loader hides
-      this.loader.addEventListener("transitionend", () => {
-        if (this.loader.classList.contains("hidden")) {
-          clearInterval(interval);
-        }
-      });
     }
 
-    // 8. MANUAL SHOW/HIDE (For custom use)
+    // Static control
     static showLoader() {
-      const loader = document.getElementById("pageLoader");
-      loader.classList.remove("hidden");
-      document.body.style.overflow = "hidden";
-      const instance = new PageLoader();
-      instance.startProgress();
+      window.pageLoaderInstance?.show();
     }
 
     static hideLoader() {
-      const loader = document.getElementById("pageLoader");
-      loader.classList.add("hidden");
-      document.body.style.overflow = "";
-      const instance = new PageLoader();
-      instance.completeProgress();
-      instance.stopProgress();
+      window.pageLoaderInstance?.complete();
     }
   }
 
-  // ==========================================================================
-  // INITIALIZE ON DOM READY
-  // ==========================================================================
+  // Initialize single instance globally
   document.addEventListener("DOMContentLoaded", () => {
-    new PageLoader();
+    window.pageLoaderInstance = new PageLoader();
   });
 
-  // ==========================================================================
-  // GLOBAL FUNCTIONS (For easy use in other scripts)
-  // ==========================================================================
+  // Global helpers
   window.showLoader = () => PageLoader.showLoader();
   window.hideLoader = () => PageLoader.hideLoader();
 </script>

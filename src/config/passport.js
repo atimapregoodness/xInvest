@@ -2,22 +2,30 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const User = require("../models/User");
 
-// Configure Passport
+// Configure Passport to use email instead of username
 passport.use(
   new LocalStrategy(
-    { usernameField: "email" }, // login using email
+    {
+      usernameField: "email", // tells passport to look for "email" instead of "username"
+      passwordField: "password", // explicitly define password field (optional)
+    },
     async (email, password, done) => {
       try {
         const user = await User.findOne({ email });
+
         if (!user) {
           return done(null, false, { message: "Invalid email or password" });
         }
 
-        // Use passport-local-mongoose's built-in authentication
+        // Authenticate using passport-local-mongoose's built-in method
         user.authenticate(password, (err, userAuth, passwordErr) => {
           if (err) return done(err);
-          if (passwordErr)
-            return done(null, false, { message: passwordErr.message });
+
+          if (!userAuth) {
+            return done(null, false, {
+              message: passwordErr?.message || "Invalid password",
+            });
+          }
 
           return done(null, userAuth);
         });
@@ -28,8 +36,11 @@ passport.use(
   )
 );
 
-// Serialize/Deserialize
-passport.serializeUser((user, done) => done(null, user.id));
+// Serialize and deserialize user
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
 passport.deserializeUser(async (id, done) => {
   try {
     const user = await User.findById(id);
@@ -38,3 +49,5 @@ passport.deserializeUser(async (id, done) => {
     done(err);
   }
 });
+
+module.exports = passport;
