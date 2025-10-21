@@ -1277,6 +1277,7 @@ a.text-accent:hover {
   padding-top: 4em !important;
   padding-left: 40vh !important;
   padding-right: 10vh !important;
+  padding-bottom: 5em !important;
 }
 
 @media (max-width: 768px) {
