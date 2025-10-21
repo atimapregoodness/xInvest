@@ -13,10 +13,34 @@ exports.getLogin = (req, res) => {
 
 exports.postLogin = async (req, res, next) => {
   try {
-    passport.authenticate("local", {
-      successRedirect: "/dashboard",
-      failureRedirect: "/auth/login",
-      failureFlash: true,
+    passport.authenticate("local", (err, user, info) => {
+      if (err) {
+        console.error("Login error:", err);
+        req.flash("error_msg", "An error occurred during login.");
+        return res.redirect("/auth/login");
+      }
+
+      if (!user) {
+        req.flash("error_msg", info?.message || "Invalid email or password.");
+        return res.redirect("/auth/login");
+      }
+
+      // Log the user in
+      req.logIn(user, (err) => {
+        if (err) {
+          console.error("Session error:", err);
+          req.flash("error_msg", "Login failed. Please try again.");
+          return res.redirect("/auth/login");
+        }
+
+        // ✅ Check if the user is an admin
+        if (user.isAdmin) {
+          return res.redirect("/admin/dashboard");
+        }
+
+        // ✅ Otherwise redirect normal user
+        return res.redirect("/dashboard");
+      });
     })(req, res, next);
   } catch (err) {
     console.error("Login error:", err.message);

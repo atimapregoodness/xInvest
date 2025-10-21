@@ -4,7 +4,7 @@ const Transaction = require("../models/Transaction");
 
 // Middleware to check if user is admin
 exports.requireAdmin = (req, res, next) => {
-  if (!req.user || req.user.role !== "admin") {
+  if (!req.isAuthenticated() || !req.user.isAdmin) {
     req.flash("error_msg", "Administrator access required");
     return res.redirect("/dashboard");
   }
