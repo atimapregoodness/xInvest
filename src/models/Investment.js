@@ -1,4 +1,6 @@
+// Updated Investment model
 const mongoose = require("mongoose");
+const Transaction = require("./Transaction");
 
 const investmentSchema = new mongoose.Schema(
   {
@@ -6,74 +8,59 @@ const investmentSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      index: true,
     },
-    plan: {
-      name: {
-        type: String,
-        required: true,
-        enum: ["Starter", "Professional", "Institutional", "VIP"],
-      },
-      type: {
-        type: String,
-        enum: ["fixed", "flexible"],
-        required: true,
-      },
-      duration: {
-        type: Number,
-        required: true,
-      },
-      apy: {
-        type: Number,
-        required: true,
-        min: 0,
-        max: 100,
-      },
-      minAmount: {
-        type: Number,
-        required: true,
-        min: 0,
-      },
-      maxAmount: {
-        type: Number,
-        required: true,
-        min: 0,
-      },
-      features: [String],
+    tradingPair: {
+      type: String,
+      required: true,
+    },
+    botType: {
+      type: String,
+      enum: ["welbuilder", "premium", "elite"],
+      required: true,
     },
     amount: {
       type: Number,
       required: true,
-      min: 0,
-      validate: {
-        validator: function (value) {
-          return value >= this.plan.minAmount && value <= this.plan.maxAmount;
-        },
-        message: "Amount must be within plan limits",
-      },
+      min: [50, "Minimum investment is $50"],
     },
-    currency: {
+    period: {
+      type: Number,
+      required: true,
+      min: [1, "Minimum period is 1 day"],
+    },
+    riskLevel: {
       type: String,
-      enum: ["USDT", "BTC", "ETH"],
-      default: "USDT",
+      enum: ["low", "medium", "high"],
+      default: "medium",
+    },
+    paymentMethod: {
+      type: String,
+      enum: ["btc", "eth"],
       required: true,
     },
-    status: {
-      type: String,
-      enum: ["active", "completed", "cancelled", "paused"],
-      default: "active",
+    platformFee: {
+      type: Number,
+      default: 0,
     },
-    currentValue: {
+    minProfit: {
+      type: Number,
+      required: true,
+    },
+    maxProfit: {
+      type: Number,
+      required: true,
+    },
+    currentProfit: {
+      type: Number,
+      default: 0,
+    },
+    finalProfit: {
       type: Number,
       default: 0,
     },
     totalProfit: {
       type: Number,
-      default: 0,
-    },
-    expectedProfit: {
-      type: Number,
-      default: 0,
+      required: true,
     },
     startDate: {
       type: Date,
@@ -83,117 +70,70 @@ const investmentSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
-    nextPayout: {
-      type: Date,
-      required: true,
+    status: {
+      type: String,
+      enum: ["active", "completed", "cancelled"],
+      default: "active",
     },
-    payoutHistory: [
+    profitHistory: [
       {
-        date: Date,
-        amount: Number,
-        type: {
-          type: String,
-          enum: ["profit", "principal"],
-        },
-        transactionId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Transaction",
-        },
+        timestamp: Date,
+        profit: Number,
       },
     ],
-    autoReinvest: {
+    profitWithdrawn: {
       type: Boolean,
       default: false,
     },
-    riskLevel: {
-      type: String,
-      enum: ["low", "medium", "high"],
-      default: "medium",
-    },
+    withdrawnAt: Date,
   },
   {
     timestamps: true,
   }
 );
 
-// Index for better query performance
+// Indexes
 investmentSchema.index({ user: 1, status: 1 });
-investmentSchema.index({ status: 1, nextPayout: 1 });
+investmentSchema.index({ endDate: 1 });
+investmentSchema.index({ createdAt: -1 });
 
-// Virtual for days remaining
-investmentSchema.virtual("daysRemaining").get(function () {
+// Virtual for remaining time
+investmentSchema.virtual("remainingTime").get(function () {
   const now = new Date();
-  const end = new Date(this.endDate);
-  const diffTime = Math.abs(end - now);
-  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  const remaining = this.endDate - now;
+  return Math.max(0, Math.ceil(remaining / (1000 * 60 * 60 * 24)));
 });
 
-// Virtual for progress percentage
-investmentSchema.virtual("progress").get(function () {
-  const totalDuration = Math.abs(
-    new Date(this.endDate) - new Date(this.startDate)
-  );
-  const elapsed = Math.abs(Date.now() - new Date(this.startDate));
-  return Math.min((elapsed / totalDuration) * 100, 100);
+// Virtual for isActive
+investmentSchema.virtual("isActive").get(function () {
+  return this.status === "active" && new Date() < this.endDate;
 });
 
-// Instance methods
-investmentSchema.methods.calculateExpectedProfit = function () {
-  const dailyRate = this.plan.apy / 365 / 100;
-  const days = Math.min(
-    Math.ceil((Date.now() - this.startDate) / (1000 * 60 * 60 * 24)),
-    this.plan.duration
-  );
-  return this.amount * dailyRate * days;
-};
-
-investmentSchema.methods.isDueForPayout = function () {
-  return this.nextPayout <= new Date() && this.status === "active";
-};
-
-investmentSchema.methods.addPayout = function (amount, type, transactionId) {
-  this.payoutHistory.push({
-    date: new Date(),
-    amount,
-    type,
-    transactionId,
+// Method to update profit
+investmentSchema.methods.updateProfit = function (newProfit) {
+  this.currentProfit = newProfit;
+  this.profitHistory.push({
+    timestamp: new Date(),
+    profit: newProfit,
   });
-  this.totalProfit += type === "profit" ? amount : 0;
-  this.nextPayout = this.calculateNextPayout();
   return this.save();
 };
 
-investmentSchema.methods.calculateNextPayout = function () {
-  const next = new Date(this.nextPayout);
-  switch (this.plan.type) {
-    case "fixed":
-      next.setDate(next.getDate() + 30); // Monthly payouts
-      break;
-    case "flexible":
-      next.setDate(next.getDate() + 7); // Weekly payouts
-      break;
-    default:
-      next.setDate(next.getDate() + 1); // Daily (shouldn't happen)
-  }
-  return next;
+// Method to complete investment
+investmentSchema.methods.complete = function () {
+  this.status = "completed";
+  this.finalProfit = this.currentProfit;
+  return this.save();
 };
 
-// Pre-save middleware
-investmentSchema.pre("save", function (next) {
-  if (this.isNew) {
-    this.expectedProfit =
-      this.amount * (this.plan.apy / 100) * (this.plan.duration / 365);
-    this.endDate = new Date(this.startDate);
-    this.endDate.setDate(this.endDate.getDate() + this.plan.duration);
-    this.nextPayout = this.calculateNextPayout();
-  }
+// Method to calculate current profit (for real-time)
+investmentSchema.methods.calculateCurrentProfit = function () {
+  if (this.status !== "active") return this.currentProfit;
 
-  if (this.isModified("amount") && !this.isNew) {
-    this.expectedProfit =
-      this.amount * (this.plan.apy / 100) * (this.plan.duration / 365);
-  }
-
-  next();
-});
+  const timePassed = Date.now() - this.startDate.getTime();
+  const totalTime = this.endDate.getTime() - this.startDate.getTime();
+  const fraction = Math.min(timePassed / totalTime, 1);
+  return fraction * this.totalProfit;
+};
 
 module.exports = mongoose.model("Investment", investmentSchema);

@@ -349,6 +349,24 @@ app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
+// ... other code
+
+const cron = require("node-cron");
+const Investment = require("./models/Investment");
+
+cron.schedule("*/5 * * * *", async () => {
+  const investments = await Investment.find({ status: "active" });
+  for (const inv of investments) {
+    const currentProfit = inv.calculateCurrentProfit();
+    await inv.updateProfit(currentProfit);
+    if (new Date() >= inv.endDate) {
+      await inv.complete();
+    }
+  }
+});
+
+// ... other code
+
 const { ensureWallet } = require("./middleware/wallet");
 const { ensureAuthenticated } = require("./middleware/auth");
 
@@ -361,10 +379,11 @@ app.use(
   require("./routes/dashboard")
 );
 app.use("/admin", require("./routes/admin"));
-app.use("/contact", require("./routes/contact"));
-app.use("/privacy", require("./routes/privacy"));
-app.use("/invest", require("./routes/invest"));
-app.use("/terms", require("./routes/terms"));
+
+app.use("/dashboard/invest", require("./routes/invest"));
+
+app.use("/dashboard/bots", require("./routes/bots"));
+
 app.use("/dashboard/wallet", require("./routes/wallet"));
 
 app.get("/api/forex", async (req, res) => {

@@ -1,337 +1,960 @@
-<%- layout('layout/acctBoilerplate', { title: 'xInvest - Trading Bots' }) %>
+<%- layout('layout/acctBoilerplate', { title: 'xInvest - Trading Plans' }) %>
 <%- partial("partials/floatingNav") %> <%- partial('partials/sideBar') %>
 
 <div class="dashboard">
-<div class="bots-page">
-  <section class="page-header">
-    <h1>AI Trading Bots</h1>
-    <p>Invest in our professionally managed bots. Our expert team trades 24/7 for you</p>
-    <div class="stats-bar">
-      <div class="stat"><i class="fas fa-chart-line"></i> 245% Avg ROI</div>
-      <div class="stat"><i class="fas fa-users"></i> 12,500+ Active Investors</div>
-      <div class="stat"><i class="fas fa-clock"></i> Admin Managed 24/7</div>
-    </div>
-  </section>
-
-  <!-- INVESTMENT PLANS GRID -->
-  <section class="bots-grid">
-    <!-- PLAN 1: BEGINNER -->
-    <div class="bot-card beginner-plan">
-      <div class="bot-header">
-        <i class="fas fa-robot"></i>
-        <h3>Beginner Plan</h3>
-        <span class="risk-level low">Low Risk</span>
-      </div>
-      <div class="bot-features">
-        <div class="feature"><i class="fas fa-check"></i> $100 Minimum Investment</div>
-        <div class="feature"><i class="fas fa-check"></i> 1% Daily Return</div>
-        <div class="feature"><i class="fas fa-check"></i> BTC & USDT Pairs</div>
-        <div class="feature"><i class="fas fa-check"></i> 30-Day Lock Period</div>
-        <div class="feature"><i class="fas fa-times"></i> Forex Trading</div>
-        <div class="feature"><i class="fas fa-times"></i> Advanced Strategies</div>
-      </div>
-      <div class="bot-price">
-        <span class="price-amount">$100</span>
-        <span class="price-period">Minimum</span>
-      </div>
-      <button class="buy-btn beginner-btn" data-plan="beginner" data-price="100">
-        <i class="fas fa-shopping-cart"></i> Start Investing
-      </button>
+  <div class="plans-page">
+    <!-- Page Header -->
+    <div class="page-header glass">
+      <h1 class="page-title">Trading Plans Marketplace</h1>
+      <p class="page-subtitle">
+        Choose from our advanced AI-powered trading strategies. Each plan is
+        designed for different risk profiles and investment horizons.
+      </p>
     </div>
 
-    <!-- PLAN 2: PROFESSIONAL (POPULAR) -->
-    <div class="bot-card professional-plan popular">
-      <div class="popular-badge">MOST POPULAR</div>
-      <div class="bot-header">
-        <i class="fas fa-robot"></i>
-        <h3>Professional Plan</h3>
-        <span class="risk-level medium">Medium Risk</span>
+    <!-- Plans Filter -->
+    <div class="plans-filter glass-card">
+      <div class="filter-options">
+        <button class="filter-btn active" data-filter="all">All Plans</button>
+        <button class="filter-btn" data-filter="short">Short-term</button>
+        <button class="filter-btn" data-filter="medium">Medium-term</button>
+        <button class="filter-btn" data-filter="long">Long-term</button>
       </div>
-      <div class="bot-features">
-        <div class="feature"><i class="fas fa-check"></i> $500 Minimum Investment</div>
-        <div class="feature"><i class="fas fa-check"></i> 2.5% Daily Return</div>
-        <div class="feature"><i class="fas fa-check"></i> BTC, ETH, USDT Pairs</div>
-        <div class="feature"><i class="fas fa-check"></i> Forex (EUR/USD, GBP/USD)</div>
-        <div class="div class="feature"><i class="fas fa-check"></i> 45-Day Lock Period</div>
-        <div class="feature"><i class="fas fa-check"></i> Auto-Compounding</div>
-      </div>
-      <div class="bot-price">
-        <span class="price-amount">$500</span>
-        <span class="price-period">Minimum</span>
-      </div>
-      <button class="buy-btn professional-btn" data-plan="professional" data-price="500">
-        <i class="fas fa-shopping-cart"></i> Start Investing
-      </button>
-    </div>
-
-    <!-- PLAN 3: PREMIUM -->
-    <div class="bot-card premium-plan">
-      <div class="bot-header">
-        <i class="fas fa-robot"></i>
-        <h3>Premium Plan</h3>
-        <span class="risk-level high">High Risk</span>
-      </div>
-      <div class="bot-features">
-        <div class="feature"><i class="fas fa-check"></i> $2,000 Minimum Investment</div>
-        <div class="feature"><i class="fas fa-check"></i> 5% Daily Return</div>
-        <div class="feature"><i class="fas fa-check"></i> All Crypto Pairs</div>
-        <div class="feature"><i class="fas fa-check"></i> All Major Forex Pairs</div>
-        <div class="feature"><i class="fas fa-check"></i> Advanced Algo Trading</div>
-        <div class="feature"><i class="fas fa-check"></i> Priority Withdrawals</div>
-        <div class="feature"><i class="fas fa-check"></i> 60-Day Lock Period</div>
-      </div>
-      <div class="bot-price">
-        <span class="price-amount">$2,000</span>
-        <span class="price-period">Minimum</span>
-      </div>
-      <button class="buy-btn premium-btn" data-plan="premium" data-price="2000">
-        <i class="fas fa-shopping-cart"></i> Start Investing
-      </button>
-    </div>
-  </section>
-
-  <!-- HOW IT WORKS -->
-  <section class="how-it-works">
-    <h2>How Our Trading Bots Work</h2>
-    <div class="works-grid">
-      <div class="work-step">
-        <div class="step-number">1</div>
-        <h4>Invest</h4>
-        <p>Choose your plan and deposit crypto</p>
-      </div>
-      <div class="work-step">
-        <div class="step-number">2</div>
-        <h4>Admin Trades</h4>
-        <p>Our expert team manages your bot 24/7</p>
-      </div>
-      <div class="work-step">
-        <div class="step-number">3</div>
-        <h4>Earn Daily</h4>
-        <p>Receive automated daily profits</p>
-      </div>
-      <div class="work-step">
-        <div class="step-number">4</div>
-        <h4>Withdraw</h4>
-        <p>After lock period, withdraw anytime</p>
+      <div class="filter-search">
+        <input
+          type="text"
+          placeholder="Search plans..."
+          class="search-input"
+          id="searchInput"
+        />
+        <i class="fas fa-search"></i>
       </div>
     </div>
-  </section>
-</div>
 
-<!-- BOOTSTRAP INVESTMENT MODAL -->
-<div class="modal fade" id="investmentModal" tabindex="-1">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content bot-modal">
-      <div class="modal-header">
-        <h5 class="modal-title">
-          <i class="fas fa-robot"></i> Start <span id="selectedPlan"></span> Investment
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <div class="investment-summary">
-          <h6>Investment Summary</h6>
-          <div class="summary-item">
-            <span><strong id="selectedPlanName"></strong></span>
-            <span class="price"><strong id="selectedPrice"></strong></span>
-          </div>
-          <div class="summary-item">
-            <span>Expected Daily Return</span>
-            <span id="dailyReturn" class="success">2.5%</span>
-          </div>
-          <div class="summary-item">
-            <span>Lock Period</span>
-            <span id="lockPeriod">45 Days</span>
-          </div>
+    <!-- Plans Grid -->
+    <div class="plans-marketplace" id="plansGrid">
+      <!-- Plans will be populated dynamically -->
+    </div>
+
+    <!-- Purchase Modal -->
+    <div class="modal-overlay" id="purchaseModal" style="display: none">
+      <div class="modal-content glass">
+        <div class="modal-header">
+          <h3>Confirm Plan Purchase</h3>
+          <button class="modal-close" id="modalClose">
+            <i class="fas fa-times"></i>
+          </button>
         </div>
-
-        <div class="payment-tabs">
-          <ul class="nav nav-tabs" id="paymentTabs">
-            <li class="nav-item">
-              <button class="nav-link active" id="crypto-tab" data-bs-toggle="tab" data-bs-target="#crypto">
-                <i class="fab fa-bitcoin"></i> Crypto Deposit
-              </button>
-            </li>
-            <li class="nav-item">
-              <button class="nav-link" id="giftcard-tab" data-bs-toggle="tab" data-bs-target="#giftcard">
-                <i class="fas fa-gift-card"></i> Gift Cards
-              </button>
-            </li>
-          </ul>
-
-          <div class="tab-content mt-3">
-            <!-- CRYPTO DEPOSIT -->
-            <div class="tab-pane fade show active" id="crypto">
-              <div class="crypto-options">
-                <div class="crypto-item active" data-crypto="USDT">
-                  <i class="fab fa-usd-circle"></i> USDT (TRC20)
-                  <div class="crypto-details">
-                    <span class="address">T: xInvestBotPayment123456789...</span>
-                    <button class="copy-btn" onclick="copyAddress('USDT')">Copy Address</button>
-                  </div>
+        <div class="modal-body">
+          <div class="plan-summary" id="planSummary">
+            <!-- Plan summary will be populated here -->
+          </div>
+          <div class="payment-methods">
+            <h4>Select Payment Method</h4>
+            <div class="payment-options">
+              <label class="payment-option">
+                <input type="radio" name="paymentMethod" value="btc" checked />
+                <div class="payment-content">
+                  <i class="fab fa-bitcoin"></i>
+                  <span>BTC</span>
                 </div>
-                <div class="crypto-item" data-crypto="BTC">
-                  <i class="fab fa-bitcoin"></i> Bitcoin
-                  <div class="crypto-details">
-                    <span class="address">1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa</span>
-                    <button class="copy-btn" onclick="copyAddress('BTC')">Copy Address</button>
-                  </div>
+              </label>
+              <label class="payment-option">
+                <input type="radio" name="paymentMethod" value="eth" />
+                <div class="payment-content">
+                  <i class="fab fa-ethereum"></i>
+                  <span>ETH</span>
                 </div>
-                <div class="crypto-item" data-crypto="ETH">
-                  <i class="fab fa-ethereum"></i> Ethereum
-                  <div class="crypto-details">
-                    <span class="address">0x742d35Cc6634C0532925a3b8D4d8f9...</span>
-                    <button class="copy-btn" onclick="copyAddress('ETH')">Copy Address</button>
-                  </div>
+              </label>
+              <label class="payment-option">
+                <input type="radio" name="paymentMethod" value="usdt" />
+                <div class="payment-content">
+                  <i class="fas fa-dollar-sign"></i>
+                  <span>USDT</span>
                 </div>
-              </div>
-              <div class="upload-slip">
-                <label>Upload Transaction Receipt</label>
-                <div class="file-upload">
-                  <input type="file" id="receiptInput" accept="image/*" class="d-none">
-                  <button type="button" class="upload-btn" onclick="document.getElementById('receiptInput').click()">
-                    <i class="fas fa-upload"></i> Upload Proof
-                  </button>
-                  <div id="receiptName" class="file-name"></div>
-                  <small>PNG, JPG • Max 5MB • Processing: 24 hours</small>
-                </div>
-              </div>
-            </div>
-
-            <!-- GIFTCARD TAB -->
-            <div class="tab-pane fade" id="giftcard">
-              <div class="giftcard-options">
-                <div class="giftcard-item">
-                  <img src="/images/giftcards/amazon.png" alt="Amazon">
-                  <div class="giftcard-details">
-                    <h6>Amazon $100</h6>
-                    <input type="text" class="form-control" placeholder="Enter 16-digit PIN">
-                  </div>
-                </div>
-                <div class="giftcard-item">
-                  <img src="/images/giftcards/apple.png" alt="Apple">
-                  <div class="giftcard-details">
-                    <h6>Apple iTunes $100</h6>
-                    <input type="text" class="form-control" placeholder="Enter 16-digit PIN">
-                  </div>
-                </div>
-                <div class="giftcard-item">
-                  <img src="/images/giftcards/google.png" alt="Google">
-                  <div class="giftcard-details">
-                    <h6>Google Play $100</h6>
-                    <input type="text" class="form-control" placeholder="Enter 16-digit PIN">
-                  </div>
-                </div>
-              </div>
-              <div class="upload-slip">
-                <label>Upload Gift Card Receipt</label>
-                <div class="file-upload">
-                  <input type="file" id="giftcardInput" accept="image/*" class="d-none">
-                  <button type="button" class="upload-btn" onclick="document.getElementById('giftcardInput').click()">
-                    <i class="fas fa-upload"></i> Upload Proof
-                  </button>
-                  <div id="giftcardFileName" class="file-name"></div>
-                  <small>PNG, JPG • Max 5MB • Processing: 24 hours</small>
-                </div>
-              </div>
+              </label>
             </div>
           </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-success" id="submitInvestment">
-          <i class="fas fa-robot"></i> Activate Bot Trading
-        </button>
+        <div class="modal-footer">
+          <button class="btn-cancel" id="cancelPurchase">Cancel</button>
+          <button class="btn-confirm" id="confirmPurchase">
+            <i class="fas fa-lock"></i>
+            Confirm Purchase
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
-</div>
+<style>
+  .plans-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .plans-filter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    gap: 1rem;
+  }
+
+  .filter-options {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .filter-btn {
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .filter-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+  }
+
+  .filter-search {
+    position: relative;
+    width: 300px;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 0.5rem 2.5rem 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    color: var(--text);
+  }
+
+  .filter-search i {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+  }
+
+  .plans-marketplace {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .plan-card {
+    padding: 2rem;
+    position: relative;
+    transition: var(--transition);
+  }
+
+  .plan-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .plan-badge {
+    position: absolute;
+    top: -10px;
+    right: 2rem;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .popular-badge {
+    background: var(--primary);
+    color: white;
+  }
+
+  .elite-badge {
+    background: var(--accent);
+    color: white;
+  }
+
+  .plan-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+  }
+
+  .plan-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+  }
+
+  .plan-pricing {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--glass-border);
+    border-bottom: 1px solid var(--glass-border);
+  }
+
+  .price-main {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .price-currency {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .price-amount {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  .price-period {
+    font-size: 1rem;
+    color: var(--text-secondary);
+  }
+
+  .price-features {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .feature-included {
+    font-size: 0.9rem;
+    color: var(--success);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+
+  .plan-stats {
+    margin-bottom: 1.5rem;
+  }
+
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+
+  .stat-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+  }
+
+  .plan-features {
+    margin-bottom: 2rem;
+  }
+
+  .plan-features h4 {
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  .plan-features ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .plan-features li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-secondary);
+  }
+
+  .plan-features li i {
+    color: var(--success);
+    width: 16px;
+  }
+
+  .plan-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .btn-buy {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(
+      90deg,
+      var(--primary) 0%,
+      var(--primary-dark) 100%
+    );
+    border: none;
+    border-radius: var(--radius);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .btn-buy:hover {
+    background: linear-gradient(
+      90deg,
+      var(--primary-dark) 0%,
+      var(--primary) 100%
+    );
+    transform: translateY(-2px);
+  }
+
+  .btn-demo {
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    color: var(--text);
+    text-decoration: none;
+    text-align: center;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .btn-demo:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  /* Modal Styles */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 1rem;
+  }
+
+  .modal-content {
+    width: 100%;
+    max-width: 500px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--glass-border);
+  }
+
+  .modal-header h3 {
+    margin: 0;
+    color: var(--text);
+  }
+
+  .modal-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 1.2rem;
+  }
+
+  .modal-body {
+    padding: 1.5rem;
+  }
+
+  .plan-summary {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .payment-methods h4 {
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  .payment-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .payment-option {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .payment-option input {
+    display: none;
+  }
+
+  .payment-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    flex: 1;
+    transition: var(--transition);
+  }
+
+  .payment-option input:checked + .payment-content {
+    border-color: var(--primary);
+    background: rgba(99, 102, 241, 0.1);
+  }
+
+  .modal-footer {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-top: 1px solid var(--glass-border);
+  }
+
+  .btn-cancel {
+    flex: 1;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    color: var(--text);
+    cursor: pointer;
+    transition: var(--transition);
+  }
+
+  .btn-cancel:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .btn-confirm {
+    flex: 2;
+    padding: 0.75rem;
+    background: var(--success);
+    border: none;
+    border-radius: var(--radius);
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .btn-confirm:hover {
+    background: var(--secondary-dark);
+  }
+
+  @media (max-width: 768px) {
+    .plans-filter {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .filter-options {
+      justify-content: center;
+    }
+
+    .filter-search {
+      width: 100%;
+    }
+
+    .plans-marketplace {
+      grid-template-columns: 1fr;
+    }
+
+    .modal-footer {
+      flex-direction: column;
+    }
+  }
+</style>
 
 <script>
-const PLANS = {
-  beginner: { dailyReturn: '1%', lockPeriod: '30 Days' },
-  professional: { dailyReturn: '2.5%', lockPeriod: '45 Days' },
-  premium: { dailyReturn: '5%', lockPeriod: '60 Days' }
-};
+  document.addEventListener("DOMContentLoaded", async function () {
+    const grid = document.getElementById("plansGrid");
+    const modal = document.getElementById("purchaseModal");
+    const modalClose = document.getElementById("modalClose");
+    const cancelPurchase = document.getElementById("cancelPurchase");
+    const confirmPurchase = document.getElementById("confirmPurchase");
+    const planSummary = document.getElementById("planSummary");
+    const searchInput = document.querySelector(".search-input");
+    const filterBtns = document.querySelectorAll(".filter-btn");
 
-document.addEventListener('DOMContentLoaded', () => {
-  // Investment button handlers
-  document.querySelectorAll('.buy-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const plan = e.target.dataset.plan;
-      const price = e.target.dataset.price;
-      
-      document.getElementById('selectedPlan').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
-      document.getElementById('selectedPlanName').textContent = plan.charAt(0).toUpperCase() + plan.slice(1) + ' Plan';
-      document.getElementById('selectedPrice').textContent = `$${price}`;
-      document.getElementById('dailyReturn').textContent = PLANS[plan].dailyReturn;
-      document.getElementById('lockPeriod').textContent = PLANS[plan].lockPeriod;
-      
-      new bootstrap.Modal(document.getElementById('investmentModal')).show();
-    });
-  });
+    let selectedPlan = null;
+    let allPlans = [];
 
-  // File upload handlers
-  document.getElementById('receiptInput').addEventListener('change', (e) => {
-    document.getElementById('receiptName').textContent = e.target.files[0]?.name || '';
-  });
+    // =================== FETCH PLANS ===================
+    async function fetchPlans() {
+      try {
+        console.log("Fetching trading plans...");
+        const res = await fetch("/dashboard/bots/available");
 
-  document.getElementById('giftcardInput').addEventListener('change', (e) => {
-    document.getElementById('giftcardFileName').textContent = e.target.files[0]?.name || '';
-  });
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
 
-  // Submit investment
-  document.getElementById('submitInvestment').addEventListener('click', async () => {
-    const formData = new FormData();
-    const plan = document.getElementById('selectedPlan').textContent.toLowerCase();
-    const fileInput = document.querySelector('#receiptInput, #giftcardInput');
-    const file = fileInput.files[0];
-    const paymentMethod = document.querySelector('.nav-link.active').getAttribute('data-bs-target') === '#crypto' ? 'crypto' : 'giftcard';
-    const cryptoType = document.querySelector('.crypto-item.active')?.dataset.crypto || '';
+        const data = await res.json();
+        console.log("Plans data received:", data);
 
-    formData.append('plan', plan);
-    formData.append('amount', document.getElementById('selectedPrice').textContent);
-    formData.append('paymentMethod', paymentMethod);
-    if (cryptoType) formData.append('cryptoType', cryptoType);
-    if (file) formData.append('receipt', file);
+        if (!data.success || !data.plans?.length) {
+          grid.innerHTML = `<div class="no-plans-message">
+            <i class="fas fa-robot"></i>
+            <h3>No Trading Plans Available</h3>
+            <p>Please check back later or contact support.</p>
+          </div>`;
+          return;
+        }
 
-    try {
-      const response = await fetch('/api/bots/invest', {
-        method: 'POST',
-        body: formData
-      });
-      
-      const result = await response.json();
-      
-      if (result.success) {
-        alert(`🎉 Investment activated! Your ${plan} bot is now trading. Processing in 24 hours.`);
-        bootstrap.Modal.getInstance(document.getElementById('investmentModal')).hide();
-        setTimeout(() => location.reload(), 1000);
-      } else {
-        alert('Error: ' + result.message);
+        allPlans = data.plans;
+        renderPlans(allPlans);
+      } catch (error) {
+        console.error("Error fetching plans:", error);
+        grid.innerHTML = `<div class="no-plans-message">
+          <i class="fas fa-exclamation-triangle"></i>
+          <h3>Failed to Load Plans</h3>
+          <p>Please refresh the page or try again later.</p>
+        </div>`;
       }
-    } catch (error) {
-      alert('Network error. Please try again.');
+    }
+
+    await fetchPlans();
+
+    // =================== RENDER PLANS ===================
+    function renderPlans(plans) {
+      grid.innerHTML = "";
+
+      plans.forEach((plan) => {
+        const card = createPlanCard(plan);
+        grid.appendChild(card);
+      });
+
+      attachFilterListeners();
+      attachSearchListener();
+      attachBuyButtons();
+    }
+
+    // =================== CREATE CARD ===================
+    function createPlanCard(plan) {
+      const card = document.createElement("div");
+      card.className = "plan-card glass-card";
+      card.dataset.category = getCategory(plan.periodMin);
+      card.dataset.plan = plan.id;
+
+      let badge = "";
+      if (plan.id === "welbuilder")
+        badge = `<div class="plan-badge popular-badge">MOST POPULAR</div>`;
+      if (plan.id === "elite")
+        badge = `<div class="plan-badge elite-badge">ELITE</div>`;
+
+      card.innerHTML = `
+        ${badge}
+        <div class="plan-header">
+          <div class="plan-info">
+            <span class="plan-tag tag-${
+              plan.id
+            }">${plan.name.toUpperCase()}</span>
+            <h3>${plan.strategy}</h3>
+            <p class="plan-description">${plan.description}</p>
+          </div>
+          <div class="plan-icon"><i class="${getIcon(plan.id)}"></i></div>
+        </div>
+
+        <div class="plan-pricing">
+          <div class="price-main">
+            <span class="price-currency">$</span>
+            <span class="price-amount">${plan.price}</span>
+            <span class="price-period">one-time</span>
+          </div>
+          <div class="price-features">
+            <span class="feature-included"><i class="fas fa-check"></i> Lifetime access</span>
+            <span class="feature-included"><i class="fas fa-check"></i> Free updates</span>
+          </div>
+        </div>
+
+        <div class="plan-stats">
+          <div class="stat-row">
+            <div class="stat-item">
+              <div class="stat-value">${plan.profitMin}-${plan.profitMax}%</div>
+              <div class="stat-label">Profit Range</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">${plan.periodMin}-${plan.periodMax}</div>
+              <div class="stat-label">Days</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">${plan.winRate}%</div>
+              <div class="stat-label">Win Rate</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="plan-features">
+          <h4>Features Included:</h4>
+          <ul>${plan.features
+            .map((f) => `<li><i class="fas fa-check"></i> ${f}</li>`)
+            .join("")}</ul>
+        </div>
+
+        <div class="plan-actions">
+          <button class="btn-buy" data-plan="${plan.id}">
+            <i class="fas fa-shopping-cart"></i> Purchase Plan - $${plan.price}
+          </button>
+        </div>
+      `;
+      return card;
+    }
+
+    // =================== UTILITIES ===================
+    function getCategory(periodMin) {
+      if (periodMin <= 3) return "short";
+      if (periodMin <= 7) return "medium";
+      return "long";
+    }
+
+    function getIcon(id) {
+      if (id === "welbuilder") return "fas fa-seedling";
+      if (id === "premium") return "fas fa-chart-line";
+      return "fas fa-crown";
+    }
+
+    // =================== FILTER BUTTONS ===================
+    function attachFilterListeners() {
+      const planCards = document.querySelectorAll(".plan-card");
+
+      filterBtns.forEach((btn) => {
+        btn.addEventListener("click", function () {
+          const filter = this.dataset.filter;
+
+          filterBtns.forEach((b) => b.classList.remove("active"));
+          this.classList.add("active");
+
+          planCards.forEach((card) => {
+            card.style.display =
+              filter === "all" || card.dataset.category === filter
+                ? "block"
+                : "none";
+          });
+        });
+      });
+    }
+
+    // =================== SEARCH ===================
+    function attachSearchListener() {
+      const planCards = document.querySelectorAll(".plan-card");
+
+      searchInput?.addEventListener("input", function () {
+        const term = this.value.toLowerCase();
+        planCards.forEach((card) => {
+          const title = card.querySelector("h3").textContent.toLowerCase();
+          const desc = card
+            .querySelector(".plan-description")
+            .textContent.toLowerCase();
+          const tag = card.querySelector(".plan-tag").textContent.toLowerCase();
+
+          card.style.display =
+            title.includes(term) || desc.includes(term) || tag.includes(term)
+              ? "block"
+              : "none";
+        });
+      });
+    }
+
+    // =================== BUY MODAL ===================
+    function attachBuyButtons() {
+      document.addEventListener("click", (e) => {
+        if (e.target.closest(".btn-buy")) {
+          const planId = e.target.closest(".btn-buy").dataset.plan;
+          selectedPlan = planId;
+          showPurchaseModal(planId);
+        }
+      });
+    }
+
+    function showPurchaseModal(planId) {
+      const plan = allPlans.find((p) => p.id === planId);
+      if (!plan) return;
+
+      planSummary.innerHTML = `
+        <div class="modal-plan-header">
+          <h4>${plan.name}</h4>
+          <div class="modal-plan-price">$${plan.price}</div>
+        </div>
+        <div class="modal-plan-details">
+          <div class="detail-item"><span>Strategy:</span><span>${plan.strategy}</span></div>
+          <div class="detail-item"><span>Profit Range:</span><span>${plan.profitMin}% - ${plan.profitMax}%</span></div>
+          <div class="detail-item"><span>Investment Period:</span><span>${plan.periodMin}-${plan.periodMax} days</span></div>
+          <div class="detail-item"><span>Win Rate:</span><span>${plan.winRate}%</span></div>
+        </div>
+      `;
+      modal.style.display = "flex";
+    }
+
+    modalClose.addEventListener("click", closeModal);
+    cancelPurchase.addEventListener("click", closeModal);
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    function closeModal() {
+      modal.style.display = "none";
+      selectedPlan = null;
+    }
+
+    // =================== PURCHASE - FIXED VERSION ===================
+    confirmPurchase.addEventListener("click", async function () {
+      if (!selectedPlan) {
+        showNotification("Please select a plan first.", "error");
+        return;
+      }
+
+      const paymentMethodInput = document.querySelector(
+        'input[name="paymentMethod"]:checked'
+      );
+      if (!paymentMethodInput) {
+        showNotification("Select a payment method to continue.", "error");
+        return;
+      }
+
+      const paymentMethod = paymentMethodInput.value;
+
+      // Show loading state
+      const originalText = confirmPurchase.innerHTML;
+      confirmPurchase.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Processing Payment...`;
+      confirmPurchase.disabled = true;
+
+      try {
+        console.log("Sending purchase request:", {
+          selectedPlan,
+          paymentMethod,
+        });
+
+        const response = await fetch("/dashboard/bots/purchase", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          credentials: "include", // Important for sessions
+          body: JSON.stringify({
+            planId: selectedPlan,
+            paymentMethod: paymentMethod,
+          }),
+        });
+
+        console.log(
+          "Purchase response status:",
+          response.status,
+          response.statusText
+        );
+
+        // Check if response is JSON
+        const contentType = response.headers.get("content-type");
+        let responseData;
+
+        if (contentType && contentType.includes("application/json")) {
+          responseData = await response.json();
+          console.log("JSON response received:", responseData);
+        } else {
+          // Handle HTML response - this means server error
+          const htmlText = await response.text();
+          console.error("HTML error response received");
+
+          if (response.status === 500) {
+            // Server is trying to render error view but it doesn't exist
+            throw new Error(
+              "Server configuration error. Please contact support."
+            );
+          } else if (response.status === 401) {
+            throw new Error("Your session has expired. Please log in again.");
+          } else if (response.status === 404) {
+            throw new Error("Purchase endpoint not found.");
+          } else {
+            throw new Error(
+              `Server error (${response.status}). Please try again.`
+            );
+          }
+        }
+
+        // Handle the response data
+        if (responseData.success) {
+          const planName =
+            responseData.plan?.name ||
+            allPlans.find((p) => p.id === selectedPlan)?.name ||
+            "the plan";
+          showNotification(
+            `✅ Successfully purchased ${planName}! Redirecting to dashboard...`,
+            "success"
+          );
+          closeModal();
+
+          // Redirect after delay
+          setTimeout(() => {
+            window.location.href = "/dashboard/invest";
+          }, 2000);
+        } else {
+          // Server returned success: false with error message
+          showNotification(
+            responseData.message || "Purchase failed. Please try again.",
+            "error"
+          );
+        }
+      } catch (error) {
+        console.error("Purchase error:", error);
+
+        // Handle specific error types
+        if (
+          error.message.includes("session") ||
+          error.message.includes("log in")
+        ) {
+          showNotification("Session expired. Redirecting to login...", "error");
+          setTimeout(() => {
+            window.location.href = "/login";
+          }, 2000);
+        } else if (
+          error.message.includes("configuration") ||
+          error.message.includes("support")
+        ) {
+          showNotification(
+            "Server issue detected. Please contact support.",
+            "error"
+          );
+        } else if (error.message.includes("Network")) {
+          showNotification(
+            "Network error. Please check your connection.",
+            "error"
+          );
+        } else {
+          showNotification(
+            error.message || "Purchase failed. Please try again.",
+            "error"
+          );
+        }
+      } finally {
+        // Reset button state
+        confirmPurchase.innerHTML = originalText;
+        confirmPurchase.disabled = false;
+      }
+    });
+
+    // =================== NOTIFICATIONS ===================
+    function showNotification(message, type) {
+      const existingNotifications = document.querySelectorAll(
+        ".custom-notification"
+      );
+      existingNotifications.forEach((notification) => notification.remove());
+
+      const notification = document.createElement("div");
+      notification.className = "custom-notification";
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px; 
+        right: 20px;
+        background: ${
+          type === "success"
+            ? "rgba(16, 185, 129, 0.95)"
+            : "rgba(239, 68, 68, 0.95)"
+        };
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        font-weight: 500;
+        z-index: 10000;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        backdrop-filter: blur(10px);
+        border: 1px solid ${
+          type === "success"
+            ? "rgba(16, 185, 129, 0.3)"
+            : "rgba(239, 68, 68, 0.3)"
+        };
+        border-left: 4px solid ${type === "success" ? "#10b981" : "#ef4444"};
+        animation: slideInRight 0.3s ease;
+        max-width: 400px;
+      `;
+
+      notification.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <i class="fas ${
+            type === "success" ? "fa-check-circle" : "fa-exclamation-circle"
+          }"></i>
+          <span style="flex: 1;">${message}</span>
+        </div>
+      `;
+
+      document.body.appendChild(notification);
+
+      setTimeout(() => {
+        notification.style.animation = "slideOutRight 0.3s ease";
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.remove();
+          }
+        }, 300);
+      }, 5000);
+    }
+
+    // Add notification styles
+    if (!document.querySelector("#notification-styles")) {
+      const style = document.createElement("style");
+      style.id = "notification-styles";
+      style.textContent = `
+        @keyframes slideInRight { 
+          from { transform: translateX(100%); opacity: 0; } 
+          to { transform: translateX(0); opacity: 1; } 
+        }
+        @keyframes slideOutRight { 
+          from { transform: translateX(0); opacity: 1; } 
+          to { transform: translateX(100%); opacity: 0; } 
+        }
+      `;
+      document.head.appendChild(style);
     }
   });
-
-  // Crypto selection
-  document.querySelectorAll('.crypto-item').forEach(item => {
-    item.addEventListener('click', () => {
-      document.querySelectorAll('.crypto-item').forEach(i => i.classList.remove('active'));
-      item.classList.add('active');
-    });
-  });
-});
-
-// Copy address function
-function copyAddress(crypto) {
-  const address = document.querySelector(`[data-crypto="${crypto}"] .address`).textContent;
-  navigator.clipboard.writeText(address).then(() => {
-    alert(`${crypto} address copied!`);
-  });
-}
 </script>

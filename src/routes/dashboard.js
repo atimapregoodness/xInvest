@@ -9,25 +9,10 @@ router.use(ensureAuthenticated);
 // Dashboard main page
 router.get("/", DashboardController.getDashboard);
 
-// Investment routes
-router.get("/investments", DashboardController.getInvestments);
-
 // Profile routes
 router.get("/profile", DashboardController.getProfile);
 router.post("/profile", DashboardController.updateProfile);
 
-router.get("/bots", (req, res) => {
-  res.render("user/bots", { title: "xInvest - Trading Bots" });
-});
-
-router.post("/api/purchase", DashboardController.purchaseBot);
-router.get("/api/my-bots", DashboardController.getUserBots);
-
-module.exports = router;
-
-// ==========================================================================
-// DASHBOARD STATS API
-// ==========================================================================
 router.get("/api/transactions/stats", async (req, res) => {
   try {
     const user = await User.findById(req.user._id);

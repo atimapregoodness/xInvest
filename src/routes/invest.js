@@ -1,21 +1,43 @@
-// src/routes/invest.js
 const express = require("express");
 const router = express.Router();
-const { createInvestment } = require("../controllers/investController");
+const { ensureAuthenticated } = require("../middleware/auth");
 
-// Middleware to ensure authentication
-function ensureAuth(req, res, next) {
-  if (req.isAuthenticated()) return next();
-  req.flash("error_msg", "You must be logged in to invest.");
-  res.redirect("/auth/login");
-}
+const investmentController = require("../controllers/InvestController");
 
-// Show investment plans
-router.get("/", ensureAuth, (req, res) => {
-  res.render("invest", { title: "Investment Plans" });
+router.get("/", ensureAuthenticated, (req, res) =>
+  res.render("user/invest", {
+    title: "xInvest - Investments",
+    user: req.user,
+  })
+);
+
+router.get("/wallet", ensureAuthenticated, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).populate("wallet");
+    if (!user.wallet) return res.status(404).json({ msg: "Wallet not found" });
+    res.json(user.wallet);
+  } catch (err) {
+    console.error("Error fetching wallet:", err);
+    res.status(500).json({ msg: "Server error" });
+  }
 });
 
-// Handle new investment submission
-router.post("/", ensureAuth, createInvestment);
+router.get("/plans", ensureAuthenticated, (req, res) =>
+  res.json(req.user.tradingPlans)
+);
+
+router.get(
+  "/active",
+  ensureAuthenticated,
+  investmentController.getActiveInvestments
+);
+
+router.post("/", ensureAuthenticated, investmentController.createInvestment);
+
+router.post(
+  "/:id/withdraw",
+  ensureAuthenticated,
+  investmentController.withdrawProfit
+);
 
 module.exports = router;

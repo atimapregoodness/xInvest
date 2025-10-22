@@ -11,6 +11,7 @@ const TransactionSchema = new mongoose.Schema({
       "transfer",
       "fee",
       "bonus",
+      "purchase",
     ],
     required: true,
   },

@@ -1,5 +1,5 @@
 :root {
-  --primary: #0066ff;
+  --primary: #0fb896;
   --secondary: #1e2a3a;
   --accent: #00d4aa;
   --dark: #0f172a;
@@ -10,4 +10,20 @@
   --info: #0066ff;
   --glass: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.1);
+
+  // --primary-dark: #4f46e5;
+  // --primary-light: #8b5cf6;
+  --secondary: #06d6a0;
+  --secondary-dark: #05b888;
+
+  --dark-light: #19302b;
+  --text: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #64748b;
+
+  --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  --radius: 12px;
+  --radius-lg: 16px;
+  --transition: all 0.3s ease;
 }

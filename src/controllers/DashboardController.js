@@ -61,40 +61,6 @@ exports.getDashboard = async (req, res) => {
   }
 };
 
-exports.getInvestments = async (req, res) => {
-  try {
-    const userId = req.user._id;
-    const { status, page = 1 } = req.query;
-
-    const filter = { user: userId };
-    if (status && status !== "all") {
-      filter.status = status;
-    }
-
-    const limit = 10;
-    const skip = (page - 1) * limit;
-
-    const investments = await Investment.find(filter)
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
-
-    const total = await Investment.countDocuments(filter);
-
-    res.render("user/investments", {
-      title: "My Investments",
-      investments,
-      currentPage: parseInt(page),
-      totalPages: Math.ceil(total / limit),
-      filter: status || "all",
-    });
-  } catch (error) {
-    console.error("Investments error:", error);
-    req.flash("error_msg", "Error loading investments");
-    res.redirect("/dashboard");
-  }
-};
-
 exports.getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select(
@@ -214,54 +180,3 @@ exports.getUserBots = async (req, res) => {
     res.status(500).json({ success: false, message: "Error fetching bots" });
   }
 };
-
-// ==========================================================================
-// INVEST IN TRADING BOT
-// ==========================================================================
-exports.investInBot = [
-  upload.single("receipt"),
-  async (req, res) => {
-    try {
-      const { plan, amount, paymentMethod, cryptoType } = req.body;
-      const user = await User.findById(req.user._id);
-
-      // Create investment transaction
-      const investment = {
-        type: "investment",
-        currency: cryptoType || "USD",
-        amount: parseFloat(amount),
-        netAmount: parseFloat(amount),
-        status: "pending",
-        description: `${plan} Trading Bot Investment`,
-        metadata: {
-          plan,
-          paymentMethod,
-          cryptoType,
-          dailyReturn: PLANS[plan].dailyReturn,
-          lockPeriod: PLANS[plan].lockPeriod,
-          receiptUrl: req.file ? req.file.path : null,
-          adminManaged: true,
-        },
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-
-      user.transactions.unshift(investment);
-
-      // Update wallet
-      if (cryptoType === "USDT") user.wallet.USDT -= parseFloat(amount);
-      await user.save();
-
-      res.json({
-        success: true,
-        message: `Your ${plan} bot investment has been activated!`,
-        investmentId: investment._id,
-        expectedDaily: (
-          parseFloat(amount) * parseFloat(PLANS[plan].dailyReturn)
-        ).toFixed(2),
-      });
-    } catch (error) {
-      res.status(500).json({ success: false, message: error.message });
-    }
-  },
-];

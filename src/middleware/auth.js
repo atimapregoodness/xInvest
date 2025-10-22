@@ -1,9 +1,17 @@
+const jwt = require("jsonwebtoken");
+const logger = require("winston");
+
 exports.ensureAuthenticated = (req, res, next) => {
-  if (req.isAuthenticated() && req.user) {
-    return next();
+  if (req.isAuthenticated()) return next();
+
+  if (req.xhr || req.headers.accept.includes("json")) {
+    return res.status(401).json({
+      success: false,
+      message: "Authentication required.",
+    });
   }
 
-  req.flash("error_msg", "You must be logged in to access this page.");
+  req.flash("error_msg", "Please log in to continue");
   return res.redirect("/auth/login");
 };
 
