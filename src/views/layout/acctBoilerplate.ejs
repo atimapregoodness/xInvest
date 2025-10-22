@@ -99,6 +99,65 @@
     <!-- i18next (translation library) -->
     <script src="https://unpkg.com/i18next@21.6.10/dist/umd/i18next.min.js"></script>
 
+    <script>
+      // =================== DIAGNOSTIC TEST ===================
+      async function diagnosticTest() {
+        console.log("🚀 Starting diagnostic test...");
+
+        try {
+          // Test 1: Check if endpoint exists
+          console.log("1. Testing endpoint existence...");
+          const testResponse = await fetch("/dashboard/bots/purchase", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              planId: "welbuilder",
+              paymentMethod: "usdt",
+            }),
+          });
+
+          console.log("Endpoint status:", testResponse.status);
+          console.log("Endpoint headers:", {
+            "content-type": testResponse.headers.get("content-type"),
+            "content-length": testResponse.headers.get("content-length"),
+          });
+
+          const responseText = await testResponse.text();
+          console.log("Response preview:", responseText.substring(0, 200));
+
+          // Test 2: Check if it's a routing issue
+          console.log("2. Testing alternative endpoints...");
+          const endpoints = [
+            "/api/bots/purchase",
+            "/api/purchase",
+            "/purchase",
+            "/bots/purchase",
+          ];
+
+          for (const endpoint of endpoints) {
+            try {
+              const test = await fetch(endpoint, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ test: true }),
+              });
+              console.log(`Endpoint ${endpoint}: ${test.status}`);
+            } catch (e) {
+              console.log(`Endpoint ${endpoint}: Failed - ${e.message}`);
+            }
+          }
+
+          return true;
+        } catch (error) {
+          console.error("Diagnostic test failed:", error);
+          return false;
+        }
+      }
+
+      // Run diagnostic
+      // await diagnosticTest();
+    </script>
+
     <!-- ====== SOCKET.IO & APP JS ====== -->
     <script src="/js/script.js"></script>
     <script src="/socket.io/socket.io.js"></script>

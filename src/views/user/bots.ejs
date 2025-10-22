@@ -531,10 +531,38 @@
     let selectedPlan = null;
     let allPlans = [];
 
+    // =================== DIAGNOSTIC ===================
+    async function runDiagnostics() {
+      console.group("🔍 DIAGNOSTICS");
+      console.log("1. Testing main purchase endpoint...");
+
+      try {
+        const testReq = await fetch("/dashboard/bots/purchase", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ test: true }),
+        });
+
+        console.log("Status:", testReq.status);
+        console.log("Content-Type:", testReq.headers.get("content-type"));
+
+        const text = await testReq.text();
+        console.log("Response type:", text.startsWith("{") ? "JSON" : "HTML");
+        console.log("Response preview:", text.substring(0, 100));
+      } catch (error) {
+        console.error("Test failed:", error);
+      }
+
+      console.groupEnd();
+    }
+
+    // Run diagnostics on load (uncomment to test)
+    // await runDiagnostics();
+
     // =================== FETCH PLANS ===================
     async function fetchPlans() {
       try {
-        console.log("Fetching trading plans...");
+        console.log("📥 Fetching trading plans...");
         const res = await fetch("/dashboard/bots/available");
 
         if (!res.ok) {
@@ -542,7 +570,7 @@
         }
 
         const data = await res.json();
-        console.log("Plans data received:", data);
+        console.log("✅ Plans data received:", data);
 
         if (!data.success || !data.plans?.length) {
           grid.innerHTML = `<div class="no-plans-message">
@@ -556,7 +584,7 @@
         allPlans = data.plans;
         renderPlans(allPlans);
       } catch (error) {
-        console.error("Error fetching plans:", error);
+        console.error("❌ Error fetching plans:", error);
         grid.innerHTML = `<div class="no-plans-message">
           <i class="fas fa-exclamation-triangle"></i>
           <h3>Failed to Load Plans</h3>
@@ -748,7 +776,7 @@
       selectedPlan = null;
     }
 
-    // =================== PURCHASE - FIXED VERSION ===================
+    // =================== PURCHASE - ULTIMATE FIX ===================
     confirmPurchase.addEventListener("click", async function () {
       if (!selectedPlan) {
         showNotification("Please select a plan first.", "error");
@@ -764,16 +792,18 @@
       }
 
       const paymentMethod = paymentMethodInput.value;
+      const selectedPlanData = allPlans.find((p) => p.id === selectedPlan);
 
       // Show loading state
       const originalText = confirmPurchase.innerHTML;
-      confirmPurchase.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Processing Payment...`;
+      confirmPurchase.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Processing $${selectedPlanData?.price} Payment...`;
       confirmPurchase.disabled = true;
 
       try {
-        console.log("Sending purchase request:", {
+        console.log("🛒 Attempting purchase...", {
           selectedPlan,
           paymentMethod,
+          planName: selectedPlanData?.name,
         });
 
         const response = await fetch("/dashboard/bots/purchase", {
@@ -781,19 +811,16 @@
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
+            "X-Requested-With": "XMLHttpRequest",
           },
-          credentials: "include", // Important for sessions
+          credentials: "include",
           body: JSON.stringify({
             planId: selectedPlan,
             paymentMethod: paymentMethod,
           }),
         });
 
-        console.log(
-          "Purchase response status:",
-          response.status,
-          response.statusText
-        );
+        console.log("📨 Response received - Status:", response.status);
 
         // Check if response is JSON
         const contentType = response.headers.get("content-type");
@@ -801,56 +828,68 @@
 
         if (contentType && contentType.includes("application/json")) {
           responseData = await response.json();
-          console.log("JSON response received:", responseData);
+          console.log("✅ Valid JSON response:", responseData);
         } else {
-          // Handle HTML response - this means server error
+          // HTML response indicates server configuration issue
           const htmlText = await response.text();
-          console.error("HTML error response received");
+          console.error("❌ HTML ERROR RESPONSE:");
+          console.error("Status:", response.status);
+          console.error("Content-Type:", contentType);
+          console.error("HTML Preview:", htmlText.substring(0, 500));
+
+          // Create a detailed error report
+          const errorReport = {
+            status: response.status,
+            contentType: contentType,
+            endpoint: "/dashboard/bots/purchase",
+            issue: "Server returning HTML instead of JSON",
+          };
+
+          console.error("Error Report:", errorReport);
 
           if (response.status === 500) {
-            // Server is trying to render error view but it doesn't exist
             throw new Error(
-              "Server configuration error. Please contact support."
+              "Server configuration error: Endpoint returning HTML instead of JSON. Please check server routes and middleware."
             );
-          } else if (response.status === 401) {
-            throw new Error("Your session has expired. Please log in again.");
-          } else if (response.status === 404) {
-            throw new Error("Purchase endpoint not found.");
           } else {
             throw new Error(
-              `Server error (${response.status}). Please try again.`
+              `Server error (${response.status}): Configuration issue detected.`
             );
           }
         }
 
-        // Handle the response data
+        // Process the response
         if (responseData.success) {
           const planName =
-            responseData.plan?.name ||
-            allPlans.find((p) => p.id === selectedPlan)?.name ||
-            "the plan";
+            responseData.plan?.name || selectedPlanData?.name || "the plan";
           showNotification(
-            `✅ Successfully purchased ${planName}! Redirecting to dashboard...`,
+            `✅ Successfully purchased ${planName}! Redirecting...`,
             "success"
           );
           closeModal();
 
-          // Redirect after delay
           setTimeout(() => {
             window.location.href = "/dashboard/invest";
           }, 2000);
         } else {
-          // Server returned success: false with error message
           showNotification(
             responseData.message || "Purchase failed. Please try again.",
             "error"
           );
         }
       } catch (error) {
-        console.error("Purchase error:", error);
+        console.error("💥 PURCHASE FAILED:", error);
 
-        // Handle specific error types
+        // Detailed error handling
         if (
+          error.message.includes("configuration") ||
+          error.message.includes("HTML instead of JSON")
+        ) {
+          showNotification(
+            "Server configuration issue detected. The purchase system is currently unavailable. Please contact support.",
+            "error"
+          );
+        } else if (
           error.message.includes("session") ||
           error.message.includes("log in")
         ) {
@@ -858,14 +897,6 @@
           setTimeout(() => {
             window.location.href = "/login";
           }, 2000);
-        } else if (
-          error.message.includes("configuration") ||
-          error.message.includes("support")
-        ) {
-          showNotification(
-            "Server issue detected. Please contact support.",
-            "error"
-          );
         } else if (error.message.includes("Network")) {
           showNotification(
             "Network error. Please check your connection.",
@@ -873,7 +904,7 @@
           );
         } else {
           showNotification(
-            error.message || "Purchase failed. Please try again.",
+            "Purchase failed. Please try again or contact support.",
             "error"
           );
         }

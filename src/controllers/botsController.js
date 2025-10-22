@@ -73,10 +73,38 @@ const BotController = {
 
   // ================= PURCHASE A PLAN =================
   purchasePlan: async (req, res) => {
+    // CRITICAL: Prevent view rendering by setting headers immediately
+    res.setHeader("Content-Type", "application/json");
+    res.setHeader("X-Content-Type-Options", "nosniff");
+
+    console.log("=== PURCHASE ENDPOINT HIT ===");
+    console.log("Method:", req.method);
+    console.log("URL:", req.originalUrl);
+    console.log("Headers:", req.headers);
+    console.log("Body:", req.body);
+
+    // Validate request method
+    if (req.method !== "POST") {
+      console.log("❌ Wrong method:", req.method);
+      return res.status(405).json({
+        success: false,
+        message: `Method ${req.method} not allowed. Use POST.`,
+      });
+    }
+
     try {
       const { planId, paymentMethod } = req.body;
 
-      console.log("Purchase request received:", {
+      // Validate JSON parsing
+      if (!req.body) {
+        console.log("❌ No body received");
+        return res.status(400).json({
+          success: false,
+          message: "No JSON data received.",
+        });
+      }
+
+      console.log("📦 Purchase request:", {
         planId,
         paymentMethod,
         user: req.user?.id,
@@ -84,7 +112,7 @@ const BotController = {
 
       // Validate input
       if (!planId || !paymentMethod) {
-        console.log("Missing parameters:", { planId, paymentMethod });
+        console.log("❌ Missing parameters");
         return res.status(400).json({
           success: false,
           message: "Missing plan ID or payment method.",
@@ -92,7 +120,7 @@ const BotController = {
       }
 
       if (!req.user || !req.user.id) {
-        console.log("User not authenticated");
+        console.log("❌ User not authenticated");
         return res.status(401).json({
           success: false,
           message: "User not authenticated. Please log in again.",
@@ -100,6 +128,7 @@ const BotController = {
       }
 
       const userId = req.user.id;
+      console.log("✅ User authenticated:", userId);
 
       // ================= PLAN DATA =================
       const plans = {
@@ -156,19 +185,19 @@ const BotController = {
 
       const plan = plans[planId];
       if (!plan) {
-        console.log("Invalid plan ID:", planId);
+        console.log("❌ Invalid plan ID:", planId);
         return res.status(400).json({
           success: false,
           message: "Invalid plan selected.",
         });
       }
 
-      console.log("Processing purchase for plan:", plan.name);
+      console.log("✅ Plan found:", plan.name);
 
       // ================= FIND USER + WALLET =================
       const user = await User.findById(userId);
       if (!user) {
-        console.log("User not found in database:", userId);
+        console.log("❌ User not found in database:", userId);
         return res.status(404).json({
           success: false,
           message: "User not found.",
@@ -177,12 +206,14 @@ const BotController = {
 
       const wallet = await Wallet.findOne({ userId });
       if (!wallet) {
-        console.log("Wallet not found for user:", userId);
+        console.log("❌ Wallet not found for user:", userId);
         return res.status(404).json({
           success: false,
           message: "Wallet not found.",
         });
       }
+
+      console.log("✅ User and wallet found");
 
       // ================= CHECK EXISTING PLAN =================
       const alreadyHasPlan = user.tradingPlans?.some(
@@ -190,27 +221,30 @@ const BotController = {
       );
 
       if (alreadyHasPlan) {
-        console.log("User already has active plan:", planId);
+        console.log("❌ User already has active plan:", planId);
         return res.status(400).json({
           success: false,
           message: "You already own this plan.",
         });
       }
 
+      console.log("✅ User does not own this plan yet");
+
       // ================= PAYMENT PROCESS =================
       const currency = paymentMethod.toUpperCase();
       const priceRates = { BTC: 108380.01, ETH: 3874.6, USDT: 1 };
       const cryptoAmount = plan.price / priceRates[currency];
 
-      console.log("Payment details:", {
+      console.log("💰 Payment details:", {
         currency,
         cryptoAmount,
         planPrice: plan.price,
+        rate: priceRates[currency],
       });
 
       // Check wallet balance
       if (!wallet[currency] || wallet[currency] < cryptoAmount) {
-        console.log("Insufficient balance:", {
+        console.log("❌ Insufficient balance:", {
           currency,
           available: wallet[currency],
           required: cryptoAmount,
@@ -223,6 +257,8 @@ const BotController = {
         });
       }
 
+      console.log("✅ Sufficient balance available");
+
       // Deduct from wallet
       const previousBalance = wallet[currency];
       wallet[currency] -= cryptoAmount;
@@ -233,7 +269,7 @@ const BotController = {
       }
 
       await wallet.save();
-      console.log("Wallet updated:", {
+      console.log("✅ Wallet updated:", {
         currency,
         previousBalance,
         newBalance: wallet[currency],
@@ -244,7 +280,7 @@ const BotController = {
         userId,
         type: "purchase",
         currency,
-        amount: -cryptoAmount, // Negative for deduction
+        amount: -cryptoAmount,
         netAmount: -cryptoAmount,
         fee: 0,
         status: "completed",
@@ -262,7 +298,7 @@ const BotController = {
       wallet.transactions.push(transaction._id);
       await wallet.save();
 
-      console.log("Transaction created:", transaction._id);
+      console.log("✅ Transaction created:", transaction._id);
 
       // ================= ADD PLAN TO USER =================
       const purchasedPlan = {
@@ -270,7 +306,7 @@ const BotController = {
         planType: plan.id,
         name: plan.name,
         purchaseDate: new Date(),
-        expiryDate: null, // Lifetime access
+        expiryDate: null,
         status: "active",
         price: plan.price,
         profitMin: plan.profitMin,
@@ -293,7 +329,7 @@ const BotController = {
       user.tradingPlans.push(purchasedPlan);
       await user.save();
 
-      console.log("Plan added to user:", purchasedPlan.planId);
+      console.log("✅ Plan added to user:", purchasedPlan.planId);
 
       // ================= SUCCESS RESPONSE =================
       const responseData = {
@@ -307,17 +343,19 @@ const BotController = {
         },
       };
 
-      console.log("Purchase completed successfully for user:", userId);
+      console.log("🎉 Purchase completed successfully for user:", userId);
+      console.log("=== PURCHASE REQUEST END ===");
 
-      // IMPORTANT: Make sure to return JSON, not render a view
+      // FINAL RESPONSE - Ensure JSON
       return res.json(responseData);
     } catch (error) {
-      console.error("Error purchasing plan:", error);
+      console.error("💥 UNEXPECTED ERROR in purchasePlan:", error);
+      console.error("Error stack:", error.stack);
 
-      // Return JSON error, don't render error view
+      // CRITICAL: Return JSON even for unexpected errors
       return res.status(500).json({
         success: false,
-        message: "Server error processing your purchase. Please try again.",
+        message: "Internal server error during purchase.",
         error:
           process.env.NODE_ENV === "development" ? error.message : undefined,
       });
