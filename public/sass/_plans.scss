@@ -1,0 +1,166 @@
+/* Custom CSS for advanced glassmorphism design */
+@import "variables";
+.glass-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.glass-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.glass-stats {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-modal {
+  background: rgba(30, 30, 46, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.plan-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    rgba(101, 101, 241, 0.2),
+    rgba(152, 101, 241, 0.2)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.plan-icon-wrapper i {
+  font-size: 2rem;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.modal-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    rgba(101, 101, 241, 0.2),
+    rgba(152, 101, 241, 0.2)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modal-icon i {
+  font-size: 1.8rem;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.btn-invest {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+
+  border: none;
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-invest:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px var(--secondary);
+}
+
+.btn-owned {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+}
+
+.owned-badge {
+  background: rgba(40, 167, 69, 0.2);
+  border: 1px solid rgba(40, 167, 69, 0.3);
+  color: #28a745;
+  font-weight: 500;
+  padding: 6px 12px;
+}
+
+.payment-option {
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.payment-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  transition: all 0.2s ease;
+}
+
+.payment-icon.active {
+  background: var(--glass);
+  border: 1px solid rgba(106, 17, 203, 0.4);
+  box-shadow: 0 5px 15px var(--primary);
+}
+
+.payment-icon i {
+  font-size: 1.5rem;
+}
+
+.payment-option:hover .payment-icon {
+  transform: translateY(-3px);
+}
+
+.payment-label {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.empty-state {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-glass-secondary {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.btn-glass-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+}
+
+.real-time-price {
+  background: rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}

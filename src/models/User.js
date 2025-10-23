@@ -50,29 +50,17 @@ const userSchema = new mongoose.Schema(
       ref: "Wallet",
     },
 
-    tradingPlans: [
+    // Purchased investment plans
+    plans: [
       {
-        planId: String,
-        planType: {
-          type: String,
-          enum: ["welbuilder", "premium", "elite"],
+        planId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Plan",
         },
-        name: String,
-        purchaseDate: {
+        purchasedAt: {
           type: Date,
           default: Date.now,
         },
-        expiryDate: Date,
-        status: {
-          type: String,
-          enum: ["active", "expired", "cancelled"],
-          default: "active",
-        },
-        price: Number,
-        profitMin: Number,
-        profitMax: Number,
-        periodMin: Number,
-        periodMax: Number,
       },
     ],
 

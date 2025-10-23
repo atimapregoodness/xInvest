@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const Wallet = require("../models/Wallet");
+const Transaction = require("../models/Transaction");
 
 // ===================== GET WALLET DETAILS =====================
 exports.getWallet = async (req, res) => {
@@ -14,10 +15,14 @@ exports.getWallet = async (req, res) => {
       return res.redirect("/dashboard");
     }
 
+    const transactions = await Transaction.find({ userId: req.user._id });
+
+    console.log(transactions);
+
     await user.wallet.calculateTotalBalance?.(); // optional balance update
 
     res.locals.wallet = user.wallet;
-    res.locals.transactions = user.wallet.transactions || [];
+    res.locals.transactions = transactions || [];
     res.locals.user = user;
 
     res.render("user/wallet", {

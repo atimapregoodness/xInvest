@@ -1,0 +1,321 @@
+<%- layout('layout/acctBoilerplate') %> <%- partial("partials/floatingNav") %>
+<%- partial("partials/sideBar") %>
+
+<div class="dashboard">
+  <div class="container mt-5">
+    <!-- Header Section -->
+    <div class="row mb-5">
+      <div class="col-12 text-center">
+        <h1 class="display-5 fw-bold text-white mb-3">
+          Investment Marketplace
+        </h1>
+        <p class="lead text-light opacity-75">
+          Choose from our premium investment plans to grow your portfolio
+        </p>
+
+        <!-- Stats Overview -->
+        <div class="row mt-4 justify-content-center">
+          <div class="col-md-3 col-6 mb-3">
+            <div class="glass-stats p-3 rounded-4 text-center">
+              <div class="h4 mb-0 text-success fw-bold">
+                <%= userPlans.length %>
+              </div>
+              <small class="text-white-50">Your Plans</small>
+            </div>
+          </div>
+          <div class="col-md-3 col-6 mb-3">
+            <div class="glass-stats p-3 rounded-4 text-center">
+              <div class="h4 mb-0 text-info fw-bold"><%= plans.length %></div>
+              <small class="text-white-50">Available Plans</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Plans Grid -->
+    <div class="row justify-content-center">
+      <% if (plans && plans.length > 0) { %> <% plans.forEach((plan, index) => {
+      %>
+      <div class="col-xl-4 col-lg-6 mb-4">
+        <div class="glass-card card border-0 rounded-4 shadow-lg h-100">
+          <!-- Card Header with Icon -->
+          <div
+            class="card-header border-0 rounded-top-4 pt-4 position-relative"
+          >
+            <!-- Plan Icon -->
+            <div class="plan-icon-wrapper mx-auto mb-3">
+              <i class="<%= plan.icon %>"></i>
+            </div>
+
+            <!-- Plan Name -->
+            <h3 class="card-title text-center fw-bold text-white mb-2">
+              <%= plan.name %>
+            </h3>
+
+            <!-- Status Badge -->
+            <% if (userPlans.includes(plan._id.toString())) { %>
+            <span
+              class="badge owned-badge rounded-pill position-absolute top-0 end-0 m-3"
+            >
+              <i class="fas fa-check-circle me-1"></i> Owned
+            </span>
+            <% } %>
+          </div>
+
+          <!-- Card Body -->
+          <div class="card-body d-flex flex-column pt-0">
+            <!-- Description -->
+            <p class="text-white-70 mb-4 text-center flex-grow-1">
+              <%= plan.description %>
+            </p>
+
+            <!-- Plan Details -->
+            <div class="plan-details mb-4">
+              <div class="row text-center">
+                <div class="col-6">
+                  <div class="detail-item">
+                    <div class="detail-label text-white-50 small">
+                      Investment
+                    </div>
+                    <div class="detail-value h5 text-white fw-bold">
+                      $<%= plan.price.toFixed(2) %>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="detail-item">
+                    <div class="detail-label text-white-50 small">
+                      Expected ROI
+                    </div>
+                    <div class="detail-value h5 text-success fw-bold">
+                      <%= plan.roi %>%
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Button -->
+            <div class="mt-auto">
+              <% if (userPlans.includes(plan._id.toString())) { %>
+              <button class="btn btn-owned w-100 py-2 rounded-3" disabled>
+                <i class="fas fa-check-circle me-2"></i> Plan Active
+              </button>
+              <% } else { %>
+              <button
+                class="btn btn-invest w-100 py-2 rounded-3 confirmPurchaseBtn"
+                data-plan-id="<%= plan._id %>"
+                data-plan-name="<%= plan.name %>"
+                data-plan-price="<%= plan.price %>"
+              >
+                <i class="fas fa-arrow-right me-2"></i> Invest Now
+              </button>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% }) %> <% } else { %>
+      <div class="col-12 text-center py-5">
+        <div class="empty-state glass-card p-5 rounded-4">
+          <i class="fas fa-box-open fa-3x text-white-50 mb-3"></i>
+          <h4 class="text-white mb-2">No Investment Plans Available</h4>
+          <p class="text-white-50">
+            Check back later for new investment opportunities.
+          </p>
+        </div>
+      </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<!-- Purchase Modal -->
+<div
+  class="modal fade"
+  id="confirmPurchaseModal"
+  tabindex="-1"
+  aria-labelledby="confirmPurchaseLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content glass-modal border-0 rounded-4 shadow-lg">
+      <form id="confirmPurchaseForm" method="POST">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+        <!-- Modal Header -->
+        <div class="modal-header border-0 pb-0">
+          <div class="w-100 text-center position-relative">
+            <div class="modal-icon mx-auto mb-3">
+              <i class="fas fa-coins"></i>
+            </div>
+            <h4 class="modal-title fw-bold text-white">Confirm Investment</h4>
+            <button
+              type="button"
+              class="btn-close btn-close-white position-absolute top-0 end-0 m-2"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+        </div>
+
+        <!-- Modal Body -->
+        <div class="modal-body text-center py-4">
+          <!-- Plan Info -->
+          <p class="mb-3 text-white-70">You're about to invest in:</p>
+          <h5 class="text-white fw-bold mb-1" id="planNameDisplay"></h5>
+          <p class="text-muted mb-4">
+            Investment Amount:
+            <strong class="text-white"
+              >$<span id="planPriceDisplay"></span
+            ></strong>
+          </p>
+
+          <!-- Payment Method Selection -->
+          <div class="payment-method-section mb-4">
+            <h6 class="text-white-70 mb-3 fw-semibold">
+              Select Payment Method
+            </h6>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+              <input
+                type="hidden"
+                name="paymentMethod"
+                id="paymentMethodInput"
+                value="USDT"
+              />
+
+              <div class="payment-option" data-method="USDT">
+                <div class="payment-icon active">
+                  <i class="fas fa-dollar-sign"></i>
+                </div>
+                <span class="payment-label">USDT</span>
+              </div>
+
+              <div class="payment-option" data-method="BTC">
+                <div class="payment-icon">
+                  <i class="fab fa-btc"></i>
+                </div>
+                <span class="payment-label">Bitcoin</span>
+              </div>
+
+              <div class="payment-option" data-method="ETH">
+                <div class="payment-icon">
+                  <i class="fab fa-ethereum"></i>
+                </div>
+                <span class="payment-label">Ethereum</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Real-time Price Info -->
+          <div
+            class="real-time-price alert alert-dark rounded-3 py-2 px-3 mt-3"
+            id="realTimePriceInfo"
+          >
+            <small class="text-white-70">
+              <i class="fas fa-sync-alt fa-spin me-1"></i>
+              <span id="cryptoEquivalent"
+                >Calculating equivalent amount...</span
+              >
+            </small>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer border-0 pt-0 m-auto justify-content-center">
+          <button
+            type="button"
+            class="btn btn-glass-secondary rounded-3 px-4"
+            data-bs-dismiss="modal"
+          >
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-success rounded-3 px-4">
+            <i class="fas fa-lock me-2"></i> Confirm Investment
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const modal = new bootstrap.Modal(
+      document.getElementById("confirmPurchaseModal")
+    );
+    const form = document.getElementById("confirmPurchaseForm");
+    const planNameDisplay = document.getElementById("planNameDisplay");
+    const planPriceDisplay = document.getElementById("planPriceDisplay");
+    const paymentInput = document.getElementById("paymentMethodInput");
+    const cryptoEquivalent = document.getElementById("cryptoEquivalent");
+
+    let currentPlanPrice = 0;
+    let cryptoPrices = {};
+
+    // Fetch current crypto prices
+    async function fetchCryptoPrices() {
+      try {
+        const response = await fetch("/api/crypto-prices"); // You'll need to create this endpoint
+        const data = await response.json();
+        cryptoPrices = data;
+        updateCryptoEquivalent();
+      } catch (error) {
+        console.error("Error fetching crypto prices:", error);
+        cryptoEquivalent.innerHTML =
+          '<span class="text-warning">Unable to fetch current prices</span>';
+      }
+    }
+
+    // Update crypto equivalent display
+    function updateCryptoEquivalent() {
+      const method = paymentInput.value;
+      const price = currentPlanPrice;
+
+      if (cryptoPrices[method] && price) {
+        const equivalent = price / cryptoPrices[method];
+        cryptoEquivalent.textContent = `Equivalent: ${equivalent.toFixed(
+          8
+        )} ${method}`;
+      } else {
+        cryptoEquivalent.innerHTML =
+          '<span class="text-warning">Price data unavailable</span>';
+      }
+    }
+
+    document.querySelectorAll(".confirmPurchaseBtn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const planId = btn.dataset.planId;
+        const planName = btn.dataset.planName;
+        const planPrice = btn.dataset.planPrice;
+
+        currentPlanPrice = parseFloat(planPrice);
+
+        planNameDisplay.textContent = planName;
+        planPriceDisplay.textContent = planPrice;
+
+        form.action = `/dashboard/plans/purchase/${planId}`;
+
+        // Fetch prices when modal opens
+        fetchCryptoPrices();
+
+        modal.show();
+      });
+    });
+
+    // Payment method selection
+    document.querySelectorAll(".payment-option").forEach((option) => {
+      option.addEventListener("click", () => {
+        document
+          .querySelectorAll(".payment-icon")
+          .forEach((icon) => icon.classList.remove("active"));
+        option.querySelector(".payment-icon").classList.add("active");
+        paymentInput.value = option.dataset.method;
+
+        // Update crypto equivalent when method changes
+        updateCryptoEquivalent();
+      });
+    });
+  });
+</script>

@@ -19,6 +19,97 @@ const User = require("./models/User");
 
 const app = express();
 
+const axios = require("axios");
+
+app.get("/api/crypto-prices", async (req, res) => {
+  try {
+    let prices = {};
+
+    // Try CoinGecko first
+    try {
+      const { data } = await axios.get(
+        "https://api.coingecko.com/api/v3/simple/price",
+        {
+          params: {
+            ids: "bitcoin,ethereum,tether",
+            vs_currencies: "usd",
+          },
+          timeout: 5000,
+        }
+      );
+
+      prices = {
+        BTC: data.bitcoin.usd,
+        ETH: data.ethereum.usd,
+        USDT: data.tether.usd,
+        _source: "coingecko",
+      };
+    } catch (coingeckoError) {
+      console.log("CoinGecko failed, trying Binance...");
+
+      // Fallback to Binance API
+      try {
+        const [btcResponse, ethResponse, usdtResponse] = await Promise.all([
+          axios.get(
+            "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"
+          ),
+          axios.get(
+            "https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT"
+          ),
+          axios.get(
+            "https://api.binance.com/api/v3/ticker/price?symbol=USDCUSDT"
+          ), // Using USDC as proxy for USDT
+        ]);
+
+        prices = {
+          BTC: parseFloat(btcResponse.data.price),
+          ETH: parseFloat(ethResponse.data.price),
+          USDT: 1, // USDT is pegged to $1
+          _source: "binance",
+        };
+      } catch (binanceError) {
+        console.log("All APIs failed, using fallback prices");
+
+        // Final fallback - hardcoded reasonable prices
+        prices = {
+          BTC: 50000,
+          ETH: 3000,
+          USDT: 1,
+          _source: "fallback",
+          _fallback: true,
+        };
+      }
+    }
+
+    console.log("Final prices:", prices);
+    res.json(prices);
+  } catch (error) {
+    console.error("Critical error in crypto prices endpoint:", error);
+
+    res.json({
+      BTC: 50000,
+      ETH: 3000,
+      USDT: 1,
+      _source: "error_fallback",
+      _fallback: true,
+    });
+  }
+});
+
+const cron = require("node-cron");
+const Investment = require("./models/Investment");
+
+cron.schedule("*/5 * * * *", async () => {
+  const investments = await Investment.find({ status: "active" });
+  for (const inv of investments) {
+    const currentProfit = inv.calculateCurrentProfit();
+    await inv.updateProfit(currentProfit);
+    if (new Date() >= inv.endDate) {
+      await inv.complete();
+    }
+  }
+});
+
 mongoose
   .connect(process.env.MONGODB_URI || "mongodb://localhost:27017/xInvest", {
     useNewUrlParser: true,
@@ -340,7 +431,7 @@ app.use((req, res, next) => {
   res.locals.success_msg = req.flash("success_msg");
   res.locals.error_msg = req.flash("error_msg");
   res.locals.error = req.flash("error");
-  res.locals.transactions = req.user ? req.user.transactions : [];
+
   res.locals.isVercel = isVercel;
   next();
 });
@@ -348,24 +439,6 @@ app.use((req, res, next) => {
 app.engine("ejs", ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
-
-// ... other code
-
-const cron = require("node-cron");
-const Investment = require("./models/Investment");
-
-cron.schedule("*/5 * * * *", async () => {
-  const investments = await Investment.find({ status: "active" });
-  for (const inv of investments) {
-    const currentProfit = inv.calculateCurrentProfit();
-    await inv.updateProfit(currentProfit);
-    if (new Date() >= inv.endDate) {
-      await inv.complete();
-    }
-  }
-});
-
-// ... other code
 
 const { ensureWallet } = require("./middleware/wallet");
 const { ensureAuthenticated } = require("./middleware/auth");
@@ -382,7 +455,7 @@ app.use("/admin", require("./routes/admin"));
 
 app.use("/dashboard/invest", require("./routes/invest"));
 
-app.use("/dashboard/bots", require("./routes/bots"));
+app.use("/dashboard/plans", require("./routes/investmentPlans"));
 
 app.use("/dashboard/wallet", require("./routes/wallet"));
 
@@ -471,25 +544,10 @@ if (!isVercel && io) {
   });
 }
 
+// =========================
+// Handle CSRF Errors First
+// =========================
 app.use((err, req, res, next) => {
-  if (err.code === "EBADCSRFTOKEN") {
-    return res.status(403).render("error", {
-      message: "Invalid CSRF token. Please try again.",
-    });
-  }
-  next(err);
-});
-
-app.use((req, res) => {
-  res.status(404).render("error/err", {
-    title: "404 - Page Not Found",
-    status: 404,
-    message: "Sorry, the page you're looking for does not exist.",
-  });
-});
-
-app.use((err, req, res, next) => {
-  console.error(err.stack);
   if (err.code === "EBADCSRFTOKEN") {
     return res.status(403).render("error/err", {
       title: "403 - Forbidden",
@@ -498,6 +556,27 @@ app.use((err, req, res, next) => {
       error: process.env.NODE_ENV === "development" ? err : {},
     });
   }
+  next(err);
+});
+
+// =========================
+// Handle 404 Errors (Not Found)
+// =========================
+app.use((req, res) => {
+  res.status(404).render("error/err", {
+    title: "404 - Page Not Found",
+    status: 404,
+    message: "Sorry, the page you're looking for does not exist.",
+    error: {},
+  });
+});
+
+// =========================
+// Handle Other Errors (500, etc.)
+// =========================
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+
   const status = err.status || 500;
   res.status(status).render("error/err", {
     title: `${status} - Server Error`,

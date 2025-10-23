@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Error - xInvest</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+        color: white;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .error-container {
+        text-align: center;
+        padding: 3rem;
+        max-width: 800px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .error-code {
+        font-size: 8rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .error-message {
+        font-size: 1.8rem;
+        margin-bottom: 2rem;
+        color: #f8f9fa;
+      }
+      .error-description {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        color: #adb5bd;
+        line-height: 1.6;
+      }
+      .home-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 15px 40px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="error-container">
+      <div class="error-code"><%= status || 500 %></div>
+      <div class="error-message">Oops! Something went wrong</div>
+      <div class="error-description">
+        We encountered an unexpected error while processing your request. Our
+        technical team has been notified and is working to resolve the issue.
+      </div>
+      <a href="/dashboard" class="home-btn">Return to Dashboard</a>
+    </div>
+  </body>
+</html>
