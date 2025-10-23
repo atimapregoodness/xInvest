@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { ensureAuthenticated } = require("../middleware/auth");
 
-const InvestmentController = require("../controllers/InvestController");
+const InvestController = require("../controllers/InvestController");
 
 router.get("/", ensureAuthenticated, (req, res) =>
   res.render("user/invest", {
@@ -29,15 +29,15 @@ router.get("/plans", ensureAuthenticated, (req, res) =>
 router.get(
   "/active",
   ensureAuthenticated,
-  InvestmentController.getActiveInvestments
+  InvestController.getActiveInvestments
 );
 
-router.post("/", ensureAuthenticated, InvestmentController.createInvestment);
+router.post("/", ensureAuthenticated, InvestController.createInvestment);
 
 router.post(
   "/:id/withdraw",
   ensureAuthenticated,
-  InvestmentController.withdrawProfit
+  InvestController.withdrawProfit
 );
 
 module.exports = router;

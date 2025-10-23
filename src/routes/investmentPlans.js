@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const investmentPlansController = require("../controllers/investmentPlansController");
+const investmentPlansController = require("../controllers/InvestmentPlansController");
 const { ensureAuthenticated } = require("../middleware/auth");
 
 router.get("/", ensureAuthenticated, investmentPlansController.getPlans);
