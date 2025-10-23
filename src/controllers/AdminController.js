@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const Investment = require("../models/Investment");
+const Investment = require("../models/Trade");
 const Transaction = require("../models/Transaction");
 
 // Middleware to check if user is admin

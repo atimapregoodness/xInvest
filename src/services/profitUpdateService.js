@@ -1,37 +1,37 @@
 // services/profitUpdateService.js
-const Investment = require("../models/Investment");
+// Run this at app startup: require('./services/profitUpdateService');
 const cron = require("node-cron");
+const Trade = require("../models/Trade");
+const User = require("../models/User");
 
-const startProfitUpdateService = () => {
-  console.log("🚀 Starting profit update service...");
+// schedule: every 30 seconds for dev, change to '*/1 * * * *' (every minute) or longer for production
+cron.schedule("*/30 * * * * *", async () => {
+  try {
+    const now = new Date();
+    // find active trades that have reached endDate
+    const dueTrades = await Trade.find({
+      status: "active",
+      endDate: { $lte: now },
+    });
 
-  // Update every 30 seconds for demo
-  cron.schedule("*/30 * * * * *", async () => {
-    try {
-      const updatedCount = await Investment.updateActiveInvestments();
+    for (const t of dueTrades) {
+      const finalProfit = (t.amount * t.roi) / 100;
+      t.profit = finalProfit;
+      t.status = "completed";
+      await t.save();
 
-      // Complete investments that have ended
-      const completedInvestments = await Investment.find({
-        status: "active",
-        endDate: { $lte: new Date() },
-      }).populate("plan");
-
-      for (const investment of completedInvestments) {
-        await investment.completeInvestment();
-        console.log(
-          `✅ Completed investment ${investment._id} for user ${investment.user}`
-        );
+      // credit user
+      const u = await User.findById(t.user);
+      if (u && u.wallet) {
+        u.wallet.balance += t.amount + finalProfit;
+        await u.save();
       }
 
-      if (updatedCount > 0 || completedInvestments.length > 0) {
-        console.log(
-          `📈 Updated ${updatedCount} investments, completed ${completedInvestments.length}`
-        );
-      }
-    } catch (error) {
-      console.error("Error in profit update service:", error);
+      console.log(
+        `ProfitUpdateService: Trade ${t._id} completed. Credited user ${t.user}`
+      );
     }
-  });
-};
-
-module.exports = { startProfitUpdateService };
+  } catch (err) {
+    console.error("ProfitUpdateService error:", err);
+  }
+});

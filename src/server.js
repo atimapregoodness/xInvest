@@ -97,7 +97,7 @@ app.get("/api/crypto-prices", async (req, res) => {
 });
 
 const cron = require("node-cron");
-const Investment = require("./models/Investment");
+const Investment = require("./models/Trade");
 
 cron.schedule("*/5 * * * *", async () => {
   const investments = await Investment.find({ status: "active" });
@@ -453,14 +453,14 @@ app.use(
 );
 app.use("/admin", require("./routes/admin"));
 
-app.use("/dashboard/invest", require("./routes/invest"));
+app.use("/dashboard/trade", require("./routes/trade"));
 
 app.use("/dashboard/plans", require("./routes/investmentPlans"));
 
 app.use("/dashboard/wallet", require("./routes/wallet"));
 
-const { startProfitUpdateService } = require("./services/profitUpdateService");
-startProfitUpdateService();
+// const { startProfitUpdateService } = require("./services/profitUpdateService");
+// startProfitUpdateService();
 
 app.get("/api/forex", async (req, res) => {
   try {

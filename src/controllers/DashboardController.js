@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const Investment = require("../models/Investment");
+const Investment = require("../models/Trade");
 const Transaction = require("../models/Transaction");
 
 exports.getDashboard = async (req, res) => {

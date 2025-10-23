@@ -55,7 +55,7 @@ const userSchema = new mongoose.Schema(
       {
         planId: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "Plan",
+          ref: "InvestmentPlan",
         },
         purchasedAt: {
           type: Date,

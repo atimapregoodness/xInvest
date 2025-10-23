@@ -1,4 +1,4 @@
-const Investment = require("../models/Investment");
+const Investment = require("../models/Trade");
 const Transaction = require("../models/Transaction");
 
 exports.getHome = async (req, res) => {
