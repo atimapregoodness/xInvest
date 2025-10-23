@@ -1,39 +1,47 @@
+// routes/invest.js
 const express = require("express");
 const router = express.Router();
 const { ensureAuthenticated } = require("../middleware/auth");
-
 const InvestController = require("../controllers/InvestController");
+const Wallet = require("../models/Wallet");
 
-router.get("/", ensureAuthenticated, (req, res) =>
-  res.render("user/invest", {
-    title: "xInvest - Investments",
-    user: req.user,
-  })
-);
+// Main investment page
+router.get("/", ensureAuthenticated, async (req, res) => {
+  try {
+    res.render("user/invest", {
+      title: "xInvest - Automated Trading",
+      user: req.user,
+    });
+  } catch (err) {
+    console.error("Error loading investment page:", err);
+    res.status(500).render("error", { error: "Server error" });
+  }
+});
 
+// Get wallet balance
 router.get("/wallet", ensureAuthenticated, async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).populate("wallet");
-    if (!user.wallet) return res.status(404).json({ msg: "Wallet not found" });
-    res.json(user.wallet);
+    const wallet = await Wallet.findOne({ userId: req.user._id });
+    if (!wallet) {
+      return res.status(404).json({ msg: "Wallet not found" });
+    }
+    res.json(wallet);
   } catch (err) {
     console.error("Error fetching wallet:", err);
     res.status(500).json({ msg: "Server error" });
   }
 });
 
-router.get("/plans", ensureAuthenticated, (req, res) =>
-  res.json(req.user.tradingPlans)
-);
+// Get user's purchased plans for trading
+router.get("/plans", ensureAuthenticated, InvestController.getUserPlans);
 
+// Investment routes
 router.get(
   "/active",
   ensureAuthenticated,
   InvestController.getActiveInvestments
 );
-
 router.post("/", ensureAuthenticated, InvestController.createInvestment);
-
 router.post(
   "/:id/withdraw",
   ensureAuthenticated,

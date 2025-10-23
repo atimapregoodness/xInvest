@@ -1,6 +1,5 @@
-// Updated Investment model
+// models/Investment.js
 const mongoose = require("mongoose");
-const Transaction = require("./Transaction");
 
 const investmentSchema = new mongoose.Schema(
   {
@@ -9,58 +8,53 @@ const investmentSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    tradingPair: {
-      type: String,
+    plan: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "InvestmentPlan",
       required: true,
     },
-    botType: {
+    tradingPair: {
       type: String,
-      enum: ["welbuilder", "premium", "elite"],
       required: true,
     },
     amount: {
       type: Number,
       required: true,
-      min: [50, "Minimum investment is $50"],
+      min: 50,
     },
     period: {
-      type: Number,
+      type: Number, // in days
       required: true,
-      min: [1, "Minimum period is 1 day"],
     },
     riskLevel: {
       type: String,
       enum: ["low", "medium", "high"],
-      default: "medium",
+      required: true,
     },
     paymentMethod: {
       type: String,
-      enum: ["btc", "eth"],
       required: true,
     },
-    platformFee: {
-      type: Number,
-      default: 0,
-    },
-    minProfit: {
+    initialCryptoAmount: {
       type: Number,
       required: true,
     },
-    maxProfit: {
-      type: Number,
+    cryptoType: {
+      type: String,
       required: true,
+    },
+    status: {
+      type: String,
+      enum: ["active", "completed", "cancelled"],
+      default: "active",
     },
     currentProfit: {
       type: Number,
       default: 0,
     },
-    finalProfit: {
-      type: Number,
-      default: 0,
-    },
     totalProfit: {
       type: Number,
-      required: true,
+      default: 0,
     },
     startDate: {
       type: Date,
@@ -70,18 +64,22 @@ const investmentSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
-    status: {
-      type: String,
-      enum: ["active", "completed", "cancelled"],
-      default: "active",
+    platformFee: {
+      type: Number,
+      default: 0,
     },
     profitHistory: [
       {
         timestamp: Date,
         profit: Number,
+        percentage: Number,
       },
     ],
-    profitWithdrawn: {
+    lastProfitUpdate: {
+      type: Date,
+      default: Date.now,
+    },
+    isProfitWithdrawn: {
       type: Boolean,
       default: false,
     },
@@ -89,51 +87,171 @@ const investmentSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
 
-// Indexes
-investmentSchema.index({ user: 1, status: 1 });
-investmentSchema.index({ endDate: 1 });
-investmentSchema.index({ createdAt: -1 });
-
-// Virtual for remaining time
-investmentSchema.virtual("remainingTime").get(function () {
+// Virtual for progress percentage
+investmentSchema.virtual("progress").get(function () {
   const now = new Date();
-  const remaining = this.endDate - now;
-  return Math.max(0, Math.ceil(remaining / (1000 * 60 * 60 * 24)));
+  const start = new Date(this.startDate);
+  const end = new Date(this.endDate);
+  const total = end - start;
+  const elapsed = now - start;
+
+  if (elapsed <= 0) return 0;
+  if (elapsed >= total) return 100;
+
+  return Math.min(100, (elapsed / total) * 100);
 });
 
-// Virtual for isActive
-investmentSchema.virtual("isActive").get(function () {
-  return this.status === "active" && new Date() < this.endDate;
+// Virtual for days remaining
+investmentSchema.virtual("daysRemaining").get(function () {
+  const now = new Date();
+  const end = new Date(this.endDate);
+  const diff = end - now;
+
+  if (diff <= 0) return 0;
+  return Math.ceil(diff / (1000 * 60 * 60 * 24));
 });
 
-// Method to update profit
-investmentSchema.methods.updateProfit = function (newProfit) {
-  this.currentProfit = newProfit;
+// Virtual for isCompleted
+investmentSchema.virtual("isCompleted").get(function () {
+  return new Date() >= new Date(this.endDate);
+});
+
+// Static method to update profits for all active investments
+investmentSchema.statics.updateActiveInvestments = async function () {
+  try {
+    const activeInvestments = await this.find({
+      status: "active",
+      endDate: { $gt: new Date() },
+    }).populate("user plan");
+
+    const updatePromises = activeInvestments.map(async (investment) => {
+      await investment.calculateProfit();
+    });
+
+    await Promise.all(updatePromises);
+    return activeInvestments.length;
+  } catch (error) {
+    console.error("Error updating active investments:", error);
+    throw error;
+  }
+};
+
+// Instance method to calculate profit
+investmentSchema.methods.calculateProfit = async function () {
+  const now = new Date();
+  const timeSinceLastUpdate = now - new Date(this.lastProfitUpdate);
+
+  // Only update if at least 30 seconds have passed
+  if (timeSinceLastUpdate < 30000) return;
+
+  const progress = this.progress / 100;
+  const plan = this.plan;
+
+  // Base profit calculation based on risk level and plan ROI
+  let baseProfitRate;
+  switch (this.riskLevel) {
+    case "low":
+      baseProfitRate = (plan.roi / 100) * 0.0003;
+      break;
+    case "medium":
+      baseProfitRate = (plan.roi / 100) * 0.0006;
+      break;
+    case "high":
+      baseProfitRate = (plan.roi / 100) * 0.001;
+      break;
+  }
+
+  // Add randomness based on plan category
+  const randomFactor = 0.7 + Math.random() * 0.6;
+  const winProbability = 0.7 + Math.random() * 0.25; // 70-95% win rate
+
+  const isProfit = Math.random() < winProbability;
+  const profitChange = this.amount * baseProfitRate * randomFactor * progress;
+  const profit = isProfit ? profitChange : -profitChange * 0.5;
+
+  this.currentProfit += profit;
+  this.totalProfit += profit;
+
+  // Record profit history
   this.profitHistory.push({
-    timestamp: new Date(),
-    profit: newProfit,
+    timestamp: now,
+    profit: profit,
+    percentage: (profit / this.amount) * 100,
   });
-  return this.save();
+
+  // Keep only last 100 records
+  if (this.profitHistory.length > 100) {
+    this.profitHistory = this.profitHistory.slice(-100);
+  }
+
+  this.lastProfitUpdate = now;
+  await this.save();
+
+  return profit;
 };
 
-// Method to complete investment
-investmentSchema.methods.complete = function () {
+// Instance method to complete investment
+investmentSchema.methods.completeInvestment = async function () {
+  if (this.status !== "active") return;
+
   this.status = "completed";
-  this.finalProfit = this.currentProfit;
-  return this.save();
+
+  // Final profit calculation with completion bonus
+  const completionBonus = this.amount * 0.01;
+  this.totalProfit += completionBonus;
+  this.currentProfit = this.totalProfit;
+
+  await this.save();
+
+  // Add transaction for the profit
+  const Transaction = mongoose.model("Transaction");
+  await Transaction.createRecord({
+    userId: this.user._id ? this.user._id : this.user,
+    type: "profit",
+    currency: this.cryptoType,
+    amount: this.totalProfit / (await getCurrentPrice(this.cryptoType)),
+    netAmount: this.totalProfit / (await getCurrentPrice(this.cryptoType)),
+    fee: 0,
+    status: "completed",
+    description: `Trading profit from ${this.tradingPair} investment (${this.plan.name})`,
+    metadata: {
+      investmentId: this._id,
+      tradingPair: this.tradingPair,
+      planName: this.plan.name,
+      initialAmount: this.amount,
+      totalProfit: this.totalProfit,
+    },
+  });
+
+  // Update user's wallet
+  const Wallet = mongoose.model("Wallet");
+  const wallet = await Wallet.findOne({
+    userId: this.user._id ? this.user._id : this.user,
+  });
+  if (wallet) {
+    const cryptoAmount =
+      this.totalProfit / (await getCurrentPrice(this.cryptoType));
+    wallet[this.cryptoType.toLowerCase()] += cryptoAmount;
+    await wallet.calculateTotalBalance();
+    await wallet.save();
+  }
+
+  return this;
 };
 
-// Method to calculate current profit (for real-time)
-investmentSchema.methods.calculateCurrentProfit = function () {
-  if (this.status !== "active") return this.currentProfit;
-
-  const timePassed = Date.now() - this.startDate.getTime();
-  const totalTime = this.endDate.getTime() - this.startDate.getTime();
-  const fraction = Math.min(timePassed / totalTime, 1);
-  return fraction * this.totalProfit;
-};
+// Helper function to get current price
+async function getCurrentPrice(cryptoType) {
+  const prices = {
+    BTC: 108031.13,
+    ETH: 3874.6,
+    USDT: 1,
+  };
+  return prices[cryptoType] || 1;
+}
 
 module.exports = mongoose.model("Investment", investmentSchema);
