@@ -410,11 +410,21 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
-const csrfProtection = csrf();
+// prefer cookie:false when you want req.csrfToken() available server-side and store token in session
+const csrfProtection = csrf({ cookie: false });
+
+// apply csrf to non-API routes
 app.use((req, res, next) => {
-  // Disable CSRF for API routes or JSON endpoints (optional)
-  if (req.path.startsWith("/api/")) return next();
+  if (req.path.startsWith("/api/")) return next(); // optional: skip API routes
   return csrfProtection(req, res, next);
+});
+
+// make token available to all views and also send safe meta tag value
+app.use((req, res, next) => {
+  // safe-check — req.csrfToken exists if csrf middleware ran
+  res.locals.csrfToken =
+    typeof req.csrfToken === "function" ? req.csrfToken() : null;
+  next();
 });
 
 app.use((req, res, next) => {

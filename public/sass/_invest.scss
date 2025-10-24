@@ -1,1048 +1,584 @@
-// :root {
-//   --primary: #3b82f6;
-//   --primary-dark: #2563eb;
-//   --success: #22c55e;
-//   --danger: #ef4444;
-//   --background: #0f172a;
-//   --surface: #1e293b;
-//   --text: #f1f5f9;
-//   --text-secondary: #94a3b8;
-//   --glass-border: rgba(255, 255, 255, 0.1);
-//   --radius: 12px;
-//   --transition: all 0.3s ease;
-// }
+// Variables
+$glass-bg: rgba(255, 255, 255, 0.05);
+$glass-border: rgba(255, 255, 255, 0.1);
+$glass-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+$primary-gradient: linear-gradient(135deg, #2dd055 0%, var(--primary));
+$success-color: #10b981;
+$warning-color: #f59e0b;
+$danger-color: #ef4444;
+$text-primary: #e2e8f0;
+$text-secondary: #94a3b8;
+$bg-primary: #0f172a;
+$bg-secondary: #1e293b;
 
-.plan-tag {
-  display: inline-block;
-  padding: 0.25rem 0.75rem;
-  background: rgba(99, 102, 241, 0.2);
-  border: 1px solid rgba(99, 102, 241, 0.3);
-  border-radius: 50px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--primary);
-  margin-bottom: 0.5rem;
+// Mixins
+@mixin glass-card {
+  background: $glass-bg;
+  backdrop-filter: blur(20px);
+  border: 1px solid $glass-border;
+  border-radius: 12px;
+  box-shadow: $glass-shadow;
 }
 
-.tag-welbuilder {
-  background: rgba(16, 185, 129, 0.2);
-  border-color: rgba(16, 185, 129, 0.3);
-  color: var(--success);
-}
-
-.tag-premium {
-  background: rgba(139, 92, 246, 0.2);
-  border-color: rgba(139, 92, 246, 0.3);
-  color: #8b5cf6;
-}
-
-.tag-elite {
-  background: rgba(245, 158, 11, 0.2);
-  border-color: rgba(245, 158, 11, 0.3);
-  color: #f59e0b;
-}
-
-.no-plans-message {
-  grid-column: 1 / -1;
-  text-align: center;
-  padding: 3rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: var(--radius);
-  border: 1px solid var(--glass-border);
-}
-
-.dashboard {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 24px;
-}
-
-.invest-page {
-  padding: 32px;
-  background: var(--surface);
-  border-radius: var(--radius);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-}
-
-.glass {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius);
-}
-
-.glass-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius);
-  padding: 16px;
-}
-
-.live-ticker {
-  padding: 16px;
-  margin-bottom: 32px;
-  display: none;
-}
-
-.ticker-content {
+@mixin flex-center {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.selected-pair-info {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-
-.pair-display {
-  font-size: 1.5rem;
-  font-weight: 600;
-}
-
-.current-price {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--success);
-}
-
-.price-change {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 1.1rem;
-}
-
-.live-indicator {
-  width: 8px;
-  height: 8px;
-  background-color: var(--success);
-  border-radius: 50%;
-  animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.4;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-.change-up {
-  color: var(--success);
-}
-.change-down {
-  color: var(--danger);
-}
-
-.btn-invest {
-  background-color: var(--primary);
-  color: var(--text);
-  border: none;
-  padding: 12px 24px;
-  border-radius: var(--radius);
-  font-size: 1.1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: var(--transition);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.btn-invest:disabled {
-  background-color: var(--text-secondary);
-  cursor: not-allowed;
-}
-
-.btn-invest:hover:not(:disabled) {
-  background-color: var(--primary-dark);
-  transform: translateY(-2px);
-}
-
-.trading-container {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 32px;
-  margin-bottom: 32px;
-}
-
-.trading-left {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-
-.section-title {
-  font-size: 1.8rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.btn-secondary {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid var(--glass-border);
-  color: var(--text);
-  padding: 8px 16px;
-  border-radius: var(--radius);
-  text-decoration: none;
-  font-size: 0.9rem;
-  transition: var(--transition);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.15);
-  transform: translateY(-1px);
-}
-
-.btn-primary {
-  background: var(--primary);
-  color: white;
-  padding: 12px 24px;
-  border-radius: var(--radius);
-  text-decoration: none;
-  font-weight: 600;
-  transition: var(--transition);
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.btn-primary:hover {
-  background: var(--primary-dark);
-  transform: translateY(-1px);
-}
-
-.market-tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.market-tab {
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text);
-  border: 1px solid var(--glass-border);
-  padding: 10px 20px;
-  border-radius: var(--radius);
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.market-tab.active,
-.market-tab:hover {
-  background-color: var(--primary);
-  color: var(--text);
-}
-
-.pairs-grid,
-.bots-grid,
-.investments-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-}
-
-.pair-card,
-.bot-card {
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.pair-card:hover,
-.pair-card.selected,
-.bot-card:hover,
-.bot-card.selected {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-}
-
-.bot-card.inactive {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.pair-header,
-.bot-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.pair-symbol {
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-
-.pair-change {
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.pair-price {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 8px 0;
-}
-
-.pair-name {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-}
-
-.bot-info {
-  flex-grow: 1;
-}
-
-.bot-tag {
-  display: inline-block;
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  font-weight: 500;
-}
-
-.tag-welbuilder {
-  background-color: var(--success);
-}
-.tag-premium {
-  background-color: var(--primary);
-}
-.tag-elite {
-  background-color: #f59e0b;
-}
-
-.bot-description {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  margin: 8px 0;
-}
-
-.profit-range {
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-.bot-stats {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 12px;
-}
-
-.stat-item {
-  text-align: center;
-}
-
-.stat-value {
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-
-.stat-label {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-}
-
-.bot-features {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.feature-tag {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 0.8rem;
-}
-
-.plan-status {
-  font-size: 0.8rem;
-  padding: 4px 8px;
-  border-radius: 6px;
-  margin-top: 8px;
-}
-
-.status-active {
-  background-color: var(--success);
-}
-.status-inactive {
-  background-color: var(--danger);
-}
-
-.chart-container {
-  height: 300px;
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-
-.chart-placeholder {
-  display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  color: var(--text-secondary);
 }
 
-.chart-placeholder i {
-  font-size: 3rem;
-  margin-bottom: 16px;
+// Glass Cards
+.glass-card {
+  @include glass-card;
 }
 
-.no-plans-message {
-  text-align: center;
-  padding: 48px 32px;
-  color: var(--text-secondary);
-}
+// Dashboard Header
+.dashboard-header {
+  padding: 1rem;
+  margin-bottom: 1rem;
 
-.no-plans-message i {
-  font-size: 3rem;
-  margin-bottom: 16px;
-  opacity: 0.5;
-}
-
-.no-plans-message h3 {
-  margin-bottom: 8px;
-  color: var(--text);
-}
-
-.investment-form {
-  padding: 24px;
-}
-
-.form-group {
-  margin-bottom: 24px;
-}
-
-.form-label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 1rem;
-  font-weight: 500;
-  margin-bottom: 8px;
-}
-
-.form-input,
-.form-select {
-  width: 100%;
-  padding: 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius);
-  color: var(--text);
-  font-size: 1rem;
-}
-
-.form-input:focus,
-.form-select:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-  outline: none;
-}
-
-.form-input:disabled,
-.form-select:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.form-hint {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  margin-top: 8px;
-}
-
-.form-hint a {
-  color: var(--primary);
-  text-decoration: none;
-}
-
-.form-hint a:hover {
-  text-decoration: underline;
-}
-
-.amount-slider {
-  margin: 16px 0;
-}
-
-.slider-labels {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-}
-
-.slider-container {
-  margin-top: 8px;
-}
-
-.slider {
-  width: 100%;
-  -webkit-appearance: none;
-  height: 6px;
-  background: var(--glass-border);
-  border-radius: 3px;
-}
-
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
-  background: var(--primary);
-  border-radius: 50%;
-  cursor: pointer;
-}
-
-.balance-info {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-  margin-top: 8px;
-}
-
-.investment-summary {
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: var(--radius);
-  padding: 16px;
-  margin-bottom: 24px;
-}
-
-.investment-summary h4 {
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 12px;
-  color: var(--text);
-}
-
-.summary-item {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.9rem;
-  margin-bottom: 8px;
-}
-
-.summary-label {
-  color: var(--text-secondary);
-}
-
-.summary-value {
-  font-weight: 500;
-}
-
-.active-investments {
-  margin-top: 32px;
-}
-
-.investment-card {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: var(--radius);
-  padding: 16px;
-}
-
-.investment-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-.investment-pair {
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-
-.investment-bot {
-  padding: 4px 8px;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  font-weight: 500;
-}
-
-.investment-details {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 16px;
-}
-
-.detail-item {
-  text-align: center;
-}
-
-.detail-value {
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-
-.detail-label {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-}
-
-.profit-display {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 12px;
-}
-
-.current-profit {
-  font-size: 1.5rem;
-  font-weight: 700;
-}
-
-.profit-change {
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-
-@media (max-width: 1024px) {
-  .trading-container {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 768px) {
-  .invest-page {
-    padding: 16px;
-  }
-
-  .pairs-grid,
-  .bots-grid,
-  .investments-grid {
-    grid-template-columns: 1fr;
-  }
-
-  /* ===================== ROOT VARIABLES ===================== */
-  :root {
-    --primary: #3b82f6;
-    --primary-dark: #2563eb;
-    --success: #22c55e;
-    --danger: #ef4444;
-    --background: #0f172a;
-    --surface: #1e293b;
-    --text: #f1f5f9;
-    --text-secondary: #94a3b8;
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --radius: 12px;
-    --transition: all 0.3s ease;
-  }
-
-  /* ===================== PLAN TAGS ===================== */
-  .plan-tag {
-    display: inline-block;
-    padding: 0.25rem 0.75rem;
-    background: rgba(99, 102, 241, 0.2);
-    border: 1px solid rgba(99, 102, 241, 0.3);
-    border-radius: 50px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--primary);
-    margin-bottom: 0.5rem;
-  }
-
-  .tag-welbuilder {
-    background: rgba(16, 185, 129, 0.2);
-    border-color: rgba(16, 185, 129, 0.3);
-    color: var(--success);
-  }
-
-  .tag-premium {
-    background: rgba(139, 92, 246, 0.2);
-    border-color: rgba(139, 92, 246, 0.3);
-    color: #8b5cf6;
-  }
-
-  .tag-elite {
-    background: rgba(245, 158, 11, 0.2);
-    border-color: rgba(245, 158, 11, 0.3);
-    color: #f59e0b;
-  }
-
-  /* ===================== NO PLANS MESSAGE ===================== */
-  .no-plans-message {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 3rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: var(--radius);
-    border: 1px solid var(--glass-border);
-    color: var(--text-secondary);
-  }
-  .no-plans-message i {
-    font-size: 3rem;
-    margin-bottom: 16px;
-    opacity: 0.5;
-  }
-  .no-plans-message h3 {
-    margin-bottom: 8px;
-    color: var(--text);
-  }
-
-  /* ===================== LAYOUT & DASHBOARD ===================== */
-  .dashboard {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 24px;
-  }
-
-  .invest-page {
-    padding: 32px;
-    background: var(--surface);
-    border-radius: var(--radius);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-  }
-
-  /* ===================== GLASS EFFECTS ===================== */
-  .glass,
-  .glass-card {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius);
-  }
-  .glass-card {
-    padding: 16px;
-  }
-
-  /* ===================== LIVE TICKER ===================== */
-  .live-ticker {
-    padding: 16px;
-    margin-bottom: 32px;
-    display: none;
-  }
-
-  .ticker-content {
+  .header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
-  }
+    flex-wrap: wrap;
+    gap: 1rem;
 
-  .selected-pair-info {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-  }
+    .header-text {
+      h1 {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: $text-primary;
+        margin-bottom: 0.25rem;
+      }
 
-  .pair-display {
-    font-size: 1.5rem;
-    font-weight: 600;
-  }
-
-  .current-price {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--success);
-  }
-
-  .price-change {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 1.1rem;
-  }
-
-  .live-indicator {
-    width: 8px;
-    height: 8px;
-    background-color: var(--success);
-    border-radius: 50%;
-    animation: pulse 1.5s infinite;
-  }
-
-  @keyframes pulse {
-    0% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.4;
-    }
-    100% {
-      opacity: 1;
+      p {
+        color: $text-secondary;
+        font-size: 0.875rem;
+      }
     }
   }
+}
 
-  .change-up {
-    color: var(--success);
-  }
-  .change-down {
-    color: var(--danger);
-  }
+// Stats Grid
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 0.75rem;
+  flex: 1;
+  max-width: 700px;
+}
 
-  /* ===================== BUTTONS ===================== */
-  .btn-invest {
-    background-color: var(--primary);
-    color: var(--text);
-    border: none;
-    padding: 12px 24px;
-    border-radius: var(--radius);
-    font-size: 1.1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+.stat-card {
+  padding: 0.75rem;
+  text-align: center;
+  transition: transform 0.3s ease;
 
-  .btn-invest:disabled {
-    background-color: var(--text-secondary);
-    cursor: not-allowed;
-  }
-
-  .btn-invest:hover:not(:disabled) {
-    background-color: var(--primary-dark);
+  &:hover {
     transform: translateY(-2px);
   }
 
-  .btn-secondary,
-  .btn-primary {
-    border-radius: var(--radius);
-    padding: 10px 20px;
-    text-decoration: none;
-    transition: var(--transition);
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+  .stat-value {
+    font-size: 1.25rem;
+    font-weight: bold;
+    background: $primary-gradient;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.25rem;
   }
-  .btn-secondary {
+
+  .stat-label {
+    color: $text-secondary;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+}
+#placeTrade {
+  background: var(--primary);
+  width: 12em;
+  text-decoration: none;
+  text-align: center;
+  font-size: 20px;
+}
+// Live Indicator
+.live-indicator {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: $success-color;
+  border-radius: 50%;
+  margin-right: 0.4rem;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+// Trading Layout
+.trading-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 1rem;
+  height: 55vh;
+  padding: 2em;
+  margin-bottom: 1rem;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+    height: auto;
+    width: 100%;
+  }
+}
+
+// Trading Sidebar
+.trading-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.trade-form-card {
+  padding: 1rem;
+
+  h2 {
+    font-size: 1.125rem;
+    font-weight: bold;
+    color: $text-primary;
+    margin-bottom: 1rem;
+  }
+}
+
+// Form Elements
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-label {
+  display: block;
+  color: $text-primary;
+  margin-bottom: 0.4rem;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.form-select,
+.form-input {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid $glass-border;
+  border-radius: 8px;
+  color: $text-primary;
+  font-size: 0.8rem;
+  transition: all 0.3s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+  }
+}
+
+// Quick Amount Buttons
+.quick-amounts {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+
+.quick-amount {
+  padding: 0.4rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid $glass-border;
+  border-radius: 6px;
+  color: $text-secondary;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
     background: rgba(255, 255, 255, 0.1);
-    border: 1px solid var(--glass-border);
-    color: var(--text);
+    color: $text-primary;
   }
-  .btn-secondary:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateY(-1px);
-  }
-  .btn-primary {
-    background: var(--primary);
-    color: white;
+}
+
+// Plan Info
+.plan-info-card {
+  padding: 0.75rem;
+  background: rgba(102, 126, 234, 0.1);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 8px;
+  margin-top: 0.75rem;
+
+  h4 {
+    font-size: 0.875rem;
     font-weight: 600;
+    color: $text-primary;
+    margin-bottom: 0.5rem;
   }
-  .btn-primary:hover {
-    background: var(--primary-dark);
+}
+
+.plan-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+
+  div {
+    color: $text-secondary;
+  }
+}
+
+// Buttons
+.btn-primary {
+  width: 100%;
+  padding: 0.75rem;
+  background: $primary-gradient;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
     transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
   }
 
-  /* ===================== MARKET & GRID ===================== */
-  .market-tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-  .market-tab {
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text);
-    border: 1px solid var(--glass-border);
-    padding: 10px 20px;
-    border-radius: var(--radius);
-    cursor: pointer;
-    transition: var(--transition);
-  }
-  .market-tab.active,
-  .market-tab:hover {
-    background-color: var(--primary);
-    color: var(--text);
-  }
-
-  .pairs-grid,
-  .bots-grid,
-  .investments-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 16px;
-  }
-
-  .pair-card,
-  .bot-card {
-    cursor: pointer;
-    transition: var(--transition);
-  }
-  .pair-card:hover,
-  .pair-card.selected,
-  .bot-card:hover,
-  .bot-card.selected {
-    transform: translateY(-4px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-  }
-  .bot-card.inactive {
+  &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+// Chart Section
+.chart-container {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  h2 {
+    font-size: 1.125rem;
+    font-weight: bold;
+    color: $text-primary;
+  }
+}
+
+.chart-controls {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.timeframe-btn {
+  padding: 0.3rem 0.6rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid $glass-border;
+  border-radius: 6px;
+  color: $text-secondary;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &.active {
+    background: $primary-gradient;
+    color: white;
+    border-color: transparent;
+  }
+}
+
+.chart-wrapper {
+  flex: 1;
+  min-height: 200px;
+  position: relative;
+}
+
+.chart-placeholder {
+  @include flex-center;
+  flex-direction: column;
+  height: 100%;
+  color: $text-secondary;
+
+  i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.5;
   }
 
-  /* ===================== BOT / INVESTMENT CARDS ===================== */
-  .bot-header,
-  .pair-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  p {
+    font-size: 0.875rem;
+  }
+}
+
+// Active Trades Section
+.active-trades-section {
+  padding: 1rem;
+}
+
+.trades-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  h2 {
+    font-size: 1.125rem;
+    font-weight: bold;
+    color: $text-primary;
   }
 
-  .pair-symbol {
-    font-size: 1.2rem;
+  .update-time {
+    font-size: 0.75rem;
+    color: $text-secondary;
+  }
+}
+
+.trades-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.75rem;
+  background: none;
+}
+
+// Trade Cards
+.trade-card {
+  @include glass-card;
+  padding: 0.75rem;
+  transition: all 0.3s ease;
+  // border-left: 3px solid transparent;
+  border: none !important;
+
+  &.active {
+    border-left-color: $success-color;
+  }
+
+  &.completed {
+    border-left-color: #3b82f6;
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  }
+}
+
+.trade-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+
+  .trade-pair {
     font-weight: 600;
-  }
-  .pair-price {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin: 8px 0;
-  }
-  .pair-change {
-    font-size: 0.9rem;
-    font-weight: 500;
-  }
-  .pair-name {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
+    font-size: 0.875rem;
+    color: $text-primary;
   }
 
-  .bot-tag {
-    padding: 4px 8px;
-    border-radius: 6px;
+  .trade-status {
+    padding: 0.2rem 0.5rem;
+    border-radius: 8px;
+    font-size: 0.65rem;
+    font-weight: 600;
+
+    &.status-active {
+      background: rgba(16, 185, 129, 0.2);
+      color: $success-color;
+    }
+
+    &.status-completed {
+      background: rgba(59, 130, 246, 0.2);
+      color: #3b82f6;
+    }
+  }
+}
+
+.trade-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.stat-item {
+  .stat-label-sm {
+    font-size: 0.7rem;
+    color: $text-secondary;
+    margin-bottom: 0.2rem;
+  }
+
+  .stat-value-sm {
     font-size: 0.8rem;
-    font-weight: 500;
+    font-weight: 600;
+    color: $text-primary;
+
+    &.profit-positive {
+      color: $success-color;
+    }
+
+    &.profit-negative {
+      color: $danger-color;
+    }
   }
-  .tag-welbuilder {
-    background-color: var(--success);
-    color: #fff;
-  }
-  .tag-premium {
-    background-color: var(--primary);
-    color: #fff;
-  }
-  .tag-elite {
-    background-color: #f59e0b;
-    color: #fff;
+}
+
+// Progress Section
+.progress-section {
+  margin-top: 0.75rem;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.3rem;
+  font-size: 0.7rem;
+  color: $text-secondary;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 0.4rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: $primary-gradient;
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+// Flash Messages
+.flash-messages {
+  margin-bottom: 1rem;
+}
+
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+  backdrop-filter: blur(20px);
+
+  &.alert-success {
+    background: rgba(16, 185, 129, 0.2);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: $success-color;
   }
 
-  /* ===================== FORM STYLES ===================== */
-  .form-group {
-    margin-bottom: 24px;
+  &.alert-error {
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: $danger-color;
   }
-  .form-label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 1rem;
-    font-weight: 500;
-    margin-bottom: 8px;
+}
+
+// Utility Classes
+.text-success {
+  color: $success-color !important;
+}
+.text-warning {
+  color: $warning-color !important;
+}
+.text-danger {
+  color: $danger-color !important;
+}
+
+.no-trades {
+  text-align: center;
+  color: $text-secondary;
+  padding: 2rem;
+  font-size: 0.875rem;
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .trading-dashboard {
+    padding: 8px;
   }
+
+  .dashboard-header .header-content {
+    flex-direction: column;
+    align-items: stretch;
+
+    .stats-grid {
+      max-width: 100%;
+    }
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .trading-layout {
+    gap: 0.75rem;
+  }
+  #trades-grid {
+    width: 100% !important;
+  }
+
+  .trades-header {
+    width: 100% !important;
+  }
+
+  .trades-grid {
+    grid-template-columns: 1fr;
+    width: 100% !important;
+  }
+
+  .quick-amounts {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .plan-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-controls {
+    flex-wrap: wrap;
+  }
+
+  .timeframe-btn {
+    font-size: 0.65rem;
+    padding: 0.25rem 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .trade-stats {
+    grid-template-columns: 1fr;
+  }
+
   .form-input,
   .form-select {
-    width: 100%;
-    padding: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius);
-    color: var(--text);
-    font-size: 1rem;
-  }
-  .form-input:focus,
-  .form-select:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
-    outline: none;
+    font-size: 0.75rem;
+    padding: 0.5rem 0.7rem;
   }
 
-  /* ===================== RESPONSIVENESS ===================== */
-  @media screen and (max-width: 1200px) {
-    .dashboard {
-      padding: 16px;
-    }
-    .trading-container {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  @media screen and (max-width: 992px) {
-    .pairs-grid,
-    .bots-grid,
-    .investments-grid {
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    }
-    .pair-display {
-      font-size: 1.2rem;
-    }
-    .current-price {
-      font-size: 1.4rem;
-    }
-  }
-
-  @media screen and (max-width: 768px) {
-    .invest-page {
-      padding: 16px;
-    }
-    .section-title {
-      font-size: 1.4rem;
-    }
-    .btn-invest {
-      font-size: 1rem;
-      padding: 10px 18px;
-    }
-    .market-tabs {
-      flex-wrap: wrap;
-    }
-    .pairs-grid,
-    .bots-grid,
-    .investments-grid {
-      grid-template-columns: 1fr;
-    }
-    .ticker-content,
-    .selected-pair-info {
-      flex-direction: column;
-      gap: 12px;
-      text-align: center;
-    }
-  }
-
-  @media screen and (max-width: 480px) {
-    .dashboard {
-      padding: 12px;
-    }
-    .invest-page {
-      padding: 12px;
-    }
-    .btn-invest {
-      width: 100%;
-      justify-content: center;
-    }
-    .pair-display {
-      font-size: 1rem;
-    }
-    .current-price {
-      font-size: 1.2rem;
-    }
-    .market-tab {
-      flex: 1;
-      text-align: center;
-      font-size: 0.85rem;
-    }
-    .form-input,
-    .form-select {
-      font-size: 0.9rem;
-    }
+  .btn-primary {
+    font-size: 0.8rem;
+    padding: 0.7rem;
   }
 }

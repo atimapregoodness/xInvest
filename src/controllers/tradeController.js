@@ -1,166 +1,347 @@
-// controllers/tradeController.js
 const Trade = require("../models/Trade");
 const Plan = require("../models/InvestmentPlan");
 const Wallet = require("../models/Wallet");
+const Transaction = require("../models/Transaction");
+const User = require("../models/User");
+const fetch = (...args) =>
+  import("node-fetch").then(({ default: fetch }) => fetch(...args));
+const parseDurationDays = require("../utils/parseDurationDays");
 
 /**
- * Parse duration into days. Accepts numbers or strings like "7", "7d", "24h", "1w".
+ * Map symbols to CoinGecko IDs
  */
-function parseDurationDays(duration) {
-  if (duration == null) return 1;
-  if (typeof duration === "number" && !isNaN(duration)) return duration;
-  const s = String(duration).trim().toLowerCase();
-  if (/^\d+(\.\d+)?$/.test(s)) return Number(s);
-  const h = s.match(/^(\d+(\.\d+)?)h$/);
-  if (h) return Number(h[1]) / 24;
-  const d = s.match(/^(\d+(\.\d+)?)d$/);
-  if (d) return Number(d[1]);
-  const w = s.match(/^(\d+(\.\d+)?)w$/);
-  if (w) return Number(w[1]) * 7;
-  return 1;
+const COINGECKO_IDS = {
+  BTC: "bitcoin",
+  ETH: "ethereum",
+  SOL: "solana",
+  USDT: "tether",
+  ADA: "cardano",
+  XRP: "ripple",
+};
+
+/**
+ * Fetch real-time price of a coin in USDT
+ * @param {string} currency - BTC, ETH, etc.
+ * @returns {number} price in USDT
+ */
+async function getUSDTPrice(currency) {
+  if (currency.toUpperCase() === "USDT") return 1;
+
+  const coinId = COINGECKO_IDS[currency.toUpperCase()];
+  if (!coinId) throw new Error(`Unsupported currency: ${currency}`);
+
+  try {
+    const res = await fetch(
+      `https://api.coingecko.com/api/v3/simple/price?ids=${coinId}&vs_currencies=usd`
+    );
+    const data = await res.json();
+    if (!data[coinId]?.usd) throw new Error("Price not found");
+    return parseFloat(data[coinId].usd);
+  } catch (err) {
+    console.error("Error fetching crypto price:", err);
+    throw new Error(`Failed to fetch ${currency} price`);
+  }
 }
 
-// GET /dashboard/trade
-exports.getAdvancedTrade = async (req, res) => {
+/**
+ * GET /dashboard/trade
+ */
+exports.getTrades = async (req, res) => {
   try {
-    const plans = await Plan.find({ isActive: true }).lean();
     const trades = await Trade.find({ user: req.user._id })
-      .sort({ createdAt: -1 })
+      .populate("plan")
       .lean();
 
+    const now = new Date();
+
+    // Compute totals for header
+    const updatedTrades = trades.map((trade) => {
+      const start = new Date(trade.startDate);
+      const end = new Date(trade.endDate);
+      const totalMs = end - start;
+      const elapsedMs = Math.max(0, Math.min(now - start, totalMs));
+      const progress = totalMs > 0 ? elapsedMs / totalMs : 0;
+
+      const expectedProfit = (trade.amount * trade.roi) / 100;
+      let currentProfit = 0;
+
+      if (trade.status === "completed") {
+        currentProfit = trade.profit || expectedProfit;
+      } else {
+        const baseProfit = expectedProfit * progress;
+        const fluctuationPercent = (Math.random() * 6 - 3) / 100;
+        currentProfit = Math.min(
+          Math.max(baseProfit * (1 + fluctuationPercent), 0),
+          expectedProfit
+        );
+      }
+
+      return {
+        ...trade,
+        currentProfit: parseFloat(currentProfit.toFixed(2)),
+      };
+    });
+
+    const activeTrades = updatedTrades.filter(
+      (t) => t.status === "active"
+    ).length;
+    const totalInvestment = updatedTrades.reduce(
+      (sum, t) => sum + (t.amount || 0),
+      0
+    );
+    const totalProfit = updatedTrades.reduce(
+      (sum, t) => sum + (t.currentProfit || 0),
+      0
+    );
+
     res.render("user/trade", {
-      title: "Trade",
+      title: "Finovex - My Trades",
       user: req.user,
-      plans,
-      trades,
-      csrfToken: req.csrfToken(),
+      trades: updatedTrades,
+      activeTrades,
+      totalInvestment: parseFloat(totalInvestment.toFixed(2)),
+      totalProfit: parseFloat(totalProfit.toFixed(2)),
     });
   } catch (err) {
-    console.error("Error loading trade page:", err);
-    res.status(500).send("Internal Server Error");
+    console.error("Render My Trades page error:", err);
+    req.flash("error_msg", "Failed to load trades");
+    res.redirect("/dashboard");
   }
 };
 
-// POST /dashboard/trade/start
+/**
+ * GET /dashboard/trade/place
+ */
+exports.getPlaceTrade = async (req, res) => {
+  try {
+    // ✅ Fetch the user with their purchased plans populated
+    const user = await User.findById(req.user._id)
+      .populate({
+        path: "plans.planId",
+        model: "InvestmentPlan",
+      })
+      .lean();
+
+    // Extract purchased plans safely
+    const plans = (user.plans || []).map((p) => p.planId).filter(Boolean); // remove nulls if any
+
+    const trades = await Trade.find({ user: req.user._id })
+      .sort({ createdAt: -1 })
+      .populate("plan")
+      .lean();
+
+    const activeTrades = trades.filter((t) => t.status === "active");
+    const totalInvestment = activeTrades.reduce(
+      (sum, t) => sum + (t.amountUSDT || 0),
+      0
+    );
+    const totalProfit = trades.reduce((sum, t) => sum + (t.profit || 0), 0);
+
+    res.render("user/place-trade", {
+      title: "Finovex - Place Trade",
+      user: req.user,
+      plans,
+      activeTrades: activeTrades.length,
+      totalInvestment,
+      totalProfit,
+      csrfToken: req.csrfToken(),
+      success_msg: req.flash("success_msg"),
+      error_msg: req.flash("error_msg"),
+    });
+  } catch (err) {
+    console.error("Place trade page error:", err);
+    req.flash("error_msg", "Unable to load place trade page.");
+    res.redirect("/dashboard/trade");
+  }
+};
+
+/**
+ * POST /dashboard/trade/start
+ */
 exports.startTrade = async (req, res) => {
   try {
-    const { tradingPair, amount, planId, currency } = req.body;
-    const numericAmount = Number(amount);
+    const { tradingPair, amount, planId, currency, durationDays } = req.body;
+    const numericUSDT = parseFloat(amount); // Amount entered in USDT
+    const tradeDuration = parseDurationDays(durationDays || 1);
 
-    if (!tradingPair || !numericAmount || !planId) {
-      return res.status(400).json({
-        success: false,
-        error: "tradingPair, amount and planId are required",
-      });
+    if (!tradingPair || !numericUSDT || !planId || !currency) {
+      return res.json({ success: false, error: "All fields are required." });
     }
-
-    const derivedCurrency =
-      (currency || "").toString().trim().toUpperCase() ||
-      (tradingPair.split("/")[1] || "").toUpperCase();
-
-    if (!["USDT", "BTC", "ETH"].includes(derivedCurrency)) {
-      return res.status(400).json({
-        success: false,
-        error: "Unsupported currency. Use USDT, BTC or ETH.",
-      });
+    if (numericUSDT <= 0) {
+      return res.json({ success: false, error: "Amount must be positive." });
+    }
+    if (tradeDuration <= 0) {
+      return res.json({ success: false, error: "Duration must be positive." });
     }
 
     const plan = await Plan.findById(planId);
     if (!plan)
-      return res.status(404).json({ success: false, error: "Plan not found" });
+      return res.json({ success: false, error: "Selected plan not found." });
 
     const wallet = await Wallet.findOne({ userId: req.user._id });
     if (!wallet)
-      return res
-        .status(404)
-        .json({ success: false, error: "Wallet not found" });
+      return res.json({ success: false, error: "Wallet not found." });
 
-    if ((wallet[derivedCurrency] || 0) < numericAmount) {
-      return res.status(400).json({
+    // Convert USDT to coin amount for the selected currency
+    const coinPriceUSDT = await getUSDTPrice(currency.toUpperCase());
+    const coinAmount = numericUSDT / coinPriceUSDT;
+
+    // Check actual coin balance in wallet
+    if ((wallet[currency.toUpperCase()] || 0) < coinAmount) {
+      return res.json({
         success: false,
-        error: `Insufficient ${derivedCurrency} balance`,
+        error: `Insufficient ${currency.toUpperCase()} balance. Available: ${
+          wallet[currency.toUpperCase()] || 0
+        }`,
       });
     }
 
-    // Deduct funds via wallet helper (include userId for transaction validation)
-    await wallet.addTransaction({
-      userId: req.user._id,
-      type: "investment",
-      currency: derivedCurrency,
-      amount: numericAmount,
-      description: `Start trade ${tradingPair}`,
-      metadata: { planId, tradingPair },
-      status: "completed",
-    });
+    // Deduct coins from wallet
+    wallet[currency.toUpperCase()] -= coinAmount;
+    await wallet.save();
 
-    const days = parseDurationDays(plan.duration || plan.durationDays);
-    const now = new Date();
-    const endDate = new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
+    const startDate = new Date();
+    const endDate = new Date(
+      startDate.getTime() + tradeDuration * 24 * 60 * 60 * 1000
+    );
 
     const trade = await Trade.create({
-      user: req.user._id, // ✅ matches Trade schema
+      user: req.user._id,
       plan: plan._id,
       tradingPair,
-      amount: numericAmount,
-      currency: derivedCurrency,
-      roi: plan.roi || 0,
-      startDate: now,
+      amount: coinAmount, // coin amount
+      currency: currency.toUpperCase(),
+      amountUSDT: numericUSDT, // USDT amount
+      roi: plan.roi,
+      startDate,
       endDate,
       status: "active",
       simulatedProfit: 0,
       profit: 0,
+      durationDays: tradeDuration,
     });
 
-    return res.json({ success: true, message: "Trade started", trade });
+    // ✅ Sanitize and validate amount
+    const cleanAmount = String(req.body.amount || "")
+      .replace(/[^\d.]/g, "") // remove $, commas, or text
+      .trim();
+
+    const amountUSDT = parseFloat(cleanAmount);
+
+    if (isNaN(amountUSDT) || amountUSDT <= 0) {
+      req.flash(
+        "error_msg",
+        "Invalid amount entered. Please use a number like 50 or 100.00"
+      );
+      return res.redirect("/dashboard/trade");
+    }
+
+    // (Trade creation happens here)
+
+    // ✅ Create transaction record safely
+    await Transaction.createRecord({
+      userId: req.user._id,
+      type: "investment", // valid enum
+      currency: currency.toUpperCase(), // BTC / ETH / USDT / USD
+      amount: amountUSDT, // correct numeric value
+      netAmount: amountUSDT, // required field
+      fee: 0,
+      status: "completed",
+      description: `Started a new ${trade.tradingPair} trade (${trade.roi}% ROI for ${trade.durationDays} days)`,
+      metadata: {
+        tradeId: trade._id,
+        planId: trade.plan,
+        tradingPair: trade.tradingPair,
+        startDate: trade.startDate,
+        endDate: trade.endDate,
+      },
+    });
+
+    req.flash(
+      "success_msg",
+      `Trade started successfully! $${numericUSDT} (${coinAmount.toFixed(
+        6
+      )} ${currency.toUpperCase()}) invested for ${tradeDuration} days.`
+    );
+    res.json({ success: true, redirect: "/dashboard/trade" });
   } catch (err) {
-    console.error("startTrade error:", err);
-    return res
+    console.error("Start trade error:", err);
+    res
       .status(500)
-      .json({ success: false, error: "Server error starting trade" });
+      .json({ success: false, error: "Server error starting trade." });
   }
 };
 
-// GET /dashboard/trade/status
-exports.getStatus = async (req, res) => {
+/**
+ * GET /dashboard/trade/status
+ * Return trades with simulated live profit and progress
+ */
+exports.getTradeStatus = async (req, res) => {
   try {
     const trades = await Trade.find({ user: req.user._id })
+      .populate("plan")
       .sort({ createdAt: -1 })
       .lean();
+
     const now = new Date();
 
-    const payload = trades.map((t) => {
-      const start = new Date(t.startDate);
-      const end = new Date(t.endDate);
-      const totalMs = Math.max(1, end - start);
+    const updatedTrades = trades.map((trade) => {
+      const start = new Date(trade.startDate);
+      const end = new Date(trade.endDate);
+      const totalMs = end - start;
       const elapsedMs = Math.max(0, Math.min(now - start, totalMs));
-      const progress = Math.min(1, elapsedMs / totalMs);
+      const progress = totalMs > 0 ? elapsedMs / totalMs : 0;
 
-      const finalProfit = (t.amount * t.roi) / 100;
-      const serverProfit =
-        t.status === "completed"
-          ? t.profit || finalProfit
-          : t.simulatedProfit || finalProfit * progress;
+      const expectedProfit = (trade.amount * trade.roi) / 100;
+      let currentProfit = 0;
+
+      if (trade.status === "completed") {
+        currentProfit = trade.profit || expectedProfit;
+      } else {
+        const baseProfit = expectedProfit * progress;
+        const fluctuationPercent = (Math.random() * 6 - 3) / 100;
+        currentProfit = Math.min(
+          Math.max(baseProfit * (1 + fluctuationPercent), 0),
+          expectedProfit
+        );
+      }
 
       return {
-        _id: t._id.toString(),
-        tradingPair: t.tradingPair,
-        amount: t.amount,
-        currency: t.currency,
-        roi: t.roi,
-        status: t.status,
-        startDate: start.toISOString(),
-        endDate: end.toISOString(),
+        ...trade,
         progress: Math.round(progress * 100),
-        simulatedProfit: Number(serverProfit.toFixed(8)),
-        profit: Number((t.profit || 0).toFixed(8)),
+        currentProfit: parseFloat(currentProfit.toFixed(2)),
+        daysRemaining: Math.max(
+          0,
+          Math.ceil((end - now) / (24 * 60 * 60 * 1000))
+        ),
+        expectedProfit: parseFloat(expectedProfit.toFixed(2)),
       };
     });
 
-    return res.json({ success: true, trades: payload });
+    const activeTrades = updatedTrades.filter(
+      (t) => t.status === "active"
+    ).length;
+    const totalInvestment = updatedTrades.reduce(
+      (sum, t) => sum + (t.amount || 0),
+      0
+    );
+    const totalProfit = updatedTrades.reduce(
+      (sum, t) => sum + (t.currentProfit || 0),
+      0
+    );
+
+    res.json({
+      success: true,
+      trades: updatedTrades,
+      activeTrades,
+      totalInvestment: parseFloat(totalInvestment.toFixed(2)),
+      totalProfit: parseFloat(totalProfit.toFixed(2)),
+    });
   } catch (err) {
-    console.error("getStatus error:", err);
-    return res
-      .status(500)
-      .json({ success: false, error: "Server error fetching trades" });
+    console.error("Get trade status error:", err);
+    res.status(500).json({
+      success: false,
+      error: "Failed to fetch trade status",
+    });
   }
 };

@@ -32,7 +32,7 @@ const TransactionSchema = new mongoose.Schema({
   },
   netAmount: {
     type: Number,
-    required: true,
+
     min: 0,
   },
   fee: {

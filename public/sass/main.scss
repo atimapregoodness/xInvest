@@ -9,13 +9,12 @@
 html {
   scroll-behavior: smooth;
 }
-
+@import "invest";
 @import "nav";
 @import "variables";
 @import "home";
 @import "auth";
 @import "dashboard";
-@import "invest";
 @import "plans";
 
 /* ====== PROFESSIONAL FLASH MESSAGES ====== */

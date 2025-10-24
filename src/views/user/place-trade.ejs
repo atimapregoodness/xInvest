@@ -1,0 +1,522 @@
+<%- layout('layout/acctBoilerplate', { title: 'Finovex - Place Trade' }) %> <%-
+partial("partials/floatingNav") %> <%- partial("partials/sideBar") %>
+
+<div class="dashboard">
+  <!-- Main Trading Layout -->
+  <div class="trading-layout">
+    <!-- Trading Sidebar -->
+    <div class="trading-sidebar">
+      <div class="trade-form-card glass-card">
+        <h2>Place Trade</h2>
+        <form id="tradeForm">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+          <!-- Trading Pair -->
+          <div class="form-group">
+            <label class="form-label">Trading Pair</label>
+            <select
+              class="form-select"
+              name="tradingPair"
+              id="tradingPairSelect"
+              required
+            >
+              <option value="">Select Pair</option>
+              <option value="BTC/USDT">BTC/USDT</option>
+              <option value="ETH/USDT">ETH/USDT</option>
+              <option value="SOL/USDT">SOL/USDT</option>
+              <option value="XRP/USDT">XRP/USDT</option>
+              <option value="ADA/USDT">ADA/USDT</option>
+            </select>
+          </div>
+
+          <!-- Amount -->
+          <div class="form-group">
+            <label class="form-label">Amount</label>
+            <input
+              type="number"
+              class="form-input"
+              name="amount"
+              placeholder="0.00"
+              step="0.00000001"
+              required
+              id="amountInput"
+            />
+            <div class="quick-amounts">
+              <button type="button" class="quick-amount" data-amount="100">
+                $100
+              </button>
+              <button type="button" class="quick-amount" data-amount="500">
+                $500
+              </button>
+              <button type="button" class="quick-amount" data-amount="1000">
+                $1K
+              </button>
+              <button type="button" class="quick-amount" data-amount="5000">
+                $5K
+              </button>
+            </div>
+          </div>
+
+          <!-- Currency -->
+          <div class="form-group">
+            <label class="form-label">Currency</label>
+            <select
+              class="form-select"
+              name="currency"
+              id="currencySelect"
+              required
+            >
+              <option value="">Select Currency</option>
+              <option value="USDT">USDT</option>
+              <option value="BTC">BTC</option>
+              <option value="ETH">ETH</option>
+            </select>
+          </div>
+
+          <!-- Trading Plan -->
+          <div class="form-group">
+            <label class="form-label">Trading Plan</label>
+            <select class="form-select" name="planId" id="planSelect" required>
+              <option value="">Select Plan</option>
+              <% plans.forEach(plan => { %>
+              <option
+                value="<%= plan._id %>"
+                data-roi="<%= plan.roi %>"
+                data-duration="<%= plan.duration %>"
+              >
+                <%= plan.name %> - <%= plan.roi %>% ROI
+              </option>
+              <% }) %>
+            </select>
+          </div>
+
+          <!-- Duration -->
+          <div class="form-group">
+            <label class="form-label">Duration (Days)</label>
+            <select
+              class="form-select"
+              name="durationDays"
+              id="durationSelect"
+              required
+            >
+              <option value="">Select Days</option>
+              <option value="1">1 Day</option>
+              <option value="3">3 Days</option>
+              <option value="7">7 Days</option>
+              <option value="14">14 Days</option>
+              <option value="30">30 Days</option>
+            </select>
+          </div>
+
+          <!-- Plan Info -->
+          <div class="plan-info-card" id="planInfo" style="display: none">
+            <h4 id="selectedPlanName"></h4>
+            <div class="plan-info-grid">
+              <div>
+                ROI: <span id="selectedROI" class="text-success"></span>
+              </div>
+
+              <div>Duration: <span id="selectedDuration"></span></div>
+              <div>
+                Expected Profit (USDT):
+                <span id="expectedProfit" class="text-success"></span>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary" id="submitBtn">
+            Start Automated Trade
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Chart Section -->
+    <div class="chart-container glass-card">
+      <div class="chart-header">
+        <h2 id="chartTitle">Select a Trading Pair</h2>
+        <div class="chart-controls">
+          <button class="timeframe-btn active" data-timeframe="1m">1m</button>
+          <button class="timeframe-btn" data-timeframe="5m">5m</button>
+          <button class="timeframe-btn" data-timeframe="15m">15m</button>
+          <button class="timeframe-btn" data-timeframe="1h">1h</button>
+          <button class="timeframe-btn" data-timeframe="4h">4h</button>
+          <button class="timeframe-btn" data-timeframe="1d">1d</button>
+        </div>
+      </div>
+      <div class="chart-wrapper">
+        <canvas id="tradingChart"></canvas>
+        <div id="chartPlaceholder" class="chart-placeholder">
+          <i class="fas fa-chart-line"></i>
+          <p>Select a trading pair to view the chart</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const tradeForm = document.getElementById("tradeForm");
+    const tradingPairSelect = document.getElementById("tradingPairSelect");
+    const planSelect = document.getElementById("planSelect");
+    const amountInput = document.getElementById("amountInput");
+    const currencySelect = document.getElementById("currencySelect");
+    const planInfo = document.getElementById("planInfo");
+    const expectedProfitEl = document.getElementById("expectedProfit");
+    const submitBtn = document.getElementById("submitBtn");
+    const chartPlaceholder = document.getElementById("chartPlaceholder");
+    const chartTitle = document.getElementById("chartTitle");
+
+    let tradingChart = null;
+    let currentTimeframe = "1m";
+    let priceUpdateInterval = null;
+
+    // Quick Amount Buttons
+    document.querySelectorAll(".quick-amount").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        amountInput.value = btn.dataset.amount;
+        updateExpectedProfit();
+      });
+    });
+
+    // Plan Selection
+    planSelect.addEventListener("change", () => {
+      const selectedOption = planSelect.options[planSelect.selectedIndex];
+      if (selectedOption.value) {
+        planInfo.style.display = "block";
+        document.getElementById("selectedPlanName").textContent =
+          selectedOption.text;
+        document.getElementById("selectedROI").textContent =
+          selectedOption.dataset.roi + "%";
+        document.getElementById("selectedRisk").textContent =
+          selectedOption.dataset.risk;
+        document.getElementById("selectedDuration").textContent =
+          selectedOption.dataset.duration;
+      } else planInfo.style.display = "none";
+      updateExpectedProfit();
+    });
+
+    // Amount or Currency change
+    amountInput.addEventListener("input", updateExpectedProfit);
+    currencySelect.addEventListener("change", updateExpectedProfit);
+
+    async function getCryptoPrice(currency) {
+      if (currency === "USDT") return 1;
+      try {
+        const res = await fetch(
+          `https://api.coingecko.com/api/v3/simple/price?ids=${currency.toLowerCase()}&vs_currencies=usd`
+        );
+        const data = await res.json();
+        return data[currency.toLowerCase()]?.usd || 1;
+      } catch {
+        return 1;
+      }
+    }
+
+    async function updateExpectedProfit() {
+      const selectedOption = planSelect.options[planSelect.selectedIndex];
+      const amount = parseFloat(amountInput.value) || 0;
+      const currency = currencySelect.value;
+
+      if (!selectedOption.value || !amount || !currency) {
+        expectedProfitEl.textContent = "$0.00";
+        return;
+      }
+
+      const roi = parseFloat(selectedOption.dataset.roi);
+      const price = await getCryptoPrice(currency);
+      const amountUSDT = amount * price;
+      const expectedProfit = (amountUSDT * roi) / 100;
+
+      expectedProfitEl.textContent = "$" + expectedProfit.toFixed(2);
+    }
+
+    // Form submission
+    tradeForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Starting Trade...";
+
+      const formData = Object.fromEntries(new FormData(tradeForm).entries());
+      try {
+        const res = await fetch("/dashboard/trade/start", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+        const result = await res.json();
+        if (result.success) {
+          window.location.href = result.redirect || "/dashboard/trade";
+        } else {
+          alert(result.error || "Failed to start trade");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Network error. Please try again.");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Start Automated Trade";
+      }
+    });
+
+    // Trading Pair Selection - Show Chart
+    tradingPairSelect.addEventListener("change", function () {
+      const selectedPair = this.value;
+      if (selectedPair) {
+        chartTitle.textContent = `${selectedPair} Chart`;
+        chartPlaceholder.style.display = "none";
+        initializeChart(selectedPair);
+        startPriceUpdates(selectedPair);
+      } else {
+        chartTitle.textContent = "Select a Trading Pair";
+        chartPlaceholder.style.display = "flex";
+        if (tradingChart) {
+          tradingChart.destroy();
+          tradingChart = null;
+        }
+        if (priceUpdateInterval) {
+          clearInterval(priceUpdateInterval);
+        }
+      }
+    });
+
+    // Timeframe Buttons
+    document.querySelectorAll(".timeframe-btn").forEach((btn) => {
+      btn.addEventListener("click", function () {
+        document
+          .querySelectorAll(".timeframe-btn")
+          .forEach((b) => b.classList.remove("active"));
+        this.classList.add("active");
+        currentTimeframe = this.dataset.timeframe;
+        if (tradingPairSelect.value) {
+          initializeChart(tradingPairSelect.value);
+        }
+      });
+    });
+
+    // Initialize Trading Chart
+    function initializeChart(pair) {
+      const ctx = document.getElementById("tradingChart").getContext("2d");
+
+      if (tradingChart) {
+        tradingChart.destroy();
+      }
+
+      // Generate realistic trading data
+      const data = generateRealisticChartData();
+
+      tradingChart = new Chart(ctx, {
+        type: "line",
+        data: {
+          datasets: [
+            {
+              label: pair,
+              data: data,
+              borderColor: "#3b82f6",
+              backgroundColor: "rgba(59, 130, 246, 0.1)",
+              borderWidth: 2,
+              fill: true,
+              tension: 0.4,
+              pointRadius: 0,
+              pointHoverRadius: 3,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            intersect: false,
+            mode: "index",
+          },
+          plugins: {
+            legend: {
+              display: false,
+            },
+            tooltip: {
+              mode: "index",
+              intersect: false,
+              backgroundColor: "rgba(15, 23, 42, 0.9)",
+              titleColor: "#e2e8f0",
+              bodyColor: "#e2e8f0",
+              borderColor: "rgba(255, 255, 255, 0.1)",
+              borderWidth: 1,
+            },
+          },
+          scales: {
+            x: {
+              type: "time",
+              time: {
+                unit: getTimeUnit(currentTimeframe),
+                displayFormats: {
+                  minute: "HH:mm",
+                  hour: "HH:mm",
+                  day: "MMM dd",
+                },
+              },
+              grid: {
+                color: "rgba(255, 255, 255, 0.05)",
+                drawBorder: false,
+              },
+              ticks: {
+                color: "#94a3b8",
+                maxRotation: 0,
+              },
+            },
+            y: {
+              position: "right",
+              grid: {
+                color: "rgba(255, 255, 255, 0.05)",
+                drawBorder: false,
+              },
+              ticks: {
+                color: "#94a3b8",
+                callback: function (value) {
+                  return "$" + value.toLocaleString();
+                },
+              },
+            },
+          },
+          animation: {
+            duration: 0,
+          },
+          elements: {
+            point: {
+              radius: 0,
+            },
+          },
+        },
+      });
+    }
+
+    function getTimeUnit(timeframe) {
+      const units = {
+        "1m": "minute",
+        "5m": "minute",
+        "15m": "minute",
+        "1h": "hour",
+        "4h": "hour",
+        "1d": "day",
+      };
+      return units[timeframe] || "minute";
+    }
+
+    // Generate realistic chart data
+    function generateRealisticChartData() {
+      const data = [];
+      const basePrice = getBasePrice(tradingPairSelect.value);
+      const volatility = 0.02; // 2% volatility
+      let price = basePrice;
+      const now = new Date();
+      const points = getDataPointsForTimeframe();
+
+      for (let i = points; i >= 0; i--) {
+        const time = new Date(
+          now.getTime() - i * getIntervalMs(currentTimeframe)
+        );
+
+        // Random walk with momentum
+        const change = (Math.random() - 0.5) * 2 * volatility * price;
+        price = Math.max(price + change, basePrice * 0.8); // Prevent price from dropping too low
+
+        data.push({
+          x: time,
+          y: parseFloat(price.toFixed(2)),
+        });
+      }
+
+      return data;
+    }
+
+    function getBasePrice(pair) {
+      const prices = {
+        "BTC/USDT": 42000,
+        "ETH/USDT": 2500,
+        "SOL/USDT": 100,
+        "XRP/USDT": 0.6,
+        "ADA/USDT": 0.45,
+      };
+      return prices[pair] || 100;
+    }
+
+    function getDataPointsForTimeframe() {
+      const points = {
+        "1m": 100,
+        "5m": 100,
+        "15m": 100,
+        "1h": 100,
+        "4h": 100,
+        "1d": 100,
+      };
+      return points[currentTimeframe] || 100;
+    }
+
+    function getIntervalMs(timeframe) {
+      const intervals = {
+        "1m": 60 * 1000,
+        "5m": 5 * 60 * 1000,
+        "15m": 15 * 60 * 1000,
+        "1h": 60 * 60 * 1000,
+        "4h": 4 * 60 * 60 * 1000,
+        "1d": 24 * 60 * 60 * 1000,
+      };
+      return intervals[timeframe] || 60000;
+    }
+
+    // Real-time price updates
+    function startPriceUpdates(pair) {
+      if (priceUpdateInterval) {
+        clearInterval(priceUpdateInterval);
+      }
+
+      priceUpdateInterval = setInterval(() => {
+        if (tradingChart && tradingChart.data.datasets[0].data.length > 0) {
+          const lastPoint =
+            tradingChart.data.datasets[0].data[
+              tradingChart.data.datasets[0].data.length - 1
+            ];
+          const volatility = 0.005; // 0.5% volatility for real-time updates
+          const change = (Math.random() - 0.5) * 2 * volatility * lastPoint.y;
+          const newPrice = Math.max(
+            lastPoint.y + change,
+            getBasePrice(pair) * 0.8
+          );
+
+          // Add new point and remove oldest if we have too many
+          tradingChart.data.datasets[0].data.push({
+            x: new Date(),
+            y: parseFloat(newPrice.toFixed(2)),
+          });
+
+          if (tradingChart.data.datasets[0].data.length > 200) {
+            tradingChart.data.datasets[0].data.shift();
+          }
+
+          tradingChart.update("none");
+        }
+      }, 2000); // Update every 2 seconds
+    }
+
+    // Initialize with default pair on page load
+    if (!tradingPairSelect.value) {
+      tradingPairSelect.value = "BTC/USDT";
+    }
+    const defaultPair = tradingPairSelect.value;
+    if (defaultPair) {
+      chartTitle.textContent = `${defaultPair} Chart`;
+      chartPlaceholder.style.display = "none";
+      initializeChart(defaultPair);
+      startPriceUpdates(defaultPair);
+    }
+
+    // Cleanup
+    window.addEventListener("beforeunload", () => {
+      if (priceUpdateInterval) {
+        clearInterval(priceUpdateInterval);
+      }
+    });
+  });
+</script>
