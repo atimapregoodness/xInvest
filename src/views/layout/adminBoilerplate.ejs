@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title><%= title %> | Finovex Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- ✅ Bootstrap -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- ✅ Google Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- ✅ Font Awesome (Use fa not fas) -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-KNu9XW3xRcpD5q1EZXFxR4XxZzKDaKfFJ3btEXKkR5QfRQOqku1msSRSS1vYH8xNCHz4ljnhnlvDfR7fIKhp9w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
+    <!-- ✅ Custom Admin Styles -->
+    <link rel="stylesheet" href="/css/admin.css" />
+
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f8f9fa;
+      }
+
+      .admin-navbar {
+        position: sticky;
+        top: 0;
+        z-index: 1050;
+      }
+
+      .admin-sidebar {
+        width: 250px;
+        min-height: 100vh;
+        transition: all 0.3s ease;
+      }
+
+      .admin-sidebar.collapsed {
+        width: 80px;
+      }
+
+      .admin-sidebar .nav-link {
+        color: #bbb;
+        padding: 10px 15px;
+        border-radius: 8px;
+        transition: 0.2s;
+      }
+
+      .admin-sidebar .nav-link.active,
+      .admin-sidebar .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #fff;
+      }
+
+      .admin-sidebar.collapsed .nav-link span {
+        display: none;
+      }
+
+      .admin-sidebar.collapsed .nav-link i {
+        margin: 0 auto;
+      }
+
+      .admin-main {
+        min-height: 100vh;
+        transition: margin-left 0.3s ease;
+      }
+
+      .admin-sidebar.mobile-open {
+        transform: translateX(0);
+      }
+
+      #overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1040;
+      }
+
+      #overlay.mobile-open {
+        display: block;
+      }
+
+      @media (max-width: 992px) {
+        .admin-sidebar {
+          position: fixed;
+          left: -260px;
+          top: 0;
+          bottom: 0;
+          z-index: 1051;
+          transition: left 0.3s ease;
+        }
+
+        .admin-sidebar.mobile-open {
+          left: 0;
+        }
+
+        .admin-main {
+          padding-top: 1rem;
+        }
+      }
+      /* Flash message animation */
+      .flash-container {
+        animation: fadeSlideDown 0.4s ease forwards;
+      }
+
+      @keyframes fadeSlideDown {
+        from {
+          opacity: 0;
+          transform: translate(-50%, -10px);
+        }
+        to {
+          opacity: 1;
+          transform: translate(-50%, 0);
+        }
+      }
+
+      /* Auto fade after a delay */
+      .alert {
+        transition: opacity 0.5s ease-in-out;
+      }
+
+      .alert.hide {
+        opacity: 0;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- ✅ Navbar -->
+
+    <!-- Flash Messages -->
+
+    <%- partial('partials/alerts') %> <%- partial('partials/loader') %>
+
+    <nav
+      class="admin-navbar bg-dark text-light d-flex align-items-center justify-content-between px-4 py-3 border-bottom border-secondary"
+    >
+      <div class="d-flex align-items-center gap-3">
+        <!-- Mobile Sidebar Toggle -->
+        <button id="sidebarToggle" class="btn btn-outline-light d-lg-none me-2">
+          <i class="fa fa-bars"></i>
+        </button>
+
+        <!-- Desktop Collapse -->
+        <button
+          id="sidebarCollapse"
+          class="btn btn-outline-light d-none d-lg-block me-2"
+        >
+          <i class="fa fa-bars"></i>
+        </button>
+
+        <h4 class="m-0 text-light">
+          <i class="fa fa-shield-halved me-2 text-primary"></i> Finovex Admin
+        </h4>
+      </div>
+
+      <div class="nav-actions d-flex align-items-center gap-3">
+        <div class="position-relative">
+          <button class="btn btn-outline-light position-relative">
+            <i class="fa fa-bell"></i>
+            <span
+              class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+              >3</span
+            >
+          </button>
+        </div>
+
+        <!-- Admin Dropdown -->
+        <div class="dropdown">
+          <button
+            class="btn btn-outline-light dropdown-toggle d-flex align-items-center gap-2"
+            type="button"
+            data-bs-toggle="dropdown"
+          >
+            <div class="user-avatar bg-primary text-white rounded-circle p-2">
+              AD
+            </div>
+            <span>Admin</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+            <li>
+              <a class="dropdown-item" href="#"
+                ><i class="fa fa-user me-2"></i>Profile</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="#"
+                ><i class="fa fa-gear me-2"></i>Settings</a
+              >
+            </li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+              <a class="dropdown-item" href="/logout"
+                ><i class="fa fa-arrow-right-from-bracket me-2"></i>Logout</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <!-- User View -->
+        <a href="/dashboard" class="btn btn-outline-light">
+          <i class="fa fa-arrow-left me-1"></i> User View
+        </a>
+      </div>
+    </nav>
+
+    <!-- Overlay for mobile -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- ✅ Layout -->
+    <div class="d-flex">
+      <!-- Sidebar -->
+      <nav
+        id="adminSidebar"
+        class="admin-sidebar bg-dark p-3 border-end border-secondary"
+      >
+        <ul class="nav flex-column mt-3">
+          <li class="nav-item">
+            <a
+              class="nav-link d-flex align-items-center gap-2 <%= title === 'Admin Dashboard' ? 'active' : '' %>"
+              href="/admin"
+            >
+              <i class="fa fa-gauge-high text-light"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link d-flex align-items-center gap-2 <%= title === 'Manage Users' ? 'active' : '' %>"
+              href="/admin/users"
+            >
+              <i class="fa fa-users text-light"></i>
+              <span>Users</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link d-flex align-items-center gap-2 <%= title === 'Requests' ? 'active' : '' %>"
+              href="/admin/request"
+            >
+              <i class="fa fa-right-left text-light"></i>
+              <span>Requests</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link d-flex align-items-center gap-2"
+              href="/admin/investments"
+            >
+              <i class="fa fa-chart-line text-light"></i>
+              <span>Investments</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link d-flex align-items-center gap-2"
+              href="/admin/plans"
+            >
+              <i class="fa fa-layer-group text-light"></i>
+              <span>Plans</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link d-flex align-items-center gap-2 <%= title === 'Admin Settings' ? 'active' : '' %>"
+              href="/admin/settings"
+            >
+              <i class="fa fa-gear text-light"></i>
+              <span>Settings</span>
+            </a>
+          </li>
+        </ul>
+
+        <!-- Sidebar Footer -->
+        <div class="sidebar-footer mt-auto pt-3 border-top border-secondary">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <div class="user-avatar bg-primary text-white rounded-circle p-2">
+              AD
+            </div>
+            <div>
+              <div class="fw-bold text-light">Admin User</div>
+              <small class="text-muted">Administrator</small>
+            </div>
+          </div>
+          <a href="/logout" class="btn btn-outline-light w-100">
+            <i class="fa fa-arrow-right-from-bracket me-2"></i>
+            Logout
+          </a>
+        </div>
+      </nav>
+
+      <!-- ✅ Main Content -->
+      <main class="admin-main flex-grow-1 p-4 bg-light" id="main">
+        <%- body %>
+      </main>
+    </div>
+
+    <!-- ✅ Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      const sidebarToggle = document.getElementById("sidebarToggle");
+      const sidebarCollapse = document.getElementById("sidebarCollapse");
+      const adminSidebar = document.getElementById("adminSidebar");
+      const adminMain = document.getElementById("main");
+      const overlay = document.getElementById("overlay");
+
+      sidebarToggle.addEventListener("click", () => {
+        adminSidebar.classList.toggle("mobile-open");
+        overlay.classList.toggle("mobile-open");
+      });
+
+      sidebarCollapse.addEventListener("click", () => {
+        adminSidebar.classList.toggle("collapsed");
+      });
+
+      overlay.addEventListener("click", () => {
+        adminSidebar.classList.remove("mobile-open");
+        overlay.classList.remove("mobile-open");
+      });
+
+      document.querySelectorAll(".admin-sidebar .nav-link").forEach((link) => {
+        link.addEventListener("click", () => {
+          if (window.innerWidth < 992) {
+            adminSidebar.classList.remove("mobile-open");
+            overlay.classList.remove("mobile-open");
+          }
+        });
+      });
+
+      // Auto-hide flash messages after 5 seconds
+      setTimeout(() => {
+        document.querySelectorAll(".alert").forEach((alert) => {
+          alert.classList.add("hide");
+          setTimeout(() => alert.remove(), 500);
+        });
+      }, 5000);
+    </script>
+  </body>
+</html>

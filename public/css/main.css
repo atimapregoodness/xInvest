@@ -519,16 +519,13 @@ html {
   --secondary: #1e2a3a;
   --accent: #00d4aa;
   --dark: #0f172a;
-  --darker: #0a0f1c;
+  --darker: #17191c;
   --success: #00d98c;
   --danger: #ff375f;
   --warning: #ffb800;
   --info: #0066ff;
   --glass: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.1);
-  --secondary: #06d6a0;
-  --secondary-dark: #05b888;
-  --dark-light: #19302b;
   --text: #f8fafc;
   --text-secondary: #cbd5e1;
   --text-muted: #64748b;
@@ -1253,16 +1250,13 @@ html {
   --secondary: #1e2a3a;
   --accent: #00d4aa;
   --dark: #0f172a;
-  --darker: #0a0f1c;
+  --darker: #17191c;
   --success: #00d98c;
   --danger: #ff375f;
   --warning: #ffb800;
   --info: #0066ff;
   --glass: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.1);
-  --secondary: #06d6a0;
-  --secondary-dark: #05b888;
-  --dark-light: #19302b;
   --text: #f8fafc;
   --text-secondary: #cbd5e1;
   --text-muted: #64748b;
@@ -1279,16 +1273,13 @@ html {
   --secondary: #1e2a3a;
   --accent: #00d4aa;
   --dark: #0f172a;
-  --darker: #0a0f1c;
+  --darker: #17191c;
   --success: #00d98c;
   --danger: #ff375f;
   --warning: #ffb800;
   --info: #0066ff;
   --glass: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.1);
-  --secondary: #06d6a0;
-  --secondary-dark: #05b888;
-  --dark-light: #19302b;
   --text: #f8fafc;
   --text-secondary: #cbd5e1;
   --text-muted: #64748b;
@@ -1800,16 +1791,13 @@ a.text-accent:hover {
   --secondary: #1e2a3a;
   --accent: #00d4aa;
   --dark: #0f172a;
-  --darker: #0a0f1c;
+  --darker: #17191c;
   --success: #00d98c;
   --danger: #ff375f;
   --warning: #ffb800;
   --info: #0066ff;
   --glass: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.1);
-  --secondary: #06d6a0;
-  --secondary-dark: #05b888;
-  --dark-light: #19302b;
   --text: #f8fafc;
   --text-secondary: #cbd5e1;
   --text-muted: #64748b;
@@ -2166,10 +2154,7 @@ a.text-accent:hover {
   box-sizing: border-box;
 }
 
-/* ==========================================================================
-// 1. PERFECT VERIFICATION BANNER
-// ========================================================================== */
-.verification-banner {
+transaction .verification-banner {
   background: linear-gradient(135deg, #f6465d, #ff6b35);
   border-radius: 8px;
   padding: 0.75rem;
@@ -2179,24 +2164,24 @@ a.text-accent:hover {
   gap: 0.75rem;
   animation: slideDown 0.3s ease;
 }
-.verification-banner i {
+transaction .verification-banner i {
   font-size: 1.25rem;
   flex-shrink: 0;
 }
-.verification-banner h3 {
+transaction .verification-banner h3 {
   margin: 0;
   color: white;
   font-size: 0.95rem;
   font-weight: 700;
   flex: 1;
 }
-.verification-banner p {
+transaction .verification-banner p {
   margin: 0;
   color: rgba(255, 255, 255, 0.9);
   font-size: 0.8rem;
   flex: 1;
 }
-.verification-banner .verify-btn {
+transaction .verification-banner .verify-btn {
   background: rgba(255, 255, 255, 0.2);
   color: white;
   padding: 0.5rem 1rem;
@@ -2207,7 +2192,7 @@ a.text-accent:hover {
   white-space: nowrap;
   transition: all 0.2s ease;
 }
-.verification-banner .verify-btn:hover {
+transaction .verification-banner .verify-btn:hover {
   background: rgba(255, 255, 255, 0.3);
   transform: translateY(-1px);
 }
@@ -2376,8 +2361,9 @@ a.text-accent:hover {
   padding: 0;
   margin: 1rem 0;
   width: 100% !important;
-  height: 45vh;
+  height: 60vh;
   max-height: 500px;
+  overflow: auto;
   margin-left: 2em !important;
 }
 
@@ -2386,6 +2372,7 @@ a.text-accent:hover {
   border-collapse: collapse;
   font-family: "Inter", monospace;
   table-layout: fixed;
+  padding: 0.3em;
 }
 
 .transactions-table th {
@@ -3176,16 +3163,13 @@ a.text-accent:hover {
   --secondary: #1e2a3a;
   --accent: #00d4aa;
   --dark: #0f172a;
-  --darker: #0a0f1c;
+  --darker: #17191c;
   --success: #00d98c;
   --danger: #ff375f;
   --warning: #ffb800;
   --info: #0066ff;
   --glass: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.1);
-  --secondary: #06d6a0;
-  --secondary-dark: #05b888;
-  --dark-light: #19302b;
   --text: #f8fafc;
   --text-secondary: #cbd5e1;
   --text-muted: #64748b;

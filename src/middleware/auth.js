@@ -24,6 +24,14 @@ exports.ensureAuthenticated = (req, res, next) => {
   }
 };
 
+exports.ensureAdmin = (req, res, next) => {
+  if (!req.isAuthenticated() || !req.user.isAdmin) {
+    req.flash("error_msg", "Admin access required.");
+    return res.redirect("/auth/login");
+  }
+  next();
+};
+
 exports.ensureVerified = (req, res, next) => {
   if (req.isAuthenticated() && req.user && req.user.verification?.email) {
     return next();

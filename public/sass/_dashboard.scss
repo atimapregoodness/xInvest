@@ -373,14 +373,7 @@
 * {
   box-sizing: border-box;
 }
-
-.dashboard {
-  // padding: 0.5rem;
-  // width: 100%;
-  // max-width: 100%;
-  // margin: 0 auto;
-  // overflow-x: hidden; // NO HORIZONTAL SCROLL
-}
+transaction
 
 /* ==========================================================================
 // 1. PERFECT VERIFICATION BANNER
@@ -616,8 +609,9 @@
   padding: 0;
   margin: 1rem 0;
   width: 100% !important;
-  height: 45vh;
+  height: 60vh;
   max-height: 500px;
+  overflow: auto;
   margin-left: 2em !important;
 }
 
@@ -626,6 +620,7 @@
   border-collapse: collapse;
   font-family: "Inter", monospace;
   table-layout: fixed; // FIXED WIDTHS
+  padding: 0.3em;
 }
 
 .transactions-table th {

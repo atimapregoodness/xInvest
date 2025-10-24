@@ -30,10 +30,6 @@
 </div>
 
 <script>
-  // ==========================================================================
-  // FANCY PAGE LOADER - ALL HTTP REQUESTS
-  // ==========================================================================
-
   class PageLoader {
     constructor() {
       this.loader = document.getElementById("pageLoader");
@@ -44,112 +40,71 @@
       this.init();
     }
 
-    // 1. INITIALIZE ON PAGE LOAD
+    // INITIALIZE ON PAGE LOAD
     init() {
-      // Show loader on page load
+      // Show only once on full page load
       this.show();
-
-      // Hide after content loads
       window.addEventListener("load", () => {
         setTimeout(() => this.hide(), 800);
       });
 
-      // Track ALL HTTP requests
-      this.interceptRequests();
+      // Intercept form submissions & navigation only
+      this.monitorUserActions();
 
-      // Update status messages
+      // Rotate status text messages
       this.updateStatusMessages();
     }
 
-    // 2. SHOW LOADER
+    // SHOW / HIDE
     show() {
       this.loader.classList.remove("hidden");
       document.body.style.overflow = "hidden";
     }
 
-    // 3. HIDE LOADER
     hide() {
       this.loader.classList.add("hidden");
       document.body.style.overflow = "";
     }
 
-    // 4. INTERCEPT ALL HTTP REQUESTS (GET/POST/PUT/DELETE)
-    interceptRequests() {
-      // FETCH API INTERCEPTOR
-      const originalFetch = window.fetch;
-      window.fetch = async (...args) => {
-        this.show();
-        try {
-          const response = await originalFetch(...args);
-          this.updateProgress(100);
-          return response;
-        } catch (error) {
-          this.hide();
-          throw error;
-        } finally {
-          setTimeout(() => this.hide(), 500);
-        }
-      };
-
-      // XMLHTTPREQUEST INTERCEPTOR
-      const originalXHROpen = XMLHttpRequest.prototype.open;
-      const originalXHRSend = XMLHttpRequest.prototype.send;
-
-      XMLHttpRequest.prototype.open = function (method, url, ...args) {
-        this.addEventListener("loadstart", () => this.show());
-        return originalXHROpen.apply(this, [method, url, ...args]);
-      };
-
-      XMLHttpRequest.prototype.send = function (...args) {
-        this.addEventListener("loadend", () => {
-          setTimeout(() => this.hide(), 300);
-        });
-        return originalXHRSend.apply(this, args);
-      };
-
-      // FORM SUBMIT INTERCEPTOR
+    // ✅ ONLY show loader for *major* user actions
+    monitorUserActions() {
+      // FORM SUBMITS
       document.addEventListener("submit", (e) => {
         if (!e.target.closest(".no-loader")) {
           this.show();
         }
       });
 
-      // LINK CLICK INTERCEPTOR
+      // LINK NAVIGATION
       document.addEventListener("click", (e) => {
-        if (e.target.closest("a[href]") && !e.target.closest(".no-loader")) {
-          const link = e.target.closest("a");
-          if (link.href && !link.href.includes("#")) {
-            this.show();
-          }
+        const link = e.target.closest("a[href]");
+        if (
+          link &&
+          !link.href.includes("#") &&
+          !link.classList.contains("no-loader") &&
+          !link.target // ignore target="_blank"
+        ) {
+          this.show();
         }
       });
     }
 
-    // 5. UPDATE PROGRESS BAR
-    updateProgress(percent) {
-      this.progressBar.style.width = `${percent}%`;
-      this.progressText.textContent = `Loading... ${percent}%`;
-    }
-
-    // 6. DYNAMIC STATUS MESSAGES
+    // STATUS MESSAGES
     updateStatusMessages() {
       const messages = [
         "Initializing Trading Dashboard",
         "Loading Market Data",
         "Connecting to Exchange",
-        "Setting up AI Bots",
         "Preparing Wallet",
         "Finalizing Security",
         "Ready to Trade!",
       ];
-
       let index = 0;
       const interval = setInterval(() => {
         this.statusText.textContent = messages[index];
         index = (index + 1) % messages.length;
       }, 2000);
 
-      // Stop when loader hides
       this.loader.addEventListener("transitionend", () => {
         if (this.loader.classList.contains("hidden")) {
           clearInterval(interval);
@@ -157,7 +112,7 @@
       });
     }
 
-    // 7. MANUAL SHOW/HIDE (For custom use)
+    // MANUAL CONTROL (optional)
     static showLoader() {
       document.getElementById("pageLoader").classList.remove("hidden");
     }
@@ -167,16 +122,10 @@
     }
   }
 
-  // ==========================================================================
-  // INITIALIZE ON DOM READY
-  // ==========================================================================
-  document.addEventListener("DOMContentLoaded", () => {
-    new PageLoader();
-  });
+  // INIT
+  document.addEventListener("DOMContentLoaded", () => new PageLoader());
 
-  // ==========================================================================
-  // GLOBAL FUNCTIONS (For easy use in other scripts)
-  // ==========================================================================
+  // GLOBAL ACCESS
   window.showLoader = () => PageLoader.showLoader();
   window.hideLoader = () => PageLoader.hideLoader();
 </script>

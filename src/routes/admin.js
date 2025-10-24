@@ -1,20 +1,29 @@
 const express = require("express");
 const router = express.Router();
 const AdminController = require("../controllers/AdminController");
-const { ensureAuthenticated } = require("../middleware/auth");
+const { ensureAdmin } = require("../middleware/auth");
 
-// All admin routes require authentication and admin role
-router.use(ensureAuthenticated);
-router.use(AdminController.requireAdmin);
+router.get("/", ensureAdmin, AdminController.getDashboard);
+router.get("/users", ensureAdmin, AdminController.getUsers);
+router.get("/transactions", ensureAdmin, AdminController.getTransactions);
+router.get("/settings", ensureAdmin, AdminController.getSettings);
 
-// Admin dashboard
-router.get("/", AdminController.getAdminDashboard);
+router.post(
+  "/user/update-balance/:id",
+  ensureAdmin,
+  AdminController.updateUserBalance
+);
+router.post("/user/restrict/:id", ensureAdmin, AdminController.restrictUser);
+router.post(
+  "/user/unrestrict/:id",
+  ensureAdmin,
+  AdminController.unrestrictUser
+);
+router.post("/user/delete/:id", ensureAdmin, AdminController.deleteUser);
 
-// User management
-router.get("/users", AdminController.getUsers);
-router.post("/users/:userId/status", AdminController.updateUserStatus);
+router.post("/transactions/add", ensureAdmin, AdminController.addTransaction);
+router.post("/settings", ensureAdmin, AdminController.updateSettings);
 
-// Transaction management
-router.get("/transactions", AdminController.getTransactions);
+router.get("/request", ensureAdmin, AdminController.getRequests);
 
 module.exports = router;

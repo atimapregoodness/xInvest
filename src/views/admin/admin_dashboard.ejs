@@ -1,109 +1,155 @@
-<%- include('layout') %>
+<%- layout('layout/adminBoilerplate') %>
 
-<h2>Admin Dashboard</h2>
-<div class="dashboard-grid">
-  <section class="users card">
-    <h3>Users</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Role</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% users.forEach(u => { %>
-        <tr>
-          <td><%= u.name %></td>
-          <td><%= u.email %></td>
-          <td><%= u.role %></td>
-          <td>
-            <% if (u.role !== 'admin') { %>
-            <form action="/admin/make-admin/<%= u._id %>" method="POST">
-              <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-              <button type="submit" class="btn small holographic">
-                Make Admin
-              </button>
-            </form>
-            <% } %>
-          </td>
-        </tr>
-        <% }) %>
-      </tbody>
-    </table>
-  </section>
-
-  <section class="investments card">
-    <h3>Investments</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>User</th>
-          <th>Crypto</th>
-          <th>Amount</th>
-          <th>Price</th>
-          <th>Yield</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% investments.forEach(inv => { %>
-        <tr>
-          <td><%= inv.user.name %></td>
-          <td><%= inv.crypto %></td>
-          <td><%= inv.amount %></td>
-          <td>$<%= inv.price %></td>
-          <td><%= inv.yield ? inv.yield.toFixed(2) + '%' : 'N/A' %></td>
-        </tr>
-        <% }) %>
-      </tbody>
-    </table>
-  </section>
-
-  <section class="transactions card">
-    <h3>Transactions</h3>
-    <table class="explorer-table">
-      <thead>
-        <tr>
-          <th>User</th>
-          <th>Type</th>
-          <th>Crypto</th>
-          <th>Amount</th>
-          <th>Hash</th>
-          <th>Block</th>
-          <th>Conf</th>
-          <th>Status</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% transactions.forEach(tx => { %>
-        <tr>
-          <td><%= tx.user ? tx.user.name : '—' %></td>
-          <td><%= tx.type %></td>
-          <td><%= tx.crypto %></td>
-          <td><%= tx.amount %></td>
-          <td>
-            <%= tx.txHash.substring(0,6) %>...<%=
-            tx.txHash.substring(tx.txHash.length-6) %>
-          </td>
-          <td><%= tx.block %></td>
-          <td><%= tx.confirmations %></td>
-          <td><%= tx.status %></td>
-          <td>
-            <% if (tx.status === 'pending') { %>
-            <form action="/admin/confirm-tx/<%= tx._id %>" method="POST">
-              <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-              <button type="submit" class="btn small holographic">
-                Confirm
-              </button>
-            </form>
-            <% } %>
-          </td>
-        </tr>
-        <% }) %>
-      </tbody>
-    </table>
-  </section>
+<div
+  class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-3 mb-4 border-bottom border-secondary"
+>
+  <h1 class="h2">
+    <i class="fa fa-gauge-high me-2 text-primary"></i>
+    Admin Dashboard
+  </h1>
+  <div class="btn-toolbar mb-2 mb-md-0">
+    <div class="btn-group me-2">
+      <button type="button" class="btn btn-sm btn-outline-light">
+        <i class="fa fa-download me-1"></i> Export
+      </button>
+    </div>
+  </div>
 </div>
+
+<!-- Stats Cards -->
+<div class="row g-3 mb-4">
+  <div class="col-xl-3 col-md-6">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h6 class="text-muted mb-1">Total Users</h6>
+            <h2 class="fw-bold mb-0"><%= stats.userCount %></h2>
+          </div>
+          <i class="fa fa-users text-primary fa-2x opacity-50"></i>
+        </div>
+        <small class="text-success">
+          <i class="fa fa-arrow-up me-1"></i> +12% from last month
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h6 class="text-muted mb-1">Transactions</h6>
+            <h2 class="fw-bold mb-0"><%= stats.txCount %></h2>
+          </div>
+          <i class="fa fa-exchange text-success fa-2x opacity-50"></i>
+        </div>
+        <small class="text-success">
+          <i class="fa fa-arrow-up me-1"></i> +8% from last month
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h6 class="text-muted mb-1">Investments</h6>
+            <h2 class="fw-bold mb-0">$156K</h2>
+          </div>
+          <i class="fa fa-line-chart text-warning fa-2x opacity-50"></i>
+        </div>
+        <small class="text-success">
+          <i class="fa fa-arrow-up me-1"></i> +15% from last month
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-3 col-md-6">
+    <div class="card h-100 border-0 shadow-sm">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h6 class="text-muted mb-1">Active Plans</h6>
+            <h2 class="fw-bold mb-0">342</h2>
+          </div>
+          <i class="fa fa-layer-group text-info fa-2x opacity-50"></i>
+        </div>
+        <small class="text-success">
+          <i class="fa fa-arrow-up me-1"></i> +5% from last month
+        </small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recent Transactions Table -->
+<div class="card shadow-sm border-0">
+  <div
+    class="card-header bg-dark text-light d-flex justify-content-between align-items-center"
+  >
+    <h5 class="card-title mb-0">
+      <i class="fa fa-clock me-2 text-primary"></i> Recent Transactions
+    </h5>
+    <a href="/admin/transactions" class="btn btn-sm btn-outline-light"
+      >View All</a
+    >
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-hover mb-0 align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>User</th>
+            <th>Type</th>
+            <th>Currency</th>
+            <th>Amount</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (recentTx.length === 0) { %>
+          <tr>
+            <td colspan="5" class="text-center text-muted py-3">
+              No recent transactions
+            </td>
+          </tr>
+          <% } else { %> <% recentTx.forEach(tx => { %>
+          <tr>
+            <td>
+              <strong><%= tx.userId.fullName %></strong><br />
+              <small class="text-muted"><%= tx.userId.email %></small>
+            </td>
+            <td><span class="badge bg-primary"><%= tx.type %></span></td>
+            <td><%= tx.currency.toUpperCase() %></td>
+            <td class="text-success">$<%= tx.amount.toFixed(2) %></td>
+            <td><%= new Date(tx.createdAt).toLocaleDateString() %></td>
+          </tr>
+          <% }) %> <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<style>
+  .card {
+    border-radius: 0.75rem;
+  }
+  .opacity-50 {
+    opacity: 0.5;
+  }
+  .table td,
+  .table th {
+    vertical-align: middle;
+  }
+  @media (max-width: 768px) {
+    h1.h2 {
+      font-size: 1.5rem;
+    }
+  }
+</style>

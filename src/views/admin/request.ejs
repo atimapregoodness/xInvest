@@ -1,0 +1,154 @@
+<%- layout('layout/adminBoilerplate') %>
+
+<div
+  class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-3 mb-4 border-bottom border-secondary"
+>
+  <h1 class="h2">
+    <i class="fa fa-inbox text-primary me-2"></i>
+    Requests Center
+  </h1>
+  <div>
+    <a href="/admin/dashboard" class="btn btn-sm btn-outline-light">
+      <i class="fa fa-arrow-left me-1"></i> Back to Dashboard
+    </a>
+  </div>
+</div>
+
+<!-- Two-column layout -->
+<div class="row g-4">
+  <!-- User Verification Requests -->
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div
+        class="card-header border-bottom border-secondary d-flex justify-content-between align-items-center"
+      >
+        <h5 class="mb-0 text-primary">
+          <i class="fa fa-user-check me-2"></i>User Verification Requests
+        </h5>
+        <span class="badge bg-primary"><%= verifications.length %></span>
+      </div>
+
+      <div class="card-body p-0">
+        <% if (verifications.length > 0) { %>
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>ID Type</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% verifications.forEach(req => { %>
+              <tr>
+                <td><%= req.user.fullName %></td>
+                <td><%= req.user.email %></td>
+                <td><%= req.idType %></td>
+                <td><%= new Date(req.createdAt).toLocaleDateString() %></td>
+                <td>
+                  <a
+                    href="<%= req.idImage %>"
+                    target="_blank"
+                    class="btn btn-sm btn-outline-info"
+                  >
+                    <i class="fa fa-eye"></i>
+                  </a>
+                  <a
+                    href="/admin/verify/approve/<%= req._id %>"
+                    class="btn btn-sm btn-outline-success"
+                  >
+                    <i class="fa fa-check"></i>
+                  </a>
+                  <a
+                    href="/admin/verify/reject/<%= req._id %>"
+                    class="btn btn-sm btn-outline-danger"
+                  >
+                    <i class="fa fa-times"></i>
+                  </a>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+        <% } else { %>
+        <div class="p-4 text-center text-muted">
+          <i class="fa fa-info-circle mb-2 d-block"></i>No pending verification
+          requests.
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Deposit Requests -->
+  <div class="col-lg-6">
+    <div class="card h-100">
+      <div
+        class="card-header border-bottom border-secondary d-flex justify-content-between align-items-center"
+      >
+        <h5 class="mb-0 text-warning">
+          <i class="fa fa-wallet me-2"></i>Deposit Requests
+        </h5>
+        <span class="badge bg-warning text-dark"><%= deposits.length %></span>
+      </div>
+
+      <div class="card-body p-0">
+        <% if (deposits.length > 0) { %>
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>User</th>
+                <th>Amount</th>
+                <th>Currency</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% deposits.forEach(dep => { %>
+              <tr>
+                <td><%= dep.user.fullName %></td>
+                <td class="text-success">$<%= dep.amount.toFixed(2) %></td>
+                <td><%= dep.currency %></td>
+                <td><%= new Date(dep.createdAt).toLocaleDateString() %></td>
+                <td>
+                  <a
+                    href="<%= dep.receipt %>"
+                    target="_blank"
+                    class="btn btn-sm btn-outline-info"
+                  >
+                    <i class="fa fa-receipt"></i>
+                  </a>
+                  <a
+                    href="/admin/deposit/approve/<%= dep._id %>"
+                    class="btn btn-sm btn-outline-success"
+                  >
+                    <i class="fa fa-check"></i>
+                  </a>
+                  <a
+                    href="/admin/deposit/reject/<%= dep._id %>"
+                    class="btn btn-sm btn-outline-danger"
+                  >
+                    <i class="fa fa-times"></i>
+                  </a>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+        <% } else { %>
+        <div class="p-4 text-center text-muted">
+          <i class="fa fa-info-circle mb-2 d-block"></i>No pending deposit
+          requests.
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>

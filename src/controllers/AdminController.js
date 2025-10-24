@@ -1,209 +1,209 @@
 const User = require("../models/User");
-const Investment = require("../models/Trade");
+const Wallet = require("../models/Wallet");
 const Transaction = require("../models/Transaction");
 
-// Middleware to check if user is admin
-exports.requireAdmin = (req, res, next) => {
-  if (!req.isAuthenticated() || !req.user.isAdmin) {
-    req.flash("error_msg", "Administrator access required");
-    return res.redirect("/dashboard");
-  }
-  next();
-};
-
-exports.getAdminDashboard = async (req, res) => {
+exports.getDashboard = async (req, res) => {
   try {
-    // Get platform statistics
-    const totalUsers = await User.countDocuments();
-    const activeUsers = await User.countDocuments({ status: "active" });
-    const totalInvestments = await Investment.countDocuments();
-    const activeInvestments = await Investment.countDocuments({
-      status: "active",
-    });
-
-    // Get financial stats
-    const investmentStats = await Investment.aggregate([
-      {
-        $group: {
-          _id: null,
-          totalInvested: { $sum: "$amount" },
-          totalProfit: { $sum: "$totalProfit" },
-          averageInvestment: { $avg: "$amount" },
-        },
-      },
-    ]);
-
-    const transactionStats = await Transaction.aggregate([
-      {
-        $match: { status: "completed" },
-      },
-      {
-        $group: {
-          _id: "$type",
-          totalAmount: { $sum: "$amount" },
-          count: { $sum: 1 },
-        },
-      },
-    ]);
-
-    // Get recent activities
-    const recentUsers = await User.find()
-      .sort({ createdAt: -1 })
-      .limit(5)
-      .select(
-        "username email profile.firstName profile.lastName createdAt status"
-      );
-
-    const recentInvestments = await Investment.find()
-      .populate("user", "username email")
+    const userCount = await User.countDocuments();
+    const txCount = await Transaction.countDocuments();
+    const recentTx = await Transaction.find()
+      .populate("userId", "fullName email")
       .sort({ createdAt: -1 })
       .limit(5);
 
-    const recentTransactions = await Transaction.find()
-      .populate("user", "username email")
-      .sort({ createdAt: -1 })
-      .limit(10);
-
     res.render("admin/admin_dashboard", {
       title: "Admin Dashboard",
-      stats: {
-        totalUsers,
-        activeUsers,
-        totalInvestments,
-        activeInvestments,
-        ...(investmentStats[0] || {
-          totalInvested: 0,
-          totalProfit: 0,
-          averageInvestment: 0,
-        }),
-        transactionStats,
-      },
-      recentUsers,
-      recentInvestments,
-      recentTransactions,
+      stats: { userCount, txCount },
+      recentTx,
     });
-  } catch (error) {
-    console.error("Admin dashboard error:", error);
-    req.flash("error_msg", "Error loading admin dashboard");
+  } catch (err) {
+    console.error(err);
+    req.flash("error_msg", "Failed to load admin dashboard.");
     res.redirect("/dashboard");
   }
 };
 
 exports.getUsers = async (req, res) => {
+  const users = await User.find().populate("wallet");
+  res.render("admin/users", {
+    title: "Manage Users",
+    users,
+  });
+};
+
+exports.restrictUser = async (req, res) => {
+  const user = await User.findById(req.params.id);
+  user.isRestricted = true;
+  await user.save();
+  req.flash("success_msg", "User restricted successfully.");
+  res.redirect("/admin/users");
+};
+
+exports.unrestrictUser = async (req, res) => {
+  const user = await User.findById(req.params.id);
+  user.isRestricted = false;
+  await user.save();
+  req.flash("success_msg", "User unrestricted successfully.");
+  res.redirect("/admin/users");
+};
+
+exports.deleteUser = async (req, res) => {
+  await User.findByIdAndDelete(req.params.id);
+  req.flash("success_msg", "User deleted successfully.");
+  res.redirect("/admin/users");
+};
+
+exports.updateUserBalance = async (req, res) => {
+  const { id } = req.params;
+  const { currency, amount } = req.body;
+
+  const wallet = await Wallet.findOne({ userId: id });
+  if (!wallet) {
+    req.flash("error_msg", "Wallet not found for this user.");
+    return res.redirect("/admin/users");
+  }
+
+  const amt = parseFloat(amount);
+  if (isNaN(amt)) {
+    req.flash("error_msg", "Invalid amount entered.");
+    return res.redirect("/admin/users");
+  }
+
+  wallet[currency] = (wallet[currency] || 0) + amt;
+
+  await wallet.save();
+
+  await Transaction.create({
+    netAmount: amt,
+    userId: id,
+    type: "credit",
+    currency,
+    amount: amt,
+    status: "completed",
+    description: `Admin credited ${amt} ${currency}`,
+  });
+
+  req.flash("success_msg", `Added ${amt} ${currency} to user's balance.`);
+  res.redirect("/admin/users");
+};
+
+exports.getTransactions = async (req, res) => {
+  const transactions = await Transaction.find()
+    .populate("userId", "fullName email")
+    .sort({ createdAt: -1 });
+  res.render("admin/transactions", {
+    layout: "layout/adminBoilerplate",
+    title: "Transactions",
+    transactions,
+  });
+};
+
+exports.addTransaction = async (req, res) => {
+  const { userId, currency, amount, type } = req.body;
+  const wallet = await Wallet.findOne({ userId });
+
+  if (!wallet) {
+    req.flash("error_msg", "User wallet not found.");
+    return res.redirect("/admin/transactions");
+  }
+
+  const amt = parseFloat(amount);
+  if (isNaN(amt)) {
+    req.flash("error_msg", "Invalid amount entered.");
+    return res.redirect("/admin/transactions");
+  }
+
+  wallet.balances[currency] =
+    (wallet.balances[currency] || 0) + (type === "credit" ? amt : -amt);
+  await wallet.save();
+
+  await Transaction.create({
+    userId,
+    type,
+    currency,
+    amount: amt,
+    status: "completed",
+    description: `Admin ${type}ed ${amt} ${currency}`,
+  });
+
+  req.flash("success_msg", "Transaction added successfully!");
+  res.redirect("/admin/transactions");
+};
+
+// Add to your admin controller (adminController.js)
+const Global = require("../models/Global");
+
+// ... existing exports ...
+
+exports.getSettings = async (req, res) => {
   try {
-    const { page = 1, status, search } = req.query;
-    const limit = 20;
-    const skip = (page - 1) * limit;
-
-    let filter = {};
-    if (status && status !== "all") {
-      filter.status = status;
+    let global = await Global.findOne();
+    if (!global) {
+      global = new Global();
+      await global.save();
     }
-
-    if (search) {
-      filter.$or = [
-        { username: { $regex: search, $options: "i" } },
-        { email: { $regex: search, $options: "i" } },
-        { "profile.firstName": { $regex: search, $options: "i" } },
-        { "profile.lastName": { $regex: search, $options: "i" } },
-      ];
-    }
-
-    const users = await User.find(filter)
-      .select("-password -security.activityLog")
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
-
-    const total = await User.countDocuments(filter);
-
-    res.render("admin/users", {
-      title: "User Management",
-      users,
-      currentPage: parseInt(page),
-      totalPages: Math.ceil(total / limit),
-      filter: { status: status || "all", search: search || "" },
+    res.render("admin/settings", {
+      layout: "layout/adminBoilerplate",
+      title: "Admin Settings",
+      global,
     });
-  } catch (error) {
-    console.error("Users management error:", error);
-    req.flash("error_msg", "Error loading users");
+  } catch (err) {
+    console.error(err);
+    req.flash("error_msg", "Failed to load settings.");
     res.redirect("/admin");
   }
 };
 
-exports.updateUserStatus = async (req, res) => {
+exports.updateSettings = async (req, res) => {
   try {
-    const { userId } = req.params;
-    const { status } = req.body;
-
-    const user = await User.findByIdAndUpdate(
-      userId,
-      { status },
-      { new: true }
+    const { eth, btc, usdt, phone, email, address, website } = req.body;
+    await Global.findOneAndUpdate(
+      {},
+      {
+        "wallets.ETH": eth,
+        "wallets.BTC": btc,
+        "wallets.USDT": usdt,
+        "company.phone": phone,
+        "company.email": email,
+        "company.address": address,
+        "company.website": website,
+      },
+      { upsert: true }
     );
-
-    if (!user) {
-      req.flash("error_msg", "User not found");
-      return res.redirect("/admin/users");
-    }
-
-    req.flash("success_msg", `User status updated to ${status}`);
-    res.redirect("/admin/users");
-  } catch (error) {
-    console.error("Update user status error:", error);
-    req.flash("error_msg", "Error updating user status");
-    res.redirect("/admin/users");
+    req.flash("success_msg", "Settings updated successfully.");
+    res.redirect("/admin/settings");
+  } catch (err) {
+    +console.error(err);
+    req.flash("error_msg", "Failed to update settings.");
+    res.redirect("/admin/settings");
   }
 };
 
-exports.getTransactions = async (req, res) => {
+const Verification = require("../models/Verification");
+const Deposit = require("../models/Deposit");
+
+exports.getRequests = async (req, res) => {
   try {
-    const { page = 1, type, status, search } = req.query;
-    const limit = 25;
-    const skip = (page - 1) * limit;
+    // Populate the correct reference field
+    const verifications = await Verification.find({ status: "pending" })
+      .populate("userId", "fullName email") // adjust field name if needed
+      .sort({ createdAt: -1 });
 
-    let filter = {};
-    if (type && type !== "all") {
-      filter.type = type;
-    }
+    const deposits = await Deposit.find({ status: "pending" })
+      .populate("userId", "fullName email") // adjust if your field name is 'user'
+      .sort({ createdAt: -1 });
 
-    if (status && status !== "all") {
-      filter.status = status;
-    }
-
-    if (search) {
-      const users = await User.find({
-        $or: [
-          { username: { $regex: search, $options: "i" } },
-          { email: { $regex: search, $options: "i" } },
-        ],
-      }).select("_id");
-
-      filter.user = { $in: users.map((u) => u._id) };
-    }
-
-    const transactions = await Transaction.find(filter)
-      .populate("user", "username email")
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit);
-
-    const total = await Transaction.countDocuments(filter);
-
-    res.render("admin/transactions", {
-      title: "Transaction Management",
-      transactions,
-      currentPage: parseInt(page),
-      totalPages: Math.ceil(total / limit),
-      filter: {
-        type: type || "all",
-        status: status || "all",
-        search: search || "",
-      },
+    res.render("admin/request", {
+      title: "Admin Requests",
+      verifications,
+      deposits,
     });
-  } catch (error) {
-    console.error("Transactions management error:", error);
-    req.flash("error_msg", "Error loading transactions");
+  } catch (err) {
+    console.error("Admin request page error:", err.message);
+    req.flash(
+      "error_msg",
+      "Unable to load pending requests. Please try again."
+    );
     res.redirect("/admin");
   }
 };
