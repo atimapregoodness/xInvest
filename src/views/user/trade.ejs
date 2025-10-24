@@ -1,190 +1,195 @@
-<%- layout('layout/acctBoilerplate', { title: 'xInvest - Automated Trading' })
-%> <%- partial("partials/floatingNav") %> <%- partial("partials/sideBar") %>
+<%- layout('layout/acctBoilerplate', { title: 'Finovex - Trade' }) %> <%-
+partial("partials/floatingNav") %> <%- partial("partials/sideBar") %>
 
-<div class="dashboard">
-  <div class="page-header glass">
-    <h1 class="page-title">Automated Trading</h1>
-    <p class="page-subtitle">
-      Select your trading pair and plan to start a fixed-profit trade.
-    </p>
+<div class="dashboard container mt-5">
+  <div class="text-center mb-4">
+    <h2 class="fw-bold text-white">Trade Dashboard</h2>
+    <p class="text-secondary">Start and monitor your active trades</p>
   </div>
 
-  <div class="glass-card simple-trading">
-    <form id="autoTradeForm" method="POST" action="/dashboard/trade/start">
-      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+  <div class="glass-card p-4 mb-4 text-white rounded-4 shadow">
+    <form id="tradeForm">
+      <div class="row g-3 align-items-center">
+        <div class="col-md-3">
+          <label class="form-label">Trading Pair</label>
+          <select class="form-select" name="tradingPair" required>
+            <option value="">Select Pair</option>
+            <option>BTC/USDT</option>
+            <option>ETH/USDT</option>
+            <option>BNB/USDT</option>
+          </select>
+        </div>
 
-      <div class="form-group">
-        <label class="form-label"
-          ><i class="fas fa-exchange-alt"></i> Trading Pair</label
-        >
-        <select name="tradingPair" class="form-input form-select" required>
-          <option value="">Select Pair</option>
-          <option value="EURUSD">EUR/USD</option>
-          <option value="BTCUSDT">BTC/USDT</option>
-          <option value="ETHUSDT">ETH/USDT</option>
-          <option value="US30">US30</option>
-        </select>
+        <div class="col-md-3">
+          <label class="form-label">Amount</label>
+          <input
+            type="number"
+            step="any"
+            class="form-control"
+            name="amount"
+            placeholder="Enter amount"
+            required
+          />
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label">Plan</label>
+          <select class="form-select" name="planId" required>
+            <% plans.forEach(plan => { %>
+            <option value="<%= plan._id %>">
+              <%= plan.name %> - <%= plan.roi %>% ROI
+            </option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div class="col-md-3">
+          <label class="form-label">Currency</label>
+          <select class="form-select" name="currency" required>
+            <option value="">Select Currency</option>
+            <option value="USDT">USDT</option>
+            <option value="BTC">BTC</option>
+            <option value="ETH">ETH</option>
+          </select>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label class="form-label"
-          ><i class="fas fa-robot"></i> Investment Plan</label
-        >
-        <select name="planId" class="form-input form-select" required>
-          <% if (plans && plans.length) { %> <% plans.forEach(plan => { %>
-          <option value="<%= plan._id %>">
-            <%= plan.name %> — ROI: <%= plan.roi %>% — Min: $<%=
-            plan.minInvestment || plan.price %>
-          </option>
-          <% }) %> <% } else { %>
-          <option disabled>No plans available</option>
-          <% } %>
-        </select>
+      <div class="text-center mt-4">
+        <button type="submit" class="btn btn-primary px-4 py-2">
+          Start Trade
+        </button>
       </div>
-
-      <div class="form-group">
-        <label class="form-label"
-          ><i class="fas fa-dollar-sign"></i> Amount (USD)</label
-        >
-        <input
-          name="amount"
-          class="form-input"
-          type="number"
-          min="1"
-          required
-          placeholder="Enter amount"
-        />
-      </div>
-
-      <div class="investment-summary glass">
-        <h4>Trade Summary</h4>
-        <p>
-          Profit will be calculated and credited at trade end according to plan
-          ROI.
-        </p>
-      </div>
-
-      <button class="btn-invest" type="submit">
-        <i class="fas fa-rocket"></i> Start Trade
-      </button>
     </form>
   </div>
 
-  <div class="glass-card active-trades mt-5">
-    <h2 class="section-title">
-      <i class="fas fa-chart-line"></i> Active & Completed Trades
-    </h2>
-    <div id="tradeList">
-      <% if (trades && trades.length) { %> <% trades.forEach(trade => { %>
-      <div
-        class="trade-item"
-        id="trade-<%= trade._id %>"
-        data-trade-id="<%= trade._id %>"
-      >
-        <div>
-          <strong><%= trade.tradingPair %></strong> — <%= trade.plan ?
-          trade.plan.name : trade.planName %>
-        </div>
-        <div>Amount: $<%= trade.amount.toFixed(2) %></div>
-        <div class="status">Status: <%= trade.status %></div>
-        <div>
-          Profit:
-          <span class="live-profit"
-            ><%= trade.profit ? '$' + trade.profit.toFixed(2) : 'Pending'
-            %></span
-          >
-        </div>
-
-        <!-- hidden metadata for client -->
-        <input
-          type="hidden"
-          class="meta-start"
-          value="<%= trade.startDateISO %>"
-        />
-        <input type="hidden" class="meta-end" value="<%= trade.endDateISO %>" />
-        <input type="hidden" class="meta-amount" value="<%= trade.amount %>" />
-        <input type="hidden" class="meta-roi" value="<%= trade.roi %>" />
-      </div>
-      <% }) %> <% } else { %>
-      <p>No trades yet. Start one above.</p>
-      <% } %>
+  <div class="glass-card p-4 text-white rounded-4 shadow">
+    <h5 class="mb-3 fw-bold">Active Trades</h5>
+    <div class="table-responsive">
+      <table class="table text-white align-middle">
+        <thead>
+          <tr>
+            <th>Pair</th>
+            <th>Amount</th>
+            <th>ROI</th>
+            <th>Live Profit</th>
+            <th>Progress</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="tradesTableBody">
+          <tr>
+            <td colspan="6" class="text-center text-secondary">Loading...</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>
 
 <script>
-  (function () {
-    const form = document.getElementById("autoTradeForm");
+  document.addEventListener("DOMContentLoaded", () => {
+    const tradeForm = document.getElementById("tradeForm");
+    const tradesTableBody = document.getElementById("tradesTableBody");
 
-    async function startTrade(data) {
-      const resp = await fetch("/dashboard/trade/start", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "CSRF-Token": form.querySelector('input[name="_csrf"]').value,
-        },
-        body: JSON.stringify(data),
-      });
-      return resp.json();
+    async function loadTrades() {
+      try {
+        const res = await fetch("/dashboard/trade/status");
+        const data = await res.json();
+        if (
+          !data.success ||
+          !Array.isArray(data.trades) ||
+          data.trades.length === 0
+        ) {
+          tradesTableBody.innerHTML =
+            '<tr><td colspan="6" class="text-center text-secondary">No active trades</td></tr>';
+          return;
+        }
+
+        tradesTableBody.innerHTML = data.trades
+          .map((t) => {
+            const profit = (t.simulatedProfit ?? 0).toFixed(8);
+            const progress = (t.progress ?? 0).toFixed(0);
+            const badge = t.status === "active" ? "warning" : "success";
+
+            return `
+          <tr id="trade-${t._id}">
+            <td>${t.tradingPair}</td>
+            <td>${t.amount.toFixed(8)} ${t.currency}</td>
+            <td>${t.roi}%</td>
+            <td class="profit-live">${profit} ${t.currency}</td>
+            <td>
+              <div class="progress" style="height:8px"><div class="progress-bar progress-fill bg-success" style="width:${progress}%"></div></div>
+            </td>
+            <td><span class="badge bg-${badge} trade-status">${
+              t.status
+            }</span></td>
+          </tr>`;
+          })
+          .join("");
+      } catch (err) {
+        console.error("loadTrades error", err);
+      }
     }
 
-    form.addEventListener("submit", async (e) => {
+    tradeForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const data = {
-        tradingPair: form.querySelector('[name="tradingPair"]').value,
-        planId: form.querySelector('[name="planId"]').value,
-        amount: Number(form.querySelector('[name="amount"]').value),
-      };
-      if (!data.tradingPair || !data.planId || !data.amount)
-        return alert("Please fill all fields");
+      const formData = new FormData(tradeForm);
+      const payload = Object.fromEntries(formData.entries());
+
       try {
-        const res = await startTrade(data);
-        if (res.success) {
-          // quick UX: append new trade stub (will be refreshed by status poll)
-          window.location.reload(); // simplest reliable action
+        const res = await fetch("/dashboard/trade/start", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "CSRF-Token": "<%= csrfToken %>",
+          },
+          body: JSON.stringify(payload),
+        });
+        const body = await res.json();
+        if (res.ok && body.success) {
+          alert("Trade started");
+          tradeForm.reset();
+          loadTrades();
         } else {
-          alert(res.msg || "Could not start trade");
+          alert(body.error || body.message || "Failed to start trade");
         }
       } catch (err) {
-        console.error(err);
-        alert("Error starting trade.");
+        console.error("start error", err);
+        alert("Unexpected error");
       }
     });
 
-    // Poll server for server-authoritative trade status & profit
-    async function fetchStatus() {
+    async function refreshStatus() {
       try {
-        const resp = await fetch("/dashboard/trade/status");
-        const payload = await resp.json();
+        const res = await fetch("/dashboard/trade/status");
+        const payload = await res.json();
         if (!payload.success) return;
         payload.trades.forEach((t) => {
-          const el = document.querySelector(`#trade-${t._id}`);
-          if (el) {
-            const statusEl = el.querySelector(".status");
-            const profitEl = el.querySelector(".live-profit");
-            // client-side micro-fluctuation factor for realism
-            const micro = Math.random() * 0.02 - 0.01; // ±1%
-            const fluctuated = Math.max(0, t.serverProfit * (1 + micro));
-            profitEl.textContent = `$${fluctuated.toFixed(2)}`;
+          const el = document.getElementById("trade-" + t._id);
+          if (!el) return;
+          const profitEl = el.querySelector(".profit-live");
+          const progressFill = el.querySelector(".progress-fill");
+          const statusEl = el.querySelector(".trade-status");
 
-            if (t.status === "completed") {
-              statusEl.textContent = "Status: Completed";
-              profitEl.textContent = `$${t.finalProfit.toFixed(2)}`;
-            } else {
-              statusEl.textContent = "Status: Active";
-            }
-          } else {
-            // trade not in DOM — optional: append or reload
-          }
+          // small client micro-jitter
+          const micro = Math.random() * 0.02 - 0.01;
+          let display = (t.simulatedProfit ?? 0) * (1 + micro);
+          if (t.status === "completed") display = t.profit ?? t.simulatedProfit;
+
+          if (profitEl)
+            profitEl.textContent = display.toFixed(8) + " " + t.currency;
+          if (progressFill) progressFill.style.width = (t.progress ?? 0) + "%";
+          if (statusEl) statusEl.textContent = t.status;
         });
       } catch (err) {
-        // silent fail
-        console.error("status fetch error", err);
+        console.error("refreshStatus error", err);
       }
     }
 
-    // start polling
-    fetchStatus();
-    setInterval(fetchStatus, 10000); // every 10s
-  })();
+    loadTrades();
+    setInterval(() => {
+      loadTrades();
+      refreshStatus();
+    }, 10000);
+  });
 </script>

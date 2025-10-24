@@ -459,8 +459,7 @@ app.use("/dashboard/plans", require("./routes/investmentPlans"));
 
 app.use("/dashboard/wallet", require("./routes/wallet"));
 
-// const { startProfitUpdateService } = require("./services/profitUpdateService");
-// startProfitUpdateService();
+require("./services/profitUpdateService");
 
 app.get("/api/forex", async (req, res) => {
   try {

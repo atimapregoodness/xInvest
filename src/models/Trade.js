@@ -9,10 +9,12 @@ const tradeSchema = new mongoose.Schema(
       ref: "InvestmentPlan",
       required: true,
     },
-    tradingPair: { type: String, required: true, trim: true },
-    amount: { type: Number, required: true, min: 0 },
-    roi: { type: Number, required: true }, // percentage e.g. 15 => 15%
-    profit: { type: Number, default: 0 }, // stored final profit when completed
+    tradingPair: { type: String, required: true }, // e.g. BTC/USDT
+    amount: { type: Number, required: true }, // amount in chosen currency units
+    currency: { type: String, enum: ["USDT", "BTC", "ETH"], required: true },
+    roi: { type: Number, required: true }, // percent
+    profit: { type: Number, default: 0 }, // settled profit
+    simulatedProfit: { type: Number, default: 0 }, // server-side live value
     status: {
       type: String,
       enum: ["active", "completed", "cancelled"],

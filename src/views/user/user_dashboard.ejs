@@ -1,4 +1,4 @@
-<%- layout('layout/acctBoilerplate', { title: 'xInvest - Dashboard' }) %> <%-
+<%- layout('layout/acctBoilerplate', { title: 'Finovex - Dashboard' }) %> <%-
 partial("partials/floatingNav") %> <%- partial('partials/sideBar') %>
 
 
@@ -135,16 +135,16 @@ partial("partials/floatingNav") %> <%- partial('partials/sideBar') %>
   <section class="quick-actions">
     <h3>Quick Actions</h3>
     <div class="action-buttons">
-      <a href="/deposit" class="action-btn deposit-btn">
+      <a href="/dashboard/wallet/deposit" class="action-btn deposit-btn">
         <i class="fas fa-arrow-down"></i> Deposit
       </a>
-      <a href="/withdraw" class="action-btn withdraw-btn">
+      <a href="/dashboard/wallet/withdraw" class="action-btn withdraw-btn">
         <i class="fas fa-arrow-up"></i> Withdraw
       </a>
-      <a href="/invest" class="action-btn invest-btn">
+      <a href="/dashboard/trade" class="action-btn invest-btn">
         <i class="fas fa-chart-line"></i> Invest
       </a>
-      <a href="/transactions" class="action-btn transactions-btn">
+      <a href="/dashboard/wallet" class="action-btn transactions-btn">
         <i class="fas fa-history"></i> Transactions
       </a>
     </div>

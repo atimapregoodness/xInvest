@@ -106,7 +106,7 @@ const multer = require("multer");
 const storage = new CloudinaryStorage({
   cloudinary,
   params: {
-    folder: "xinvest/botslips",
+    folder: "Finovex/botslips",
     allowed_formats: ["jpg", "jpeg", "png"],
     transformation: [{ width: 800, height: 600, crop: "limit" }],
   },

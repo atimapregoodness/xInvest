@@ -10,7 +10,7 @@ exports.getLogin = (req, res) => {
     return res.redirect("/dashboard");
   } else {
     res.render("auth/login", {
-      title: "xInvest - Login",
+      title: "Finovex - Login",
       formData: { email: "" },
       csrfToken: req.csrfToken(),
     });
@@ -65,7 +65,7 @@ exports.getRegister = (req, res) => {
     return res.redirect("/dashboard");
   } else {
     res.render("auth/register", {
-      title: "xInvest - Sign Up",
+      title: "Finovex - Sign Up",
       formData: { fullName: "", email: "", country: "", phone: "" },
       csrfToken: req.csrfToken(),
     });
@@ -115,7 +115,7 @@ exports.postRegister = async (req, res) => {
 
     if (error) {
       return res.render("auth/register", {
-        title: "xInvest - Sign Up",
+        title: "Finovex - Sign Up",
         formData: { fullName, email, country, phone },
         error_msg: error,
         csrfToken: req.csrfToken(),
@@ -145,7 +145,7 @@ exports.postRegister = async (req, res) => {
 
       req.flash(
         "success_msg",
-        "Welcome to xInvest! Your account has been created."
+        "Welcome to Finovex! Your account has been created."
       );
       return res.redirect("/dashboard");
     });
@@ -156,7 +156,7 @@ exports.postRegister = async (req, res) => {
       "Sorry something went wrong. Please try again later."
     );
     return res.render("auth/register", {
-      title: "xInvest - Sign Up",
+      title: "Finovex - Sign Up",
       formData: req.body,
       error_msg: "Sorry something went wrong. Please try again later.",
       csrfToken: req.csrfToken(),
@@ -177,7 +177,7 @@ exports.logout = (req, res) => {
 
 exports.getForgotPassword = (req, res) => {
   res.render("auth/forgot-password", {
-    title: "xInvest - Forgot Password",
+    title: "Finovex - Forgot Password",
     csrfToken: req.csrfToken(),
   });
 };

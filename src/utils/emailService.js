@@ -24,14 +24,14 @@ transporter.verify((error, success) => {
 const sendWelcomeEmail = async (email, name) => {
   try {
     const mailOptions = {
-      from: `"xInvest" <${process.env.SMTP_FROM}>`,
+      from: `"Finovex" <${process.env.SMTP_FROM}>`,
       to: email,
-      subject: "Welcome to xInvest - Start Your Trading Journey",
+      subject: "Welcome to Finovex - Start Your Trading Journey",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #0066FF;">Welcome to xInvest, ${name}!</h2>
+          <h2 style="color: #0066FF;">Welcome to Finovex, ${name}!</h2>
           <p>We're excited to have you join our professional trading platform.</p>
-          <p>With xInvest, you get access to:</p>
+          <p>With Finovex, you get access to:</p>
           <ul>
             <li>Institutional-grade trading tools</li>
             <li>Real-time market data</li>
@@ -44,7 +44,7 @@ const sendWelcomeEmail = async (email, name) => {
               Go to Dashboard
             </a>
           </div>
-          <p>Happy trading!<br>The xInvest Team</p>
+          <p>Happy trading!<br>The Finovex Team</p>
         </div>
       `,
     };
@@ -63,13 +63,13 @@ const sendPasswordResetEmail = async (email, resetToken) => {
     const resetUrl = `${process.env.BASE_URL}/auth/reset-password?token=${resetToken}`;
 
     const mailOptions = {
-      from: `"xInvest" <${process.env.SMTP_FROM}>`,
+      from: `"Finovex" <${process.env.SMTP_FROM}>`,
       to: email,
-      subject: "Password Reset Request - xInvest",
+      subject: "Password Reset Request - Finovex",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #0066FF;">Password Reset Request</h2>
-          <p>You requested to reset your password for your xInvest account.</p>
+          <p>You requested to reset your password for your Finovex account.</p>
           <p>Click the button below to reset your password:</p>
           <div style="text-align: center; margin: 30px 0;">
             <a href="${resetUrl}" style="background: #0066FF; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; display: inline-block;">
@@ -96,13 +96,13 @@ const sendPasswordResetEmail = async (email, resetToken) => {
 const sendSecurityAlertEmail = async (email, activity) => {
   try {
     const mailOptions = {
-      from: `"xInvest Security" <${process.env.SMTP_FROM}>`,
+      from: `"Finovex Security" <${process.env.SMTP_FROM}>`,
       to: email,
-      subject: "Security Alert - xInvest",
+      subject: "Security Alert - Finovex",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2 style="color: #FF375F;">Security Alert</h2>
-          <p>We detected suspicious activity on your xInvest account:</p>
+          <p>We detected suspicious activity on your Finovex account:</p>
           <p><strong>Activity:</strong> ${activity}</p>
           <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
           <p>If this was you, you can safely ignore this email.</p>

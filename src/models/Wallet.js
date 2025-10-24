@@ -12,26 +12,10 @@ const WalletSchema = new mongoose.Schema(
     },
 
     // ====== BALANCES ======
-    totalBalance: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-    BTC: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-    ETH: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-    USDT: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
+    totalBalance: { type: Number, default: 0, min: 0 },
+    BTC: { type: Number, default: 0, min: 0 },
+    ETH: { type: Number, default: 0, min: 0 },
+    USDT: { type: Number, default: 0, min: 0 },
 
     // ====== INVESTMENT STATS ======
     investmentStats: {
@@ -65,10 +49,7 @@ const WalletSchema = new mongoose.Schema(
       },
     ],
 
-    lastUpdated: {
-      type: Date,
-      default: Date.now,
-    },
+    lastUpdated: { type: Date, default: Date.now },
   },
   { timestamps: true }
 );
@@ -78,7 +59,6 @@ const WalletSchema = new mongoose.Schema(
 //
 WalletSchema.pre("save", async function (next) {
   try {
-    // Fetch real-time prices (cached or live)
     const response = await fetch(
       "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,tether&vs_currencies=usd"
     );
@@ -88,11 +68,9 @@ WalletSchema.pre("save", async function (next) {
     const ethPrice = data.ethereum?.usd || 3450;
     const usdtPrice = data.tether?.usd || 1;
 
-    // Calculate USD equivalent
     this.totalBalance =
       this.BTC * btcPrice + this.ETH * ethPrice + this.USDT * usdtPrice;
 
-    // Calculate total bonus
     this.bonus.totalBonus = this.bonus.BTC + this.bonus.ETH;
     this.lastUpdated = Date.now();
 
@@ -147,8 +125,9 @@ WalletSchema.methods.addTransaction = async function (transactionData) {
     }
   }
 
-  // Create Transaction record
+  // ✅ FIXED: Include userId in transaction
   const transaction = await Transaction.create({
+    userId: this.userId, // FIX
     type,
     currency,
     amount,
