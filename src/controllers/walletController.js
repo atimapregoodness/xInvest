@@ -113,42 +113,6 @@ exports.withdraw = async (req, res) => {
   }
 };
 
-// ===================== TRANSFER =====================
-exports.transfer = async (req, res) => {
-  try {
-    const { fromCurrency, toCurrency, amount } = req.body;
-
-    const user = await User.findById(req.user._id).populate("wallet");
-    if (!user || !user.wallet) {
-      req.flash("error_msg", "Wallet not found.");
-      return res.redirect("/dashboard/wallet");
-    }
-
-    if (user.wallet[fromCurrency] < amount) {
-      req.flash("error_msg", "Insufficient balance for transfer.");
-      return res.redirect("/dashboard/wallet");
-    }
-
-    await user.wallet.addTransaction({
-      type: "transfer",
-      currency: fromCurrency,
-      amount,
-      description: `Internal transfer from ${fromCurrency} to ${toCurrency}`,
-      metadata: { fromCurrency, toCurrency },
-    });
-
-    user.wallet[toCurrency] += amount;
-    await user.wallet.save();
-
-    req.flash("success_msg", "Funds transferred successfully.");
-    res.redirect("/dashboard/wallet");
-  } catch (error) {
-    console.error("❌ Transfer error:", error);
-    req.flash("error_msg", "Transfer failed.");
-    res.redirect("/dashboard/wallet");
-  }
-};
-
 // ===================== TRANSACTION HISTORY =====================
 exports.getTransactions = async (req, res) => {
   try {

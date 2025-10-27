@@ -4,13 +4,22 @@ const User = require("../models/User");
 const Wallet = require("../models/Wallet");
 
 // ===================== CONNECT TO DATABASE =====================
-mongoose
-  .connect(process.env.MONGODB_URI)
-  .then(() => console.log("✅ Connected to MongoDB"))
-  .catch((err) => {
+async function connectDB() {
+  try {
+    await mongoose.connect(
+      process.env.MONGODB_URI || "mongodb://localhost:27017/xInvest",
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        serverSelectionTimeoutMS: 30000, // 30 seconds
+      }
+    );
+    console.log("✅ Connected to MongoDB");
+  } catch (err) {
     console.error("❌ MongoDB connection failed:", err);
     process.exit(1);
-  });
+  }
+}
 
 // ===================== SEED ADMIN FUNCTION =====================
 async function seedAdmin() {
@@ -21,7 +30,6 @@ async function seedAdmin() {
     });
     if (existingAdmin) {
       console.log("⚠️ Admin already exists:", existingAdmin.email);
-      mongoose.connection.close();
       return;
     }
 
@@ -41,19 +49,25 @@ async function seedAdmin() {
     // Ensure wallet is created and linked
     let wallet = await Wallet.findOne({ userId: admin._id });
     if (!wallet) {
-      wallet = await Wallet.create({ userId: admin._id });
+      wallet = await Wallet.create({ userId: admin._id, balance: 0 });
       admin.wallet = wallet._id;
       await admin.save();
     }
 
     console.log("✅ Admin user created successfully!");
     console.log("📧 Email:", process.env.ADMIN_EMAIL);
+    console.log("🔑 Password:", process.env.ADMIN_PASSWORD);
   } catch (error) {
     console.error("❌ Error seeding admin:", error);
   } finally {
-    mongoose.connection.close();
+    // Close DB connection
+    await mongoose.connection.close();
+    console.log("🛑 MongoDB connection closed");
   }
 }
 
-// ===================== RUN FUNCTION =====================
-seedAdmin();
+// ===================== RUN SCRIPT =====================
+(async () => {
+  await connectDB();
+  await seedAdmin();
+})();

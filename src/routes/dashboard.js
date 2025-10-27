@@ -1,24 +1,83 @@
+// routes/dashboard.js
 const express = require("express");
 const router = express.Router();
+const path = require("path");
+const fs = require("fs");
+const multer = require("multer");
+
 const DashboardController = require("../controllers/DashboardController");
 const { ensureAuthenticated } = require("../middleware/auth");
+const User = require("../models/User");
 
-// All dashboard routes require authentication
+// ----------------------
+// MIDDLEWARE
+// ----------------------
+
+// Ensure uploads folder exists
+const uploadDir = path.join(__dirname, "../public/uploads/verifications");
+if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+
+// Multer setup for file uploads
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = file.originalname.split(".").pop();
+    cb(null, file.fieldname + "-" + uniqueSuffix + "." + ext);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  const allowed = ["image/jpeg", "image/png", "image/jpg"];
+  if (!allowed.includes(file.mimetype)) {
+    return cb(new Error("Only image files (JPG, PNG) are allowed!"));
+  }
+  cb(null, true);
+};
+
+const upload = multer({ storage, fileFilter });
+
+// ----------------------
+// AUTH GUARD
+// ----------------------
 router.use(ensureAuthenticated);
 
-// Dashboard main page
+// ----------------------
+// DASHBOARD ROUTES
+// ----------------------
+
+// Main dashboard
 router.get("/", DashboardController.getDashboard);
 
-// Profile routes
-router.get("/profile", DashboardController.getProfile);
-router.post("/profile", DashboardController.updateProfile);
+// Profile page
+router.get("/personal", DashboardController.getProfile);
 
+// Verification page (GET)
+router.get(
+  "/personal/verification",
+
+  DashboardController.getVerificationPage
+);
+
+// Verification submit (POST)
+router.post(
+  "/personal/verification",
+  ensureAuthenticated,
+
+  upload.single("idUpload"),
+  DashboardController.submitVerification
+);
+
+// ----------------------
+// API: Transaction Stats
+// ----------------------
 router.get("/api/transactions/stats", async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
     const transactions = user.transactions || [];
 
-    // Calculate stats
     let profitReturn = 0,
       bonus = 0,
       totalDeposit = 0,
@@ -33,28 +92,29 @@ router.get("/api/transactions/stats", async (req, res) => {
     transactions.forEach((txn) => {
       const amount = txn.netAmount || 0;
 
-      // PROFIT RETURN
-      if (txn.type === "profit") profitReturn += amount;
-
-      // BONUS
-      if (txn.type === "bonus") {
-        bonus += amount;
-        if (txn.currency === "BTC") bonusBTC += amount;
-        if (txn.currency === "ETH") bonusETH += amount;
-      }
-
-      // DEPOSITS
-      if (txn.type === "deposit" && txn.status === "completed") {
-        totalDeposit += amount;
-        if (txn.currency === "BTC") depositBTC += amount;
-        if (txn.currency === "ETH") depositETH += amount;
-      }
-
-      // WITHDRAWALS
-      if (txn.type === "withdrawal" && txn.status === "completed") {
-        totalWithdrawal += amount;
-        if (txn.currency === "BTC") withdrawalBTC += amount;
-        if (txn.currency === "ETH") withdrawalETH += amount;
+      switch (txn.type) {
+        case "profit":
+          profitReturn += amount;
+          break;
+        case "bonus":
+          bonus += amount;
+          if (txn.currency === "BTC") bonusBTC += amount;
+          if (txn.currency === "ETH") bonusETH += amount;
+          break;
+        case "deposit":
+          if (txn.status === "completed") {
+            totalDeposit += amount;
+            if (txn.currency === "BTC") depositBTC += amount;
+            if (txn.currency === "ETH") depositETH += amount;
+          }
+          break;
+        case "withdrawal":
+          if (txn.status === "completed") {
+            totalWithdrawal += amount;
+            if (txn.currency === "BTC") withdrawalBTC += amount;
+            if (txn.currency === "ETH") withdrawalETH += amount;
+          }
+          break;
       }
     });
 
@@ -72,7 +132,8 @@ router.get("/api/transactions/stats", async (req, res) => {
       withdrawalETH,
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Stats error" });
+    console.error("Stats error:", error);
+    res.status(500).json({ success: false, message: "Error fetching stats" });
   }
 });
 

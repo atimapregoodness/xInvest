@@ -1,55 +1,64 @@
+/**
+ * services/profitUpdateService.js
+ * -------------------------------
+ * Runs every 30 seconds to update trade progress and credit profits on completion.
+ * Also provides a manual trigger function for testing or admin use.
+ */
+
 const cron = require("node-cron");
 const Trade = require("../models/Trade");
 const Wallet = require("../models/Wallet");
+const Transaction = require("../models/Transaction"); // 🧾 Import Transaction model
 
-// ⏱ Update profits every 30 seconds
-cron.schedule("*/30 * * * * *", async () => {
+/**
+ * 🔁 Core trade profit updater logic (can run manually or via cron)
+ */
+async function updateTradesManually() {
   try {
-    const activeTrades = await Trade.find({
-      status: "active",
-      endDate: { $gt: new Date() },
-    });
+    const now = new Date();
 
-    if (activeTrades.length === 0) return;
+    // 🔍 Fetch all active trades
+    const activeTrades = await Trade.find({ status: "active" });
 
-    console.log(`[CRON] Updating ${activeTrades.length} active trades...`);
+    if (activeTrades.length === 0) {
+      console.log("[PROFIT-UPDATER] No active trades to process.");
+      return;
+    }
+
+    console.log(
+      `[PROFIT-UPDATER] Updating ${activeTrades.length} active trades...`
+    );
 
     for (const trade of activeTrades) {
       try {
-        const now = new Date();
         const start = new Date(trade.startDate);
         const end = new Date(trade.endDate);
         const totalMs = end - start;
 
         if (totalMs <= 0) continue;
 
-        // ✅ Calculate progress (0–1)
         const elapsedMs = now - start;
         const progress = Math.min(Math.max(elapsedMs / totalMs, 0), 1);
 
-        // ✅ Expected profit in USDT (fixed ROI)
-        const investment = parseFloat(trade.amountUSDT) || 0;
+        // 🧮 Compute expected profit (in same currency as trade)
+        const investment = parseFloat(trade.amount) || 0; // amount in coin (BTC/ETH/USDT)
         const roi = parseFloat(trade.roi) || 0;
         const expectedProfit = (investment * roi) / 100;
 
-        // ✅ Simulated live profit with minor fluctuation
+        // 💹 Simulate progressive profit
         const baseProfit = expectedProfit * progress;
-        const fluctuation = baseProfit * ((Math.random() * 6 - 3) / 100); // ±3%
+        const fluctuation = baseProfit * ((Math.random() * 6 - 3) / 100);
         let simulatedProfit = baseProfit + fluctuation;
 
-        // ✅ Ensure valid profit (no NaN, no negatives)
-        if (!isFinite(simulatedProfit) || simulatedProfit < 0) {
+        if (!isFinite(simulatedProfit) || simulatedProfit < 0)
           simulatedProfit = 0;
-        }
 
-        // ✅ Cap simulated profit to expected profit
         simulatedProfit = Math.min(simulatedProfit, expectedProfit);
 
-        // ✅ Update trade progress + profit
         trade.simulatedProfit = parseFloat(simulatedProfit.toFixed(8));
         trade.progress = Math.round(progress * 100);
 
-        // ✅ If trade reached end time, complete and credit wallet
+        // ✅ If trade completed, credit profit + investment
         if (now >= end || progress >= 1) {
           trade.status = "completed";
           trade.profit = parseFloat(expectedProfit.toFixed(8));
@@ -58,14 +67,49 @@ cron.schedule("*/30 * * * * *", async () => {
           const wallet = await Wallet.findOne({ userId: trade.user });
           if (wallet) {
             const currency = trade.currency?.toUpperCase();
-            const balance = parseFloat(wallet[currency]) || 0;
+            const prevBalance = parseFloat(wallet[currency]) || 0;
             const totalPayout = investment + expectedProfit;
 
-            wallet[currency] = parseFloat((balance + totalPayout).toFixed(8));
+            wallet[currency] = parseFloat(
+              (prevBalance + totalPayout).toFixed(8)
+            );
             await wallet.save();
 
             console.log(
-              `[CRON] ✅ Trade ${trade._id} completed. Credited ${totalPayout} ${currency}.`
+              `[PROFIT-UPDATER] ✅ Trade ${trade._id} completed — credited ${totalPayout} ${currency} to user ${trade.user}.`
+            );
+
+            // 🧾 Create transaction record for profit credit
+            await Transaction.createRecord({
+              userId: trade.user,
+              type: "profit",
+              currency,
+              amount: expectedProfit,
+              description: `Profit credited for completed trade ${trade._id}`,
+              metadata: {
+                tradeId: trade._id,
+                roi,
+                investment,
+                totalPayout,
+              },
+            });
+
+            // 🧾 Create transaction record for returning investment principal
+            await Transaction.createRecord({
+              userId: trade.user,
+              type: "credit",
+              currency,
+              amount: investment,
+              description: `Investment principal returned for trade ${trade._id}`,
+              metadata: {
+                tradeId: trade._id,
+                roi,
+                profit: expectedProfit,
+              },
+            });
+          } else {
+            console.warn(
+              `[PROFIT-UPDATER] ⚠️ No wallet found for user ${trade.user}`
             );
           }
         }
@@ -76,10 +120,18 @@ cron.schedule("*/30 * * * * *", async () => {
       }
     }
 
-    console.log("[CRON] ✅ Profit update cycle complete.\n");
+    console.log("[PROFIT-UPDATER] ✅ Update cycle complete.\n");
   } catch (err) {
     console.error("🚨 Critical profit update error:", err.message);
   }
-});
+}
 
-module.exports = { cron };
+/**
+ * 🕒 Schedule automatic run every 30 seconds
+ */
+cron.schedule("*/30 * * * * *", updateTradesManually);
+
+/**
+ * 🧪 Export for manual trigger
+ */
+module.exports = { updateTradesManually };

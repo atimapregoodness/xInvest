@@ -16,15 +16,25 @@
       </div>
 
       <div class="balance-actions">
-        <a href="/wallet/deposit" class="balance-btn">
+        <button
+          class="balance-btn"
+          id="depositBtn"
+          data-bs-toggle="modal"
+          data-bs-target="#depositModal"
+        >
           <i class="fas fa-arrow-down"></i>
           <span>Deposit</span>
-        </a>
-        <a href="/wallet/withdraw" class="balance-btn">
+        </button>
+        <button
+          class="balance-btn"
+          id="withdrawBtn"
+          data-bs-toggle="modal"
+          data-bs-target="#withdrawModal"
+        >
           <i class="fas fa-arrow-up"></i>
           <span>Withdraw</span>
-        </a>
-        <a href="/invest" class="balance-btn">
+        </button>
+        <a href="/dashboard/invest" class="balance-btn">
           <i class="fas fa-chart-line"></i>
           <span>Invest</span>
         </a>
@@ -50,7 +60,7 @@
               </td>
               <td class="asset-symbol-cell">
                 <div class="asset-holding" id="btc-holding">
-                  <%= wallet?.BTC?.toFixed(6) || '0.000000' %> BTC
+                  <%= (wallet?.BTC || 0).toFixed(6) %> BTC
                 </div>
                 <div class="asset-live-price" id="btc-live-price">$0.00</div>
               </td>
@@ -69,7 +79,7 @@
               </td>
               <td class="asset-symbol-cell">
                 <div class="asset-holding" id="eth-holding">
-                  <%= wallet?.ETH?.toFixed(4) || '0.0000' %> ETH
+                  <%= (wallet?.ETH || 0).toFixed(4) %> ETH
                 </div>
                 <div class="asset-live-price" id="eth-live-price">$0.00</div>
               </td>
@@ -88,7 +98,7 @@
               </td>
               <td class="asset-symbol-cell">
                 <div class="asset-holding" id="usdt-holding">
-                  $<%= wallet?.USDT?.toLocaleString() || '0' %> USDT
+                  $<%= (wallet?.USDT || 0).toLocaleString() %> USDT
                 </div>
                 <div class="asset-live-price" id="usdt-live-price">$1.00</div>
               </td>
@@ -102,146 +112,653 @@
     </div>
 
     <!-- Transactions Table -->
-    <div class="transactions-table-container">
-      <table class="transactions-table">
-        <thead>
-          <tr>
-            <th class="type-th">Type</th>
-            <th class="details-th">Details</th>
-            <th class="amount-th">Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% transactions.forEach(transaction => { const type =
-          transaction?.type || 'unknown'; const status = transaction?.status ||
-          'pending'; const currency = transaction?.currency || 'USD'; const
-          netAmount = transaction?.netAmount || 0; const fee = transaction?.fee
-          || 0; %>
-          <tr class="transaction-row" data-status="<%= status %>">
-            <!-- COLUMN 1: TYPE -->
-            <td class="type-cell">
-              <div class="type-icon <%= type %>-icon">
-                <% if (type === 'deposit') { %>
-                <i class="fas fa-arrow-down"></i>
-                <% } else if (type === 'withdrawal') { %>
-                <i class="fas fa-arrow-up"></i>
-                <% } else if (type === 'investment') { %>
-                <i class="fas fa-chart-line"></i>
-                <% } else if (type === 'profit') { %>
-                <i class="fas fa-coins"></i>
-                <% } else if (type === 'transfer') { %>
-                <i class="fas fa-exchange-alt"></i>
-                <% } else if (type === 'fee') { %>
-                <i class="fas fa-minus-circle"></i>
-                <% } else if (type === 'bonus') { %>
-                <i class="fas fa-gift"></i>
-                <% } else if (type === 'purchase') { %>
-                <i class="fas fa-shopping-cart"></i>
-                <% } else { %>
-                <i class="fas fa-question-circle"></i>
+    <div class="">
+      <h4 class="px-3 pt-4">History</h4>
+      <div class="transactions-table-container">
+        <table class="transactions-table">
+          <thead>
+            <tr>
+              <th class="type-th">Type</th>
+              <th class="details-th">Details</th>
+              <th class="amount-th">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% transactions.forEach(transaction => { %>
+            <tr class="transaction-row" data-status="<%= transaction.status %>">
+              <td class="type-cell">
+                <div class="group">
+                  <div class="type-icon <%= transaction.type %>-icon">
+                    <% if (transaction.type === 'deposit') { %>
+                    <i class="fas fa-arrow-down"></i>
+                    <% } else if (transaction.type === 'withdrawal') { %>
+                    <i class="fas fa-arrow-up"></i>
+                    <% } else if (transaction.type === 'investment') { %>
+                    <i class="fas fa-chart-line"></i>
+                    <% } else if (transaction.type === 'profit') { %>
+                    <i class="fas fa-coins"></i>
+                    <% } else if (transaction.type === 'transfer') { %>
+                    <i class="fas fa-exchange-alt"></i>
+                    <% } else if (transaction.type === 'fee') { %>
+                    <i class="fas fa-minus-circle"></i>
+                    <% } else if (transaction.type === 'bonus') { %>
+                    <i class="fas fa-gift"></i>
+                    <% } else if (transaction.type === 'purchase') { %>
+                    <i class="fas fa-shopping-cart"></i>
+                    <% } else { %>
+                    <i class="fas fa-question-circle"></i>
+                    <% } %>
+                  </div>
+                  <div class="type-name">
+                    <%= transaction.type.charAt(0).toUpperCase() +
+                    transaction.type.slice(1) %>
+                  </div>
+                </div>
+                <p class="type-status <%= transaction.status %>">
+                  <%= transaction.status.charAt(0).toUpperCase() +
+                  transaction.status.slice(1) %>
+                </p>
+              </td>
+
+              <td class="details-cell">
+                <div class="currency"><%= transaction.currency %></div>
+                <% if (transaction.description) { %>
+                <div class="description"><%= transaction.description %></div>
+                <% } %> <% if (transaction.txHash) { %>
+                <div class="tx-hash">
+                  TX: <%= transaction.txHash.substring(0, 10) %>...
+                </div>
                 <% } %>
-              </div>
-              <div class="type-name">
-                <%= type.charAt(0).toUpperCase() + type.slice(1) %>
-              </div>
-              <div class="type-status <%= status %>">
-                <%= status.charAt(0).toUpperCase() + status.slice(1) %>
-              </div>
-            </td>
+                <div class="date">
+                  <%= new Date(transaction.createdAt).toLocaleDateString() %>
+                  <%= new Date(transaction.createdAt).toLocaleTimeString([],
+                  {hour:'2-digit', minute:'2-digit'}) %>
+                </div>
+              </td>
 
-            <!-- COLUMN 2: DETAILS -->
-            <td class="details-cell">
-              <div class="currency"><%= currency %></div>
-              <% if (transaction?.description) { %>
-              <div class="description"><%= transaction.description %></div>
-              <% } %> <% if (transaction?.txHash) { %>
-              <div class="tx-hash">
-                TX: <%= transaction.txHash.substring(0, 10) %>...
-              </div>
-              <% } %>
-              <div class="date">
-                <%= new Date(transaction.createdAt).toLocaleDateString() %> <%=
-                new Date(transaction.createdAt).toLocaleTimeString([],
-                {hour:'2-digit', minute:'2-digit'}) %>
-              </div>
-            </td>
-
-            <!-- COLUMN 3: AMOUNT -->
-            <td class="amount-cell">
-              <div class="net-amount <%= type === 'fee' ? 'negative' : '' %>">
-                <%= type === 'fee' ? '-' : '' %><%= netAmount.toFixed(4) %> <%=
-                currency %>
-              </div>
-              <% if (fee > 0) { %>
-              <div class="fee">Fee: -<%= fee.toFixed(4) %> <%= currency %></div>
-              <% } %>
-            </td>
-          </tr>
-          <% }) %> <% if (transactions.length === 0) { %>
-          <tr class="no-transactions">
-            <td colspan="3" class="text-center">
-              <i class="fas fa-inbox"></i>
-              <div>No transactions yet</div>
-            </td>
-          </tr>
-          <% } %>
-        </tbody>
-      </table>
+              <td class="amount-cell">
+                <div
+                  class="net-amount <%= transaction.type === 'fee' ? 'negative' : '' %>"
+                >
+                  <%= transaction.type === 'fee' ? '-' : '' %> <%=
+                  (transaction.netAmount ? transaction.netAmount.toFixed(4) :
+                  '0.0000') %> <%= transaction.currency || '' %>
+                </div>
+                <% if (transaction.fee && transaction.fee > 0) { %>
+                <div class="fee">
+                  Fee: -<%= transaction.fee ? transaction.fee.toFixed(4) :
+                  '0.0000' %> <%= transaction.currency || '' %>
+                </div>
+                <% } %>
+              </td>
+            </tr>
+            <% }) %> <% if (transactions.length === 0) { %>
+            <tr class="no-transactions">
+              <td colspan="3" class="text-center">
+                <i class="fas fa-inbox"></i>
+                <div>No transactions yet</div>
+              </td>
+            </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
     </div>
   </section>
 </div>
 
+<!-- Deposit Modal -->
+<div
+  class="modal fade glass-modal"
+  id="depositModal"
+  tabindex="-1"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content glass">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <i class="fas fa-arrow-down text-success me-2"></i>Deposit Funds
+        </h3>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <form
+        action="/dashboard/deposit"
+        method="POST"
+        enctype="multipart/form-data"
+        id="depositForm"
+      >
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+        <div class="modal-body">
+          <!-- Currency Selection -->
+          <div class="form-group mb-3">
+            <label class="form-label">Currency</label>
+            <div class="currency-selector">
+              <div
+                class="currency-option currency-btc selected"
+                data-currency="BTC"
+              >
+                <i class="fab fa-bitcoin"></i>
+                <span>BTC</span>
+              </div>
+              <div class="currency-option currency-eth" data-currency="ETH">
+                <i class="fab fa-ethereum"></i>
+                <span>ETH</span>
+              </div>
+              <div class="currency-option currency-usdt" data-currency="USDT">
+                <i class="fas fa-dollar-sign"></i>
+                <span>USDT</span>
+              </div>
+            </div>
+            <input
+              type="hidden"
+              id="depositCurrency"
+              name="currency"
+              value="BTC"
+              required
+            />
+          </div>
+
+          <!-- Amount -->
+          <div class="form-group mb-3">
+            <label for="depositAmount" class="form-label">Amount</label>
+            <div class="input-with-icon">
+              <input
+                type="number"
+                id="depositAmount"
+                name="amount"
+                step="0.000001"
+                min="0.000001"
+                required
+                placeholder="0.00"
+                class="form-control"
+              />
+              <span class="input-icon" id="depositCurrencySymbol">BTC</span>
+            </div>
+            <small class="text-muted"
+              >Minimum deposit: 0.001 BTC / 0.01 ETH / 10 USDT</small
+            >
+          </div>
+
+          <!-- Wallet Address -->
+          <div class="wallet-info mb-3">
+            <label class="form-label">Send to this address</label>
+            <div class="address-container">
+              <div class="address-text" id="depositWalletAddress">
+                bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh
+              </div>
+              <button type="button" class="copy-btn" id="copyDepositAddress">
+                <i class="fas fa-copy"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Proof Upload -->
+          <div class="form-group mb-3">
+            <label for="depositReceipt" class="form-label"
+              >Upload Payment Proof</label
+            >
+            <input
+              type="file"
+              id="depositReceipt"
+              name="receipt"
+              accept=".jpg,.jpeg,.png,.pdf"
+              class="form-control"
+              required
+            />
+            <small class="text-muted"
+              >Upload screenshot or PDF of your transaction (max 10MB)</small
+            >
+          </div>
+
+          <!-- Transaction Hash (Optional) -->
+          <div class="form-group mb-3">
+            <label for="transactionHash" class="form-label"
+              >Transaction Hash (Optional)</label
+            >
+            <input
+              type="text"
+              id="transactionHash"
+              name="transactionHash"
+              class="form-control"
+              placeholder="Enter transaction hash for faster processing"
+            />
+          </div>
+
+          <!-- Terms -->
+          <div class="form-check mb-3">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="depositTerms"
+              name="terms"
+              required
+            />
+            <label class="form-check-label" for="depositTerms">
+              I confirm I've sent the exact amount to the address above
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-outline-light"
+            data-bs-dismiss="modal"
+          >
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-paper-plane me-2"></i>Submit Deposit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Withdrawal Modal -->
+<div
+  class="modal fade glass-modal"
+  id="withdrawModal"
+  tabindex="-1"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content glass">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <i class="fas fa-arrow-up text-warning me-2"></i>Withdraw Funds
+        </h3>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <form action="/dashboard/withdraw" method="POST" id="withdrawForm">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+        <div class="modal-body">
+          <!-- Currency -->
+          <div class="form-group mb-3">
+            <label class="form-label">Currency</label>
+            <div class="currency-selector">
+              <div
+                class="currency-option currency-btc selected"
+                data-currency="BTC"
+              >
+                <i class="fab fa-bitcoin"></i> BTC
+              </div>
+              <div class="currency-option currency-eth" data-currency="ETH">
+                <i class="fab fa-ethereum"></i> ETH
+              </div>
+              <div class="currency-option currency-usdt" data-currency="USDT">
+                <i class="fas fa-dollar-sign"></i> USDT
+              </div>
+            </div>
+            <input
+              type="hidden"
+              id="withdrawCurrency"
+              name="currency"
+              value="BTC"
+              required
+            />
+          </div>
+
+          <!-- Amount -->
+          <div class="form-group mb-3">
+            <label for="withdrawAmount" class="form-label">Amount</label>
+            <div class="input-with-icon">
+              <input
+                type="number"
+                id="withdrawAmount"
+                name="amount"
+                step="0.000001"
+                min="0.000001"
+                required
+                placeholder="0.00"
+                class="form-control"
+              />
+              <span class="input-icon" id="withdrawCurrencySymbol">BTC</span>
+            </div>
+            <div class="available-balance mt-1">
+              Available:
+              <span id="availableBalance"
+                ><%= (wallet?.BTC || 0).toFixed(6) %> BTC</span
+              >
+            </div>
+            <small class="text-muted"
+              >Minimum withdrawal: 0.001 BTC / 0.01 ETH / 10 USDT</small
+            >
+          </div>
+
+          <!-- Wallet -->
+          <div class="form-group mb-3">
+            <label for="withdrawWalletAddress" class="form-label"
+              >Your Wallet Address</label
+            >
+            <input
+              type="text"
+              id="withdrawWalletAddress"
+              name="walletAddress"
+              required
+              placeholder="Enter your external wallet address"
+              class="form-control"
+            />
+          </div>
+
+          <!-- Network -->
+          <div class="form-group mb-3">
+            <label for="withdrawNetwork" class="form-label">Network</label>
+            <select
+              class="form-control"
+              id="withdrawNetwork"
+              name="network"
+              required
+            >
+              <option value="mainnet">Main Network</option>
+              <option value="erc20">ERC-20</option>
+              <option value="bep20">BEP-20</option>
+              <option value="trc20">TRC-20</option>
+            </select>
+          </div>
+
+          <!-- 2FA -->
+          <div class="form-group mb-3">
+            <label for="withdraw2FA" class="form-label">2FA Code</label>
+            <input
+              type="text"
+              id="withdraw2FA"
+              name="twoFactorCode"
+              maxlength="6"
+              required
+              placeholder="Enter 6-digit code from authenticator"
+              class="form-control"
+            />
+          </div>
+
+          <!-- Terms -->
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              id="withdrawTerms"
+              name="terms"
+              required
+            />
+            <label class="form-check-label" for="withdrawTerms">
+              I confirm the wallet address is correct and withdrawals are
+              irreversible
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-outline-light"
+            data-bs-dismiss="modal"
+          >
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-paper-plane me-2"></i>Submit Withdrawal
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const toggleBtn = document.getElementById('toggleBalance');
-    const balanceAmount = document.getElementById('balanceAmount');
-    let isHidden = false;
+  document.addEventListener('DOMContentLoaded', function () {
+    // Wallet data from server
+    const walletData = {
+      BTC: <%= wallet?.BTC || 0 %>,
+      ETH: <%= wallet?.ETH || 0 %>,
+      USDT: <%= wallet?.USDT || 0 %>
+    };
 
-    toggleBtn.addEventListener('click', () => {
-      isHidden = !isHidden;
-      if (isHidden) {
-        balanceAmount.textContent = '******';
-        toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
-      } else {
-        balanceAmount.textContent = '$<%= wallet?.totalBalance?.toLocaleString() || "0.00" %>';
-        toggleBtn.innerHTML = '<i class="fas fa-eye"></i>';
-      }
-    });
+    let totalBalance = 0;
+    let isBalanceHidden = false;
 
-    const walletData = <%- JSON.stringify(wallet || {}) %>;
-    setInterval(updatePrices, 30000);
-    updatePrices();
+    // Initialize all functionality
+    initBalanceToggle();
+    initPriceUpdates();
+    initDepositModal();
+    initWithdrawModal();
+
+    // ===============================
+    // 🔹 BALANCE TOGGLE
+    // ===============================
+    function initBalanceToggle() {
+      const toggleBtn = document.getElementById('toggleBalance');
+      const balanceAmount = document.getElementById('balanceAmount');
+
+      toggleBtn.addEventListener('click', () => {
+        isBalanceHidden = !isBalanceHidden;
+        if (isBalanceHidden) {
+          balanceAmount.textContent = '******';
+          toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+        } else {
+          updateBalanceDisplay();
+          toggleBtn.innerHTML = '<i class="fas fa-eye"></i>';
+        }
+      });
+    }
+
+    // ===============================
+    // 🔹 PRICE UPDATES & WALLET CALCULATIONS
+    // ===============================
+    function initPriceUpdates() {
+      updatePrices(); // Initial update
+      setInterval(updatePrices, 30000); // Update every 30 seconds
+    }
 
     async function updatePrices() {
       try {
-        const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,tether&vs_currencies=usd');
+        const response = await fetch(
+          'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,tether&vs_currencies=usd'
+        );
+
         if (!response.ok) throw new Error('API Error');
         const data = await response.json();
 
-        const btcPrice = data.bitcoin.usd;
-        const ethPrice = data.ethereum.usd;
-        const usdtPrice = data.tether.usd;
+        // Extract prices
+        const btcPrice = data.bitcoin?.usd || 0;
+        const ethPrice = data.ethereum?.usd || 0;
+        const usdtPrice = data.tether?.usd || 1;
 
-        const btcValue = btcPrice * (walletData.BTC || 0);
-        const ethValue = ethPrice * (walletData.ETH || 0);
-        const usdtValue = (walletData.USDT || 0);
+        // Calculate values
+        const btcValue = (walletData.BTC || 0) * btcPrice;
+        const ethValue = (walletData.ETH || 0) * ethPrice;
+        const usdtValue = (walletData.USDT || 0) * usdtPrice;
 
-        document.getElementById('btc-live-price').textContent = `$${btcPrice.toLocaleString()}`;
-        document.getElementById('eth-live-price').textContent = `$${ethPrice.toLocaleString()}`;
-        document.getElementById('usdt-live-price').textContent = `$${usdtPrice.toFixed(4)}`;
+        // Update display
+        updateAssetDisplay('btc', btcPrice, btcValue);
+        updateAssetDisplay('eth', ethPrice, ethValue);
+        updateAssetDisplay('usdt', usdtPrice, usdtValue);
 
-        document.getElementById('btc-value').textContent = `$${btcValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-        document.getElementById('eth-value').textContent = `$${ethValue.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-        document.getElementById('usdt-value').textContent = `$${usdtValue.toLocaleString()}`;
-
-        const totalBalance = btcValue + ethValue + usdtValue;
-        if (!isHidden) {
-          balanceAmount.textContent = `$${totalBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-        }
+        // Update total balance
+        totalBalance = btcValue + ethValue + usdtValue;
+        updateBalanceDisplay();
 
       } catch (error) {
         console.error('Price update failed:', error);
+        // Fallback prices
+        updateAssetDisplay('btc', 45000, (walletData.BTC || 0) * 45000);
+        updateAssetDisplay('eth', 3000, (walletData.ETH || 0) * 3000);
+        updateAssetDisplay('usdt', 1, (walletData.USDT || 0));
       }
+    }
+
+    function updateAssetDisplay(asset, price, value) {
+      const priceElement = document.getElementById(`${asset}-live-price`);
+      const valueElement = document.getElementById(`${asset}-value`);
+
+      if (priceElement) {
+        priceElement.textContent = `$${price.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      }
+      if (valueElement) {
+        valueElement.textContent = `$${value.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      }
+    }
+
+    function updateBalanceDisplay() {
+      if (!isBalanceHidden) {
+        document.getElementById('balanceAmount').textContent = `$${totalBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+      }
+    }
+
+    // ===============================
+    // 🔹 DEPOSIT MODAL
+    // ===============================
+    function initDepositModal() {
+      const depositModal = document.getElementById('depositModal');
+
+      // Currency selection
+      depositModal.querySelectorAll('.currency-option').forEach(option => {
+        option.addEventListener('click', function() {
+          depositModal.querySelectorAll('.currency-option').forEach(opt => opt.classList.remove('selected'));
+          this.classList.add('selected');
+
+          const currency = this.getAttribute('data-currency');
+          document.getElementById('depositCurrency').value = currency;
+          document.getElementById('depositCurrencySymbol').textContent = currency;
+          updateDepositAddress(currency);
+        });
+      });
+
+      // Copy address functionality
+      document.getElementById('copyDepositAddress').addEventListener('click', function() {
+        const address = document.getElementById('depositWalletAddress').textContent;
+        navigator.clipboard.writeText(address).then(() => {
+          const originalHTML = this.innerHTML;
+          this.innerHTML = '<i class="fas fa-check"></i>';
+          setTimeout(() => {
+            this.innerHTML = originalHTML;
+          }, 2000);
+        });
+      });
+
+      // Form validation
+      document.getElementById('depositForm').addEventListener('submit', function(e) {
+        const amount = parseFloat(document.getElementById('depositAmount').value) || 0;
+        const currency = document.getElementById('depositCurrency').value;
+
+        // Validate minimum amounts
+        const minAmounts = {
+          'BTC': 0.001,
+          'ETH': 0.01,
+          'USDT': 10
+        };
+
+        if (amount < minAmounts[currency]) {
+          e.preventDefault();
+          alert(`Minimum deposit for ${currency} is ${minAmounts[currency]}`);
+          return;
+        }
+
+        // File validation
+        const fileInput = document.getElementById('depositReceipt');
+        if (fileInput.files.length === 0) {
+          e.preventDefault();
+          alert('Please upload payment proof');
+          return;
+        }
+      });
+    }
+
+    function updateDepositAddress(currency) {
+      const addresses = {
+        'BTC': 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
+        'ETH': '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
+        'USDT': '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+      };
+      document.getElementById('depositWalletAddress').textContent = addresses[currency];
+    }
+
+    // ===============================
+    // 🔹 WITHDRAW MODAL
+    // ===============================
+    function initWithdrawModal() {
+      const withdrawModal = document.getElementById('withdrawModal');
+
+      // Currency selection
+      withdrawModal.querySelectorAll('.currency-option').forEach(option => {
+        option.addEventListener('click', function() {
+          withdrawModal.querySelectorAll('.currency-option').forEach(opt => opt.classList.remove('selected'));
+          this.classList.add('selected');
+
+          const currency = this.getAttribute('data-currency');
+          document.getElementById('withdrawCurrency').value = currency;
+          document.getElementById('withdrawCurrencySymbol').textContent = currency;
+          updateAvailableBalance(currency);
+        });
+      });
+
+      // Amount validation
+      document.getElementById('withdrawAmount').addEventListener('input', function() {
+        validateWithdrawAmount();
+      });
+
+      // Form validation
+      document.getElementById('withdrawForm').addEventListener('submit', function(e) {
+        if (!validateWithdrawAmount()) {
+          e.preventDefault();
+          alert('Amount exceeds available balance!');
+          return;
+        }
+
+        const amount = parseFloat(document.getElementById('withdrawAmount').value) || 0;
+        const currency = document.getElementById('withdrawCurrency').value;
+
+        // Validate minimum amounts
+        const minAmounts = {
+          'BTC': 0.001,
+          'ETH': 0.01,
+          'USDT': 10
+        };
+
+        if (amount < minAmounts[currency]) {
+          e.preventDefault();
+          alert(`Minimum withdrawal for ${currency} is ${minAmounts[currency]}`);
+          return;
+        }
+
+        // 2FA validation
+        const twoFA = document.getElementById('withdraw2FA').value;
+        if (twoFA.length !== 6 || !/^\d+$/.test(twoFA)) {
+          e.preventDefault();
+          alert('Please enter a valid 6-digit 2FA code');
+          return;
+        }
+      });
+    }
+
+    function updateAvailableBalance(currency) {
+      const balances = {
+        'BTC': (walletData.BTC || 0).toFixed(6),
+        'ETH': (walletData.ETH || 0).toFixed(4),
+        'USDT': (walletData.USDT || 0).toFixed(2)
+      };
+      document.getElementById('availableBalance').textContent = `${balances[currency]} ${currency}`;
+    }
+
+    function validateWithdrawAmount() {
+      const currency = document.getElementById('withdrawCurrency').value;
+      const amount = parseFloat(document.getElementById('withdrawAmount').value) || 0;
+      const available = walletData[currency] || 0;
+
+      return amount <= available;
     }
   });
 </script>

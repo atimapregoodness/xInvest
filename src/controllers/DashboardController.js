@@ -2,6 +2,9 @@ const User = require("../models/User");
 const Investment = require("../models/Trade");
 const Transaction = require("../models/Transaction");
 
+const path = require("path");
+const Verification = require("../models/Verification");
+
 exports.getDashboard = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -78,47 +81,10 @@ exports.getProfile = async (req, res) => {
   }
 };
 
-exports.updateProfile = async (req, res) => {
-  try {
-    const { firstName, lastName, phone, country, bio } = req.body;
-
-    await User.findByIdAndUpdate(req.user._id, {
-      "profile.firstName": firstName,
-      "profile.lastName": lastName,
-      "profile.phone": phone,
-      "profile.country": country,
-      "profile.bio": bio,
-    });
-
-    req.flash("success_msg", "Profile updated successfully");
-    res.redirect("/dashboard/profile");
-  } catch (error) {
-    console.error("Profile update error:", error);
-    req.flash("error_msg", "Error updating profile");
-    res.redirect("/dashboard/profile");
-  }
-};
-
-const cloudinary = require("cloudinary").v2;
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
-const multer = require("multer");
-
-const storage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: "Finovex/botslips",
-    allowed_formats: ["jpg", "jpeg", "png"],
-    transformation: [{ width: 800, height: 600, crop: "limit" }],
-  },
-});
-
-const upload = multer({ storage });
-
 // ==========================================================================
 // PURCHASE BOT
 // ==========================================================================
 exports.purchaseBot = [
-  upload.single("slip"),
   async (req, res) => {
     try {
       const { plan, price, paymentMethod, cryptoType } = req.body;
@@ -178,5 +144,41 @@ exports.getUserBots = async (req, res) => {
     res.json({ success: true, bots });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error fetching bots" });
+  }
+};
+
+exports.getVerificationPage = (req, res) => {
+  res.cookie("XSRF-TOKEN", req.csrfToken());
+  res.render("user/verification", {
+    title: "User Verification",
+    csrfToken: req.csrfToken(),
+    messages: {
+      error: req.flash("error"),
+      success: req.flash("success"),
+    },
+  });
+};
+
+exports.submitVerification = async (req, res) => {
+  try {
+    if (!req.file) {
+      req.flash("error", "ID image is required.");
+      return res.redirect("/dashboard/personal/verification");
+    }
+
+    const verification = new Verification({
+      user: req.user._id,
+      documentType: "ID",
+      documentUrl: `/uploads/verifications/${req.file.filename}`,
+    });
+
+    await verification.save();
+
+    req.flash("success", "Verification submitted successfully!");
+    res.redirect("/dashboard/personal/verification");
+  } catch (err) {
+    console.error(err);
+    req.flash("error", "Server error, please try again.");
+    res.redirect("/dashboard/personal/verification");
   }
 };

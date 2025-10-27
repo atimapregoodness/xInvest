@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const depositSchema = new mongoose.Schema(
+const withdrawalSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
@@ -14,17 +14,13 @@ const depositSchema = new mongoose.Schema(
     },
     currency: {
       type: String,
-      default: "USD",
-      enum: ["USD", "EUR", "GBP", "BTC", "ETH", "USDT"],
+      required: true,
+      enum: ["BTC", "ETH", "USDT"],
     },
-    paymentMethod: {
+    walletAddress: {
       type: String,
       required: true,
-      enum: ["bank", "crypto", "card", "wallet"],
-    },
-    receipt: {
-      type: String,
-      required: false,
+      trim: true,
     },
     status: {
       type: String,
@@ -47,11 +43,11 @@ const depositSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-depositSchema.pre("save", function (next) {
+withdrawalSchema.pre("save", function (next) {
   if (this.isModified("status") && this.status === "approved") {
     this.approvedAt = new Date();
   }
   next();
 });
 
-module.exports = mongoose.model("Deposit", depositSchema);
+module.exports = mongoose.model("Withdrawal", withdrawalSchema);

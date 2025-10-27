@@ -5,7 +5,7 @@ const { sendWelcomeEmail } = require("../utils/emailService");
 
 exports.getLogin = (req, res) => {
   if (req.isAuthenticated() && req.user.isAdmin) {
-    return res.redirect("/admin/dashboard");
+    return res.redirect("/admin");
   } else if (req.isAuthenticated() && req.user) {
     return res.redirect("/dashboard");
   } else {
@@ -41,7 +41,7 @@ exports.postLogin = async (req, res, next) => {
 
         // ✅ Check if the user is an admin
         if (user.isAdmin) {
-          return res.redirect("/admin/dashboard");
+          return res.redirect("/admin");
         }
 
         // ✅ Otherwise redirect normal user
@@ -60,7 +60,7 @@ exports.postLogin = async (req, res, next) => {
 
 exports.getRegister = (req, res) => {
   if (req.isAuthenticated() && req.user.isAdmin) {
-    return res.redirect("/admin/dashboard");
+    return res.redirect("/admin");
   } else if (req.isAuthenticated() && req.user) {
     return res.redirect("/dashboard");
   } else {

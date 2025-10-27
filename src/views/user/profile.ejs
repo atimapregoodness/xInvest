@@ -1,0 +1,262 @@
+<%- layout('layout/acctBoilerplate', { title: 'Finovex - Dashboard' }) %>
+<%-partial("partials/floatingNav") %> <%- partial('partials/sideBar') %>
+
+<div class="dashboard">
+  <div class="profile-header">
+    <div class="profile-avatar">JD</div>
+    <div class="profile-info">
+      <h2><%= user.fullName %></h2>
+      <p><%= user.email %></p>
+      <div
+        class="verification-status <%= user.isVerified ? 'status-verified' : 'status-unverified' %>"
+      >
+        <i
+          class="fa-solid <%= user.isVerified ? 'fa-check-circle' : 'fa-exclamation-circle' %>"
+        ></i>
+        <%= user.isVerified ? 'Verified' : 'Unverified' %>
+      </div>
+    </div>
+  </div>
+
+  <ul class="nav nav-tabs mb-4" id="profileTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link active"
+        id="personal-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#personal"
+        type="button"
+        role="tab"
+      >
+        Personal Information
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link"
+        id="security-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#security"
+        type="button"
+        role="tab"
+      >
+        Security
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button
+        class="nav-link"
+        id="verification-tab"
+        data-bs-toggle="tab"
+        data-bs-target="#verification"
+        type="button"
+        role="tab"
+      >
+        Verification
+      </button>
+    </li>
+  </ul>
+
+  <div class="tab-content" id="profileTabsContent">
+    <!-- Personal Information Tab -->
+    <div class="tab-pane fade show active" id="personal" role="tabpanel">
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title mb-0">Personal Details</h5>
+            </div>
+            <div class="card-body">
+              <form>
+                <div class="mb-3">
+                  <label for="fullName" class="form-label">fullName</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="fullName"
+                    value="<%= user.fullName %>"
+                    disabled
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    value="<%= user.email %>"
+                    disabled
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="phone" class="form-label">Phone Number</label>
+                  <input
+                    type="tel"
+                    class="form-control"
+                    id="phone"
+                    value="<%= user.phone %>"
+                    disabled
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="country" class="form-label">Country</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="country"
+                    value="<%= user.country %>"
+                    disabled
+                  />
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title mb-0">Verification Status</h5>
+            </div>
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <span>Identity Verification</span>
+                <div
+                  class="verification-status <%= user.isVerified ? 'status-verified' : 'status-unverified' %>"
+                >
+                  <i
+                    class="fa-solid <%= user.isVerified ? 'fa-check-circle' : 'fa-exclamation-circle' %>"
+                  ></i>
+                  <%= user.isVerified ? 'Verified' : 'Unverified' %>
+                </div>
+              </div>
+              <div class="mt-4">
+                <a
+                  href="
+                /dashboard/personal/verification
+              "
+                >
+                  <button class="btn btn-primary w-100">
+                    <i class="fa-solid fa-id-card me-2"></i>Start Identity
+                    Verification
+                  </button>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security Tab -->
+    <div class="tab-pane fade" id="security" role="tabpanel">
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title mb-0">Security Settings</h5>
+            </div>
+            <div class="card-body">
+              <div class="mb-4">
+                <h6>Change Password</h6>
+                <form>
+                  <div class="mb-3">
+                    <label for="currentPassword" class="form-label"
+                      >Current Password</label
+                    >
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="currentPassword"
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="newPassword" class="form-label"
+                      >New Password</label
+                    >
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="newPassword"
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="confirmPassword" class="form-label"
+                      >Confirm New Password</label
+                    >
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="confirmPassword"
+                    />
+                  </div>
+                  <button type="submit" class="btn btn-primary">
+                    Update Password
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Verification Tab -->
+    <div class="tab-pane fade" id="verification" role="tabpanel">
+      <div class="row">
+        <div class="col-lg-8">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title mb-0">Verification Status</h5>
+            </div>
+            <div class="card-body text-center">
+              <% if (user.isVerified) { %>
+              <div class="verification-status status-verified">
+                <i class="fa-solid fa-check-circle text-success me-2"></i>
+                Verified
+              </div>
+              <p class="text-muted mt-2">
+                Your account has been successfully verified. You now have access
+                to all features.
+              </p>
+              <% } else { %>
+              <div class="verification-status status-unverified">
+                <i class="fa-solid fa-exclamation-circle text-danger me-2"></i>
+                Unverified
+              </div>
+              <p class="text-muted mt-2">
+                No verification history available yet. Start your identity
+                verification to secure your account.
+              </p>
+              <% } %>
+            </div>
+          </div>
+        </div>
+
+        <% if (!user.isVerified) { %>
+        <div class="col-lg-4">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title mb-0">Start Verification</h5>
+            </div>
+            <div class="card-body">
+              <p>
+                Complete your identity verification to access full features.
+              </p>
+              <a
+                href="
+                /dashboard/personal/verification
+              "
+              >
+                <button class="btn btn-primary w-100">
+                  <i class="fa-solid fa-id-card me-2"></i>Start Identity
+                  Verification
+                </button>
+              </a>
+            </div>
+          </div>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>

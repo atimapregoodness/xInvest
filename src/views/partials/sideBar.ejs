@@ -9,7 +9,12 @@
     <a href="/dashboard/trade" class="sidebar-item">
       <i class="fas fa-chart-line"></i>
       <span>Trade</span>
-      <div class="nav-badge">3</div>
+      <span
+        class="position-absolute top-1 translate-middle badge rounded-pill bg-danger"
+        id="CountBadge"
+      >
+        <%= activeTradesCount %>
+      </span>
     </a>
 
     <a href="/dashboard/plans" class="sidebar-item">

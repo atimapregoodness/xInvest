@@ -48,13 +48,13 @@ async function getUSDTPrice(currency) {
  */
 exports.getTrades = async (req, res) => {
   try {
-    const trades = await Trade.find({ user: req.user._id })
+    // Fetch only "pending" trades for the logged-in user
+    const trades = await Trade.find({ user: req.user._id, status: "pending" })
       .populate("plan")
       .lean();
 
     const now = new Date();
 
-    // Compute totals for header
     const updatedTrades = trades.map((trade) => {
       const start = new Date(trade.startDate);
       const end = new Date(trade.endDate);
@@ -67,13 +67,16 @@ exports.getTrades = async (req, res) => {
 
       if (trade.status === "completed") {
         currentProfit = trade.profit || expectedProfit;
-      } else {
+      } else if (trade.status === "active") {
         const baseProfit = expectedProfit * progress;
         const fluctuationPercent = (Math.random() * 6 - 3) / 100;
         currentProfit = Math.min(
           Math.max(baseProfit * (1 + fluctuationPercent), 0),
           expectedProfit
         );
+      } else {
+        // Pending trades — no profit yet
+        currentProfit = 0;
       }
 
       return {
@@ -82,29 +85,29 @@ exports.getTrades = async (req, res) => {
       };
     });
 
-    const activeTrades = updatedTrades.filter(
-      (t) => t.status === "active"
-    ).length;
     const totalInvestment = updatedTrades.reduce(
       (sum, t) => sum + (t.amount || 0),
       0
     );
-    const totalProfit = updatedTrades.reduce(
-      (sum, t) => sum + (t.currentProfit || 0),
-      0
-    );
+
+    const activeTradesCount = await Trade.countDocuments({
+      user: req.user._id,
+      status: "active",
+    });
+
+    res.locals.activeTradesCount = activeTradesCount;
 
     res.render("user/trade", {
-      title: "Finovex - My Trades",
+      title: "Finovex - Pending Trades",
       user: req.user,
       trades: updatedTrades,
-      activeTrades,
+      activeTrades: 0,
       totalInvestment: parseFloat(totalInvestment.toFixed(2)),
-      totalProfit: parseFloat(totalProfit.toFixed(2)),
+      totalProfit: 0,
     });
   } catch (err) {
-    console.error("Render My Trades page error:", err);
-    req.flash("error_msg", "Failed to load trades");
+    console.error("Render Pending Trades page error:", err);
+    req.flash("error_msg", "Failed to load pending trades");
     res.redirect("/dashboard");
   }
 };

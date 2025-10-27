@@ -1,0 +1,129 @@
+<%- layout('layout/acctBoilerplate', { title: 'Finovex - Identity Verification'
+}) %> <%- partial("partials/floatingNav") %> <%- partial("partials/sideBar") %>
+
+<div class="verification-container dashboard">
+  <div class="verification-header">
+    <h1>Identity Verification</h1>
+    <p>Upload your government-issued ID to verify your identity.</p>
+  </div>
+
+  <!-- Flash messages -->
+  <% if (messages && messages.error && messages.error.length > 0) { %>
+  <div class="alert alert-danger"><%= messages.error[0] %></div>
+  <% } %> <% if (messages && messages.success && messages.success.length > 0) {
+  %>
+  <div class="alert alert-success"><%= messages.success[0] %></div>
+  <% } %>
+
+  <!-- Verification Form -->
+  <form
+    id="verificationForm"
+    action="/dashboard/personal/verification"
+    method="POST"
+    enctype="multipart/form-data"
+  >
+    <!-- CSRF Token -->
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+    <div class="upload-card">
+      <div class="upload-icon"><i class="fa-solid fa-id-card"></i></div>
+
+      <div class="upload-area" id="idUploadArea">
+        <i class="fa-solid fa-cloud-upload-alt"></i>
+        <p>Drag & Drop or Click to Upload (JPG, PNG only)</p>
+
+        <input
+          type="file"
+          name="idUpload"
+          id="idUpload"
+          style="display: none"
+          accept=".jpg,.jpeg,.png"
+          required
+        />
+
+        <button
+          class="btn btn-primary mt-2"
+          type="button"
+          onclick="document.getElementById('idUpload').click()"
+        >
+          Select File
+        </button>
+      </div>
+
+      <div id="idFilePreview" class="file-preview" style="display: none">
+        <i class="fa-solid fa-file-image"></i>
+        <div class="file-info">
+          <div id="idFileName" class="file-name"></div>
+          <div id="idFileSize" class="file-size"></div>
+        </div>
+        <button type="button" class="btn btn-outline" onclick="removeIdFile()">
+          Remove
+        </button>
+      </div>
+    </div>
+
+    <div class="terms my-3">
+      <input
+        type="checkbox"
+        name="termsAgreement"
+        id="termsAgreement"
+        required
+      />
+      I certify that the document I'm uploading is authentic and belongs to me.
+    </div>
+
+    <div class="d-flex justify-content-between">
+      <button class="btn btn-outline" type="button" onclick="showProfilePage()">
+        Back
+      </button>
+      <button class="btn btn-primary" type="submit">Submit</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  const idUpload = document.getElementById("idUpload");
+  const idFilePreview = document.getElementById("idFilePreview");
+  const idFileName = document.getElementById("idFileName");
+  const idFileSize = document.getElementById("idFileSize");
+  const idUploadArea = document.getElementById("idUploadArea");
+
+  // Handle file selection
+  idUpload.addEventListener("change", function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.size / 1024 / 1024 > 5) {
+      alert("File too large (>5MB)");
+      idUpload.value = "";
+      return;
+    }
+
+    const validTypes = ["image/jpeg", "image/png", "image/jpg"];
+    if (!validTypes.includes(file.type)) {
+      alert("Invalid file type. Only JPG or PNG allowed.");
+      idUpload.value = "";
+      return;
+    }
+
+    idFileName.textContent = file.name;
+    idFileSize.textContent = (file.size / 1024 / 1024).toFixed(2) + " MB";
+    idFilePreview.style.display = "flex";
+  });
+
+  function removeIdFile() {
+    idUpload.value = "";
+    idFilePreview.style.display = "none";
+  }
+
+  // Prevent default drag-drop behavior
+  ["dragenter", "dragover", "dragleave", "drop"].forEach((ev) =>
+    idUploadArea.addEventListener(ev, (e) => e.preventDefault())
+  );
+
+  idUploadArea.addEventListener("click", () => idUpload.click());
+
+  function showProfilePage() {
+    window.location.href = "/profile";
+  }
+</script>

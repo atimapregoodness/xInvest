@@ -184,15 +184,17 @@ const Deposit = require("../models/Deposit");
 
 exports.getRequests = async (req, res) => {
   try {
-    // Populate the correct reference field
+    // Fetch pending verifications and populate user info
     const verifications = await Verification.find({ status: "pending" })
-      .populate("userId", "fullName email") // adjust field name if needed
+      .populate("user", "fullName email") // make sure this matches your schema
       .sort({ createdAt: -1 });
 
+    // Fetch pending deposits and populate user info
     const deposits = await Deposit.find({ status: "pending" })
-      .populate("userId", "fullName email") // adjust if your field name is 'user'
+      .populate("user", "fullName email") // make sure this matches your schema
       .sort({ createdAt: -1 });
 
+    // Render admin request page
     res.render("admin/request", {
       title: "Admin Requests",
       verifications,

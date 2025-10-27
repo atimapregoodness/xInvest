@@ -76,16 +76,17 @@ partial("partials/floatingNav") %> <%- partial("partials/sideBar") %>
         const data = await res.json();
         if (!data.success) return;
 
-        const trades = data.trades.map((t) => ({
-          ...t,
-          progress: Math.min(Math.max(t.progress, 0), 100),
-        }));
+        // Only keep active trades
+        const activeTrades = data.trades
+          .filter((t) => t.status === "active")
+          .map((t) => ({
+            ...t,
+            progress: Math.min(Math.max(t.progress, 0), 100),
+          }));
 
-        updateTradesGrid(trades);
+        updateTradesGrid(activeTrades);
         lastUpdate.textContent = new Date().toLocaleTimeString();
-        liveTrades.textContent = trades.filter(
-          (t) => t.status === "active"
-        ).length;
+        liveTrades.textContent = activeTrades.length;
       } catch (err) {
         console.error("Error loading trades:", err);
       }
@@ -94,7 +95,7 @@ partial("partials/floatingNav") %> <%- partial("partials/sideBar") %>
     function updateTradesGrid(trades) {
       if (!trades || trades.length === 0) {
         tradesGrid.innerHTML =
-          '<div class="no-trades">No trades yet. Place your first trade.</div>';
+          '<div class="no-trades">No active trades at the moment.</div>';
         return;
       }
 
@@ -155,6 +156,7 @@ partial("partials/floatingNav") %> <%- partial("partials/sideBar") %>
         .join("");
     }
 
+    // Initial load + auto refresh
     loadTrades();
     const interval = setInterval(loadTrades, 3000);
     window.addEventListener("beforeunload", () => clearInterval(interval));
