@@ -57,18 +57,6 @@ if (!isVercel) {
   server = app;
 }
 
-// =========================
-// View Engine
-// =========================
-app.engine("ejs", ejsMate);
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
-
-// =========================
-// Middleware
-// =========================
-app.set("trust proxy", 1);
-
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -126,6 +114,18 @@ app.use(
   })
 );
 // =========================
+// View Engine
+// =========================
+app.engine("ejs", ejsMate);
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+// =========================
+// Middleware
+// =========================
+app.set("trust proxy", 1);
+
+// =========================
 // Core Middleware
 // =========================
 app.use(compression());
@@ -137,7 +137,7 @@ app.use(methodOverride("_method"));
 // =========================
 // CSRF & Cookie Setup
 // =========================
-const csrf = require("csurf");
+// const csrf = require("csurf");
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
@@ -173,18 +173,18 @@ app.use(passport.session());
 // =========================
 // CSRF Protection
 // =========================
-const csrfProtection = csrf({ cookie: true });
+// const csrfProtection = csrf({ cookie: true });
 
-// Apply CSRF protection to all non-API routes
-app.use((req, res, next) => {
-  if (req.path.startsWith("/api/")) return next(); // Skip API routes
+// // Apply CSRF protection to all non-API routes
+// app.use((req, res, next) => {
+//   if (req.path.startsWith("/api/")) return next(); // Skip API routes
 
-  csrfProtection(req, res, (err) => {
-    if (err) return next(err);
-    res.locals.csrfToken = req.csrfToken();
-    next();
-  });
-});
+//   csrfProtection(req, res, (err) => {
+//     if (err) return next(err);
+//     res.locals.csrfToken = req.csrfToken();
+//     next();
+//   });
+// });
 
 app.use(flash());
 

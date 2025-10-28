@@ -10,9 +10,8 @@ exports.getLogin = (req, res) => {
     return res.redirect("/dashboard");
   } else {
     res.render("auth/login", {
-      title: "Finovex - Login",
+      title: "meziumFx - Login",
       formData: { email: "" },
-      csrfToken: req.csrfToken(),
     });
   }
 };
@@ -65,9 +64,8 @@ exports.getRegister = (req, res) => {
     return res.redirect("/dashboard");
   } else {
     res.render("auth/register", {
-      title: "Finovex - Sign Up",
+      title: "meziumFx - Sign Up",
       formData: { fullName: "", email: "", country: "", phone: "" },
-      csrfToken: req.csrfToken(),
     });
   }
 };
@@ -115,10 +113,9 @@ exports.postRegister = async (req, res) => {
 
     if (error) {
       return res.render("auth/register", {
-        title: "Finovex - Sign Up",
+        title: "meziumFx - Sign Up",
         formData: { fullName, email, country, phone },
         error_msg: error,
-        csrfToken: req.csrfToken(),
       });
     }
 
@@ -145,7 +142,7 @@ exports.postRegister = async (req, res) => {
 
       req.flash(
         "success_msg",
-        "Welcome to Finovex! Your account has been created."
+        "Welcome to meziumFx! Your account has been created."
       );
       return res.redirect("/dashboard");
     });
@@ -156,10 +153,9 @@ exports.postRegister = async (req, res) => {
       "Sorry something went wrong. Please try again later."
     );
     return res.render("auth/register", {
-      title: "Finovex - Sign Up",
+      title: "meziumFx - Sign Up",
       formData: req.body,
       error_msg: "Sorry something went wrong. Please try again later.",
-      csrfToken: req.csrfToken(),
     });
   }
 };
@@ -177,8 +173,7 @@ exports.logout = (req, res) => {
 
 exports.getForgotPassword = (req, res) => {
   res.render("auth/forgot-password", {
-    title: "Finovex - Forgot Password",
-    csrfToken: req.csrfToken(),
+    title: "meziumFx - Forgot Password",
   });
 };
 

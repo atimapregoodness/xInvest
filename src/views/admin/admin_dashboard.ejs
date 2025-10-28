@@ -1,155 +1,231 @@
 <%- layout('layout/adminBoilerplate') %>
 
 <div
-  class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-3 mb-4 border-bottom border-secondary"
+  class="d-flex justify-content-between align-items-center flex-wrap mb-4 border-bottom border-secondary pb-3"
 >
-  <h1 class="h2">
-    <i class="fa fa-gauge-high me-2 text-primary"></i>
-    Admin Dashboard
+  <h1 class="h3 fw-bold text-light">
+    <i class="fa-solid fa-inbox text-primary me-2"></i> Requests Center
   </h1>
-  <div class="btn-toolbar mb-2 mb-md-0">
-    <div class="btn-group me-2">
-      <button type="button" class="btn btn-sm btn-outline-light">
-        <i class="fa fa-download me-1"></i> Export
-      </button>
+  <a href="/admin/dashboard" class="btn btn-outline-light btn-sm">
+    <i class="fa-solid fa-arrow-left me-1"></i> Dashboard
+  </a>
+</div>
+
+<div class="row g-4">
+  <!-- USER VERIFICATION REQUESTS -->
+  <div class="col-lg-6">
+    <div class="card shadow-sm border-0 h-100">
+      <div
+        class="card-header bg-dark text-white d-flex justify-content-between align-items-center"
+      >
+        <h6 class="mb-0">
+          <i class="fa-solid fa-user-check me-2 text-primary"></i> User
+          Verifications
+        </h6>
+        <span id="verCount" class="badge bg-primary"
+          ><%= verifications.length %></span
+        >
+      </div>
+
+      <div class="card-body p-0">
+        <% if (verifications.length > 0) { %>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0 text-nowrap">
+            <thead class="table-light">
+              <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>ID Type</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% verifications.forEach((req, i) => { %>
+              <tr>
+                <td><%= req.user.fullName %></td>
+                <td><%= req.user.email %></td>
+                <td><%= req.idType %></td>
+                <td><%= new Date(req.createdAt).toLocaleDateString() %></td>
+                <td>
+                  <div class="dropdown">
+                    <button
+                      class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                      <li>
+                        <a
+                          href="<%= req.idImage %>"
+                          target="_blank"
+                          class="dropdown-item text-info"
+                        >
+                          <i class="fa-solid fa-eye me-2"></i> View ID
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="/admin/verify/approve/<%= req._id %>"
+                          class="dropdown-item text-success"
+                        >
+                          <i class="fa-solid fa-check me-2"></i> Approve
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="/admin/verify/reject/<%= req._id %>"
+                          class="dropdown-item text-danger"
+                        >
+                          <i class="fa-solid fa-times me-2"></i> Reject
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+        <% } else { %>
+        <div class="p-4 text-center text-muted">
+          <i class="fa-regular fa-circle-info fa-2x mb-2 d-block"></i>
+          No pending verification requests.
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEPOSIT REQUESTS -->
+  <div class="col-lg-6">
+    <div class="card shadow-sm border-0 h-100">
+      <div
+        class="card-header bg-dark text-white d-flex justify-content-between align-items-center"
+      >
+        <h6 class="mb-0">
+          <i class="fa-solid fa-wallet me-2 text-warning"></i> Deposit Requests
+        </h6>
+        <span id="depCount" class="badge bg-warning text-dark"
+          ><%= deposits.length %></span
+        >
+      </div>
+
+      <div class="card-body p-0">
+        <% if (deposits.length > 0) { %>
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0 text-nowrap">
+            <thead class="table-light">
+              <tr>
+                <th>User</th>
+                <th>Amount</th>
+                <th>Currency</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% deposits.forEach((dep, i) => { %>
+              <tr>
+                <td><%= dep.user.fullName %></td>
+                <td class="text-success">$<%= dep.amount.toFixed(2) %></td>
+                <td><%= dep.currency %></td>
+                <td><%= new Date(dep.createdAt).toLocaleDateString() %></td>
+                <td>
+                  <div class="dropdown">
+                    <button
+                      class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm bg-dark>
+                      <li>
+                        <a
+                          href="console.cloudinary.com/<%= dep.receiptUrl %>"
+                          target="_blank"
+                          class="dropdown-item text-info"
+                        >
+                          <i class="fa-solid fa-receipt me-2"></i> View Receipt
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="/admin/deposit/approve/<%= dep._id %>"
+                          class="dropdown-item text-success"
+                        >
+                          <i class="fa-solid fa-check me-2"></i> Approve
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="/admin/deposit/reject/<%= dep._id %>"
+                          class="dropdown-item text-danger"
+                        >
+                          <i class="fa-solid fa-times me-2"></i> Reject
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+        <% } else { %>
+        <div class="p-4 text-center text-muted">
+          <i class="fa-regular fa-circle-info fa-2x mb-2 d-block"></i>
+          No pending deposit requests.
+        </div>
+        <% } %>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Stats Cards -->
-<div class="row g-3 mb-4">
-  <div class="col-xl-3 col-md-6">
-    <div class="card h-100 border-0 shadow-sm">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-start">
-          <div>
-            <h6 class="text-muted mb-1">Total Users</h6>
-            <h2 class="fw-bold mb-0"><%= stats.userCount %></h2>
-          </div>
-          <i class="fa fa-users text-primary fa-2x opacity-50"></i>
-        </div>
-        <small class="text-success">
-          <i class="fa fa-arrow-up me-1"></i> +12% from last month
-        </small>
-      </div>
-    </div>
-  </div>
+<!-- SOCKET.IO + DROPDOWN INITIALIZATION -->
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
 
-  <div class="col-xl-3 col-md-6">
-    <div class="card h-100 border-0 shadow-sm">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-start">
-          <div>
-            <h6 class="text-muted mb-1">Transactions</h6>
-            <h2 class="fw-bold mb-0"><%= stats.txCount %></h2>
-          </div>
-          <i class="fa fa-exchange text-success fa-2x opacity-50"></i>
-        </div>
-        <small class="text-success">
-          <i class="fa fa-arrow-up me-1"></i> +8% from last month
-        </small>
-      </div>
-    </div>
-  </div>
+  socket.on("updateRequests", (data) => {
+    if (data.verifications) {
+      document.getElementById("verCount").textContent =
+        data.verifications.length;
+    }
+    if (data.deposits) {
+      document.getElementById("depCount").textContent = data.deposits.length;
+    }
+  });
 
-  <div class="col-xl-3 col-md-6">
-    <div class="card h-100 border-0 shadow-sm">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-start">
-          <div>
-            <h6 class="text-muted mb-1">Investments</h6>
-            <h2 class="fw-bold mb-0">$156K</h2>
-          </div>
-          <i class="fa fa-line-chart text-warning fa-2x opacity-50"></i>
-        </div>
-        <small class="text-success">
-          <i class="fa fa-arrow-up me-1"></i> +15% from last month
-        </small>
-      </div>
-    </div>
-  </div>
-
-  <div class="col-xl-3 col-md-6">
-    <div class="card h-100 border-0 shadow-sm">
-      <div class="card-body">
-        <div class="d-flex justify-content-between align-items-start">
-          <div>
-            <h6 class="text-muted mb-1">Active Plans</h6>
-            <h2 class="fw-bold mb-0">342</h2>
-          </div>
-          <i class="fa fa-layer-group text-info fa-2x opacity-50"></i>
-        </div>
-        <small class="text-success">
-          <i class="fa fa-arrow-up me-1"></i> +5% from last month
-        </small>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Recent Transactions Table -->
-<div class="card shadow-sm border-0">
-  <div
-    class="card-header bg-dark text-light d-flex justify-content-between align-items-center"
-  >
-    <h5 class="card-title mb-0">
-      <i class="fa fa-clock me-2 text-primary"></i> Recent Transactions
-    </h5>
-    <a href="/admin/transactions" class="btn btn-sm btn-outline-light"
-      >View All</a
-    >
-  </div>
-  <div class="card-body p-0">
-    <div class="table-responsive">
-      <table class="table table-hover mb-0 align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>User</th>
-            <th>Type</th>
-            <th>Currency</th>
-            <th>Amount</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% if (recentTx.length === 0) { %>
-          <tr>
-            <td colspan="5" class="text-center text-muted py-3">
-              No recent transactions
-            </td>
-          </tr>
-          <% } else { %> <% recentTx.forEach(tx => { %>
-          <tr>
-            <td>
-              <strong><%= tx.userId.fullName %></strong><br />
-              <small class="text-muted"><%= tx.userId.email %></small>
-            </td>
-            <td><span class="badge bg-primary"><%= tx.type %></span></td>
-            <td><%= tx.currency.toUpperCase() %></td>
-            <td class="text-success">$<%= tx.amount.toFixed(2) %></td>
-            <td><%= new Date(tx.createdAt).toLocaleDateString() %></td>
-          </tr>
-          <% }) %> <% } %>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
+  // Reinitialize Bootstrap dropdowns on DOM changes
+  document.addEventListener("DOMContentLoaded", () => {
+    const dropdownElements = [].slice.call(
+      document.querySelectorAll(".dropdown-toggle")
+    );
+    dropdownElements.map((el) => new bootstrap.Dropdown(el));
+  });
+</script>
 
 <style>
-  .card {
-    border-radius: 0.75rem;
-  }
-  .opacity-50 {
-    opacity: 0.5;
-  }
-  .table td,
-  .table th {
-    vertical-align: middle;
-  }
+  /* Responsive & clean table styles */
   @media (max-width: 768px) {
-    h1.h2 {
-      font-size: 1.5rem;
+    table {
+      font-size: 0.85rem;
+    }
+    th,
+    td {
+      white-space: nowrap;
+    }
+    .dropdown-menu {
+      font-size: 0.85rem;
     }
   }
 </style>

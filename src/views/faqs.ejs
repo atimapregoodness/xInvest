@@ -1,0 +1,1004 @@
+<%- layout('layout/boilerplate',{title: 'MeziumFx - Faqs'}) %>
+
+<div class="page-container">
+  <!-- Hero Section -->
+  <section class="faq-hero">
+    <div class="container">
+      <div class="row justify-content-center text-center">
+        <div class="col-lg-8">
+          <h1 class="display-4 gradient-text mb-4">
+            Frequently Asked Questions
+          </h1>
+          <p class="lead text-light mb-5">
+            Find quick answers to common questions about investing with
+            MeziumFx. Can't find what you're looking for?
+            <a href="/contact" class="text-primary">Contact our support team</a
+            >.
+          </p>
+
+          <!-- Search Bar -->
+          <div class="search-container mb-5">
+            <div class="search-box glass-card">
+              <i class="fas fa-search search-icon"></i>
+              <input
+                type="text"
+                id="faqSearch"
+                placeholder="Search questions or keywords..."
+                class="search-input bg-none"
+              />
+              <button class="search-btn" onclick="searchFAQs()">
+                <i class="fas fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main FAQ Content -->
+  <section class="faq-main py-5">
+    <div class="container">
+      <div class="row">
+        <!-- Sidebar Categories -->
+        <div class="col-lg-3 mb-4">
+          <div class="sidebar glass-card">
+            <h5 class="sidebar-title">Categories</h5>
+            <div class="category-list">
+              <button class="category-btn active" data-category="all">
+                <i class="fas fa-th-large me-2"></i>All Questions
+              </button>
+              <button class="category-btn" data-category="getting-started">
+                <i class="fas fa-rocket me-2"></i>Getting Started
+              </button>
+              <button class="category-btn" data-category="account">
+                <i class="fas fa-user me-2"></i>Account & Verification
+              </button>
+              <button class="category-btn" data-category="investment">
+                <i class="fas fa-chart-line me-2"></i>Investment Plans
+              </button>
+              <button class="category-btn" data-category="deposit-withdrawal">
+                <i class="fas fa-exchange-alt me-2"></i>Deposits & Withdrawals
+              </button>
+              <button class="category-btn" data-category="security">
+                <i class="fas fa-shield-alt me-2"></i>Security & Privacy
+              </button>
+              <button class="category-btn" data-category="technical">
+                <i class="fas fa-cogs me-2"></i>Technical Support
+              </button>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="quick-stats mt-4">
+              <div class="stat-item">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Support Available</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number">< 2min</div>
+                <div class="stat-label">Average Response Time</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FAQ Content -->
+        <div class="col-lg-9">
+          <!-- Getting Started Section -->
+          <div class="faq-section" data-category="getting-started">
+            <h3 class="section-title mb-4">
+              <i class="fas fa-rocket me-2"></i>Getting Started
+            </h3>
+            <div class="accordion glass-accordion" id="gettingStartedAccordion">
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button
+                    class="accordion-button"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#gs1"
+                  >
+                    How do I create an account with MeziumFx?
+                  </button>
+                </h2>
+                <div
+                  id="gs1"
+                  class="accordion-collapse collapse show"
+                  data-bs-parent="#gettingStartedAccordion"
+                >
+                  <div class="accordion-body">
+                    <p>
+                      Creating an account is simple and takes less than 2
+                      minutes:
+                    </p>
+                    <ol>
+                      <li>
+                        Click the "Sign Up" button in the top right corner
+                      </li>
+                      <li>
+                        Enter your email address and create a secure password
+                      </li>
+                      <li>
+                        Verify your email address through the confirmation link
+                        sent to your inbox
+                      </li>
+                      <li>
+                        Complete your profile with basic personal information
+                      </li>
+                      <li>
+                        Submit required identification documents for
+                        verification
+                      </li>
+                    </ol>
+                    <p>Once verified, you can immediately start investing.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button
+                    class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#gs2"
+                  >
+                    What are the minimum requirements to start investing?
+                  </button>
+                </h2>
+                <div
+                  id="gs2"
+                  class="accordion-collapse collapse"
+                  data-bs-parent="#gettingStartedAccordion"
+                >
+                  <div class="accordion-body">
+                    <p>To start investing with MeziumFx, you need:</p>
+                    <ul>
+                      <li>Be at least 18 years old</li>
+                      <li>
+                        Valid government-issued ID (passport, driver's license,
+                        or national ID)
+                      </li>
+                      <li>
+                        Proof of address (utility bill or bank statement less
+                        than 3 months old)
+                      </li>
+                      <li>
+                        Minimum initial deposit of $50 (varies by currency)
+                      </li>
+                    </ul>
+                    <p>
+                      Some countries may have additional regulatory
+                      requirements.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button
+                    class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#gs3"
+                  >
+                    Is there a demo account available?
+                  </button>
+                </h2>
+                <div
+                  id="gs3"
+                  class="accordion-collapse collapse"
+                  data-bs-parent="#gettingStartedAccordion"
+                >
+                  <div class="accordion-body">
+                    <p>
+                      Yes, we offer a comprehensive demo account with $10,000 in
+                      virtual funds. This allows you to:
+                    </p>
+                    <ul>
+                      <li>Test our platform features and interface</li>
+                      <li>
+                        Practice different investment strategies risk-free
+                      </li>
+                      <li>Understand how our trading algorithms work</li>
+                      <li>
+                        Familiarize yourself with portfolio management tools
+                      </li>
+                    </ul>
+                    <p>
+                      The demo account mirrors real market conditions and
+                      includes all the features of a live account.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Account & Verification Section -->
+          <div class="faq-section" data-category="account">
+            <h3 class="section-title mb-4">
+              <i class="fas fa-user me-2"></i>Account & Verification
+            </h3>
+            <div class="accordion glass-accordion" id="accountAccordion">
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button
+                    class="accordion-button"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#acc1"
+                  >
+                    Why do I need to verify my account?
+                  </button>
+                </h2>
+                <div
+                  id="acc1"
+                  class="accordion-collapse collapse show"
+                  data-bs-parent="#accountAccordion"
+                >
+                  <div class="accordion-body">
+                    <p>
+                      Account verification is required for several important
+                      reasons:
+                    </p>
+                    <ul>
+                      <li>
+                        <strong>Regulatory Compliance:</strong> We operate under
+                        strict financial regulations that require identity
+                        verification (KYC - Know Your Customer)
+                      </li>
+                      <li>
+                        <strong>Security:</strong> Protects your account from
+                        unauthorized access and fraudulent activities
+                      </li>
+                      <li>
+                        <strong>Withdrawal Processing:</strong> Verified
+                        accounts ensure secure and timely withdrawal processing
+                      </li>
+                      <li>
+                        <strong>Legal Protection:</strong> Helps prevent money
+                        laundering and other financial crimes
+                      </li>
+                    </ul>
+                    <p>
+                      Verification typically takes 1-2 business days once all
+                      documents are submitted.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button
+                    class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#acc2"
+                  >
+                    What documents do I need for verification?
+                  </button>
+                </h2>
+                <div
+                  id="acc2"
+                  class="accordion-collapse collapse"
+                  data-bs-parent="#accountAccordion"
+                >
+                  <div class="accordion-body">
+                    <p>
+                      For complete account verification, you'll need to provide:
+                    </p>
+
+                    <h6>Identity Verification:</h6>
+                    <ul>
+                      <li>
+                        Clear photo of your government-issued ID (passport,
+                        driver's license, or national ID card)
+                      </li>
+                      <li>
+                        Selfie photo holding your ID and a handwritten note with
+                        "MeziumFx" and today's date
+                      </li>
+                    </ul>
+
+                    <h6>Address Verification:</h6>
+                    <ul>
+                      <li>
+                        Utility bill (electricity, water, gas) less than 3
+                        months old
+                      </li>
+                      <li>Bank statement or credit card statement</li>
+                      <li>Tax document or government-issued correspondence</li>
+                    </ul>
+
+                    <p>
+                      All documents must be clear, legible, and show your full
+                      name and address.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button
+                    class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#acc3"
+                  >
+                    Can I have multiple accounts?
+                  </button>
+                </h2>
+                <div
+                  id="acc3"
+                  class="accordion-collapse collapse"
+                  data-bs-parent="#accountAccordion"
+                >
+                  <div class="accordion-body">
+                    <p>
+                      No, each individual is permitted only one trading account
+                      with MeziumFx. This policy is in place to:
+                    </p>
+                    <ul>
+                      <li>Prevent abuse of bonus and promotion systems</li>
+                      <li>
+                        Maintain accurate trading records for regulatory
+                        compliance
+                      </li>
+                      <li>
+                        Ensure fair access to our services for all clients
+                      </li>
+                    </ul>
+                    <p>
+                      If we detect multiple accounts for the same individual, we
+                      reserve the right to suspend all accounts and void any
+                      profits generated.
+                    </p>
+                    <p>
+                      However, you can open sub-accounts for family members who
+                      meet our eligibility requirements and complete separate
+                      verification processes.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Investment Plans Section -->
+          <div class="faq-section" data-category="investment">
+            <h3 class="section-title mb-4">
+              <i class="fas fa-chart-line me-2"></i>Investment Plans
+            </h3>
+            <div class="accordion glass-accordion" id="investmentAccordion">
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button
+                    class="accordion-button"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#inv1"
+                  >
+                    How do your investment algorithms work?
+                  </button>
+                </h2>
+                <div
+                  id="inv1"
+                  class="accordion-collapse collapse show"
+                  data-bs-parent="#investmentAccordion"
+                >
+                  <div class="accordion-body">
+                    <p>
+                      Our proprietary trading algorithms leverage advanced
+                      machine learning and quantitative analysis:
+                    </p>
+
+                    <h6>Data Analysis:</h6>
+                    <ul>
+                      <li>
+                        Real-time market data from multiple global exchanges
+                      </li>
+                      <li>Historical price patterns and volatility analysis</li>
+                      <li>Sentiment analysis from news and social media</li>
+                      <li>
+                        Technical indicators and chart pattern recognition
+                      </li>
+                    </ul>
+
+                    <h6>Risk Management:</h6>
+                    <ul>
+                      <li>
+                        Dynamic position sizing based on market conditions
+                      </li>
+                      <li>Automated stop-loss and take-profit mechanisms</li>
+                      <li>Portfolio diversification across multiple assets</li>
+                      <li>Real-time risk assessment and adjustment</li>
+                    </ul>
+
+                    <p>
+                      Our algorithms are continuously optimized and backtested
+                      to ensure consistent performance across various market
+                      conditions.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button
+                    class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#inv2"
+                  >
+                    What is the minimum investment amount?
+                  </button>
+                </h2>
+                <div
+                  id="inv2"
+                  class="accordion-collapse collapse"
+                  data-bs-parent="#investmentAccordion"
+                >
+                  <div class="accordion-body">
+                    <p>The minimum investment varies by plan:</p>
+
+                    <div class="table-responsive">
+                      <table class="table table-dark table-hover">
+                        <thead>
+                          <tr>
+                            <th>Plan</th>
+                            <th>Minimum Investment</th>
+                            <th>Recommended For</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>Starter Plan</td>
+                            <td>$50</td>
+                            <td>Beginners</td>
+                          </tr>
+                          <tr>
+                            <td>Growth Plan</td>
+                            <td>$1,000</td>
+                            <td>Intermediate Investors</td>
+                          </tr>
+                          <tr>
+                            <td>Pro Plan</td>
+                            <td>$5,000</td>
+                            <td>Experienced Investors</td>
+                          </tr>
+                          <tr>
+                            <td>VIP Plan</td>
+                            <td>$25,000</td>
+                            <td>High Net Worth Individuals</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <p>
+                      You can start with any plan and upgrade as your investment
+                      grows.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button
+                    class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#inv3"
+                  >
+                    Can I change my investment plan?
+                  </button>
+                </h2>
+                <div
+                  id="inv3"
+                  class="accordion-collapse collapse"
+                  data-bs-parent="#investmentAccordion"
+                >
+                  <div class="accordion-body">
+                    <p>
+                      Yes, you can upgrade your investment plan at any time.
+                      However, there are some important considerations:
+                    </p>
+
+                    <h6>Upgrading Plans:</h6>
+                    <ul>
+                      <li>
+                        You can upgrade immediately if you meet the minimum
+                        investment requirement for the new plan
+                      </li>
+                      <li>
+                        Your existing investment continues under the new plan
+                        terms
+                      </li>
+                      <li>
+                        Any bonuses or special features of the new plan become
+                        available immediately
+                      </li>
+                    </ul>
+
+                    <h6>Downgrading Plans:</h6>
+                    <ul>
+                      <li>
+                        Downgrades are only possible at the end of your current
+                        investment cycle
+                      </li>
+                      <li>
+                        You'll need to wait for your current plan to complete
+                        before switching to a lower-tier plan
+                      </li>
+                      <li>
+                        Some premium features may no longer be available after
+                        downgrading
+                      </li>
+                    </ul>
+
+                    <p>
+                      To change your plan, navigate to the "Investment Plans"
+                      section in your dashboard and select "Upgrade Plan."
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Deposits & Withdrawals Section -->
+          <div class="faq-section" data-category="deposit-withdrawal">
+            <h3 class="section-title mb-4">
+              <i class="fas fa-exchange-alt me-2"></i>Deposits & Withdrawals
+            </h3>
+            <div class="accordion glass-accordion" id="depositAccordion">
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button
+                    class="accordion-button"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#dw1"
+                  >
+                    What payment methods do you accept?
+                  </button>
+                </h2>
+                <div
+                  id="dw1"
+                  class="accordion-collapse collapse show"
+                  data-bs-parent="#depositAccordion"
+                >
+                  <div class="accordion-body">
+                    <p>We support a wide range of secure payment methods:</p>
+
+                    <div class="row">
+                      <div class="col-md-6">
+                        <h6>Cryptocurrencies:</h6>
+                        <ul>
+                          <li>Bitcoin (BTC)</li>
+                          <li>Ethereum (ETH)</li>
+                          <li>USDT (ERC-20, TRC-20, BEP-20)</li>
+                          <li>Litecoin (LTC)</li>
+                          <li>Bitcoin Cash (BCH)</li>
+                        </ul>
+                      </div>
+                      <div class="col-md-6">
+                        <h6>Traditional Methods:</h6>
+                        <ul>
+                          <li>Bank Wire Transfer</li>
+                          <li>Credit/Debit Cards (Visa, MasterCard)</li>
+                          <li>PayPal</li>
+                          <li>Skrill</li>
+                          <li>Neteller</li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <p>
+                      Processing times and fees vary by method. Cryptocurrency
+                      deposits are typically fastest with minimal fees.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button
+                    class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#dw2"
+                  >
+                    How long do withdrawals take to process?
+                  </button>
+                </h2>
+                <div
+                  id="dw2"
+                  class="accordion-collapse collapse"
+                  data-bs-parent="#depositAccordion"
+                >
+                  <div class="accordion-body">
+                    <p>Withdrawal processing times depend on the method:</p>
+
+                    <div class="table-responsive">
+                      <table class="table table-dark table-hover">
+                        <thead>
+                          <tr>
+                            <th>Method</th>
+                            <th>Processing Time</th>
+                            <th>Fee</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>Cryptocurrency</td>
+                            <td>1-4 hours</td>
+                            <td>Network fee only</td>
+                          </tr>
+                          <tr>
+                            <td>Bank Wire</td>
+                            <td>2-5 business days</td>
+                            <td>$25 + intermediary fees</td>
+                          </tr>
+                          <tr>
+                            <td>Credit/Debit Card</td>
+                            <td>1-3 business days</td>
+                            <td>2.5%</td>
+                          </tr>
+                          <tr>
+                            <td>E-wallets</td>
+                            <td>24 hours</td>
+                            <td>1%</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <p>
+                      All withdrawals are subject to security verification,
+                      which may add additional time for first-time withdrawals
+                      or large amounts.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h2 class="accordion-header">
+                  <button
+                    class="accordion-button collapsed"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#dw3"
+                  >
+                    Are there any withdrawal limits?
+                  </button>
+                </h2>
+                <div
+                  id="dw3"
+                  class="accordion-collapse collapse"
+                  data-bs-parent="#depositAccordion"
+                >
+                  <div class="accordion-body">
+                    <p>
+                      Yes, we have withdrawal limits in place for security
+                      reasons:
+                    </p>
+
+                    <h6>Daily Limits:</h6>
+                    <ul>
+                      <li>Standard Accounts: $10,000 per day</li>
+                      <li>Verified Accounts: $50,000 per day</li>
+                      <li>VIP Accounts: $100,000 per day</li>
+                    </ul>
+
+                    <h6>Monthly Limits:</h6>
+                    <ul>
+                      <li>Standard Accounts: $100,000 per month</li>
+                      <li>Verified Accounts: $500,000 per month</li>
+                      <li>VIP Accounts: $2,000,000 per month</li>
+                    </ul>
+
+                    <p>
+                      For withdrawals exceeding these limits, please contact our
+                      support team to arrange special processing.
+                    </p>
+                    <p>
+                      All limits are subject to verification and may be adjusted
+                      based on account activity and risk assessment.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- No Results Message -->
+          <div id="noResults" class="text-center py-5" style="display: none">
+            <div class="no-results glass-card">
+              <i class="fas fa-search fa-3x mb-3 text-muted"></i>
+              <h4 class="text-light">No matching questions found</h4>
+              <p class="text-muted">
+                Try different keywords or browse the categories
+              </p>
+              <button class="btn btn-primary mt-3" onclick="resetSearch()">
+                <i class="fas fa-redo me-2"></i>Show All Questions
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="faq-cta py-5">
+    <div class="container">
+      <div class="cta-card glass-card text-center">
+        <h2 class="cta-title mb-3">Still have questions?</h2>
+        <p class="cta-text mb-4">
+          Our support team is available 24/7 to help you with any questions or
+          concerns.
+        </p>
+        <div class="cta-buttons">
+          <a href="/contact" class="btn btn-primary btn-lg me-3">
+            <i class="fas fa-headset me-2"></i>Contact Support
+          </a>
+          <a href="/dashboard" class="btn btn-outline-light btn-lg">
+            <i class="fas fa-chart-line me-2"></i>Start Investing
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Initialize all FAQ functionality
+    initCategoryFilter();
+    initSearchFunctionality();
+    initURLParams();
+  });
+
+  // Category filtering
+  function initCategoryFilter() {
+    const categoryBtns = document.querySelectorAll(".category-btn");
+
+    categoryBtns.forEach((btn) => {
+      btn.addEventListener("click", function () {
+        // Update active button
+        categoryBtns.forEach((b) => b.classList.remove("active"));
+        this.classList.add("active");
+
+        const category = this.getAttribute("data-category");
+        filterFAQsByCategory(category);
+      });
+    });
+  }
+
+  function filterFAQsByCategory(category) {
+    const faqSections = document.querySelectorAll(".faq-section");
+    const noResults = document.getElementById("noResults");
+    let visibleSections = 0;
+
+    faqSections.forEach((section) => {
+      if (
+        category === "all" ||
+        section.getAttribute("data-category") === category
+      ) {
+        section.style.display = "block";
+        visibleSections++;
+
+        // Show all accordion items in visible sections
+        const accordionItems = section.querySelectorAll(".accordion-collapse");
+        accordionItems.forEach((item) => {
+          if (category === "all") {
+            // For "all" category, collapse all except the first one in each section
+            const isFirst =
+              item === section.querySelector(".accordion-collapse");
+            if (isFirst && !item.classList.contains("show")) {
+              new bootstrap.Collapse(item, { toggle: false }).show();
+            } else if (!isFirst && item.classList.contains("show")) {
+              new bootstrap.Collapse(item, { toggle: false }).hide();
+            }
+          } else {
+            // For specific categories, expand all items
+            if (!item.classList.contains("show")) {
+              new bootstrap.Collapse(item, { toggle: false }).show();
+            }
+          }
+        });
+      } else {
+        section.style.display = "none";
+      }
+    });
+
+    // Show/hide no results message
+    if (visibleSections === 0) {
+      noResults.style.display = "block";
+    } else {
+      noResults.style.display = "none";
+    }
+
+    // Update URL
+    const url = new URL(window.location);
+    if (category === "all") {
+      url.searchParams.delete("category");
+    } else {
+      url.searchParams.set("category", category);
+    }
+    window.history.replaceState({}, "", url);
+  }
+
+  // Search functionality
+  function initSearchFunctionality() {
+    const searchInput = document.getElementById("faqSearch");
+
+    // Search on input with debounce
+    let searchTimeout;
+    searchInput.addEventListener("input", function () {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        searchFAQs();
+      }, 300);
+    });
+
+    // Search on Enter key
+    searchInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        searchFAQs();
+      }
+    });
+  }
+
+  function searchFAQs() {
+    const searchTerm = document
+      .getElementById("faqSearch")
+      .value.toLowerCase()
+      .trim();
+    const noResults = document.getElementById("noResults");
+
+    if (searchTerm === "") {
+      resetSearch();
+      return;
+    }
+
+    // Reset category filter
+    document.querySelectorAll(".category-btn").forEach((btn) => {
+      btn.classList.remove("active");
+      if (btn.getAttribute("data-category") === "all") {
+        btn.classList.add("active");
+      }
+    });
+
+    const faqSections = document.querySelectorAll(".faq-section");
+    let totalMatches = 0;
+
+    faqSections.forEach((section) => {
+      const accordionItems = section.querySelectorAll(".accordion-item");
+      let sectionMatches = 0;
+
+      accordionItems.forEach((item) => {
+        const question = item
+          .querySelector(".accordion-button")
+          .textContent.toLowerCase();
+        const answer = item
+          .querySelector(".accordion-body")
+          .textContent.toLowerCase();
+
+        const questionMatch = question.includes(searchTerm);
+        const answerMatch = answer.includes(searchTerm);
+
+        if (questionMatch || answerMatch) {
+          item.style.display = "block";
+          sectionMatches++;
+          totalMatches++;
+
+          // Expand matching items
+          const collapse = item.querySelector(".accordion-collapse");
+          if (!collapse.classList.contains("show")) {
+            new bootstrap.Collapse(collapse, { toggle: false }).show();
+          }
+
+          // Highlight matching text
+          highlightText(item, searchTerm);
+        } else {
+          item.style.display = "none";
+        }
+      });
+
+      // Show/hide section based on matches
+      if (sectionMatches > 0) {
+        section.style.display = "block";
+      } else {
+        section.style.display = "none";
+      }
+    });
+
+    // Show/hide no results message
+    if (totalMatches === 0) {
+      noResults.style.display = "block";
+    } else {
+      noResults.style.display = "none";
+    }
+  }
+
+  function highlightText(element, searchTerm) {
+    // Remove existing highlights
+    const highlights = element.querySelectorAll(".highlight");
+    highlights.forEach((highlight) => {
+      const parent = highlight.parentNode;
+      parent.replaceChild(
+        document.createTextNode(highlight.textContent),
+        highlight
+      );
+      parent.normalize();
+    });
+
+    // Highlight matching text
+    const walker = document.createTreeWalker(
+      element,
+      NodeFilter.SHOW_TEXT,
+      null,
+      false
+    );
+
+    const nodes = [];
+    let node;
+    while ((node = walker.nextNode())) {
+      if (node.textContent.toLowerCase().includes(searchTerm)) {
+        nodes.push(node);
+      }
+    }
+
+    nodes.forEach((node) => {
+      const span = document.createElement("span");
+      span.className = "highlight";
+      span.textContent = node.textContent;
+      node.parentNode.replaceChild(span, node);
+    });
+  }
+
+  function resetSearch() {
+    document.getElementById("faqSearch").value = "";
+    document.querySelectorAll(".category-btn").forEach((btn) => {
+      btn.classList.remove("active");
+      if (btn.getAttribute("data-category") === "all") {
+        btn.classList.add("active");
+      }
+    });
+
+    filterFAQsByCategory("all");
+
+    // Remove highlights
+    document.querySelectorAll(".highlight").forEach((highlight) => {
+      const parent = highlight.parentNode;
+      parent.replaceChild(
+        document.createTextNode(highlight.textContent),
+        highlight
+      );
+      parent.normalize();
+    });
+  }
+
+  // URL parameter handling
+  function initURLParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const category = urlParams.get("category");
+    const search = urlParams.get("search");
+
+    if (category) {
+      const categoryBtn = document.querySelector(
+        `.category-btn[data-category="${category}"]`
+      );
+      if (categoryBtn) {
+        categoryBtn.click();
+      }
+    }
+
+    if (search) {
+      document.getElementById("faqSearch").value = search;
+      searchFAQs();
+    }
+  }
+</script>

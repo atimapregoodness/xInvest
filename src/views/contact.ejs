@@ -1,10 +1,427 @@
-<%- include('layout') %>
+<%- layout('layout/boilerplate', { title: 'MeziumFx - Contact Us' }) %>
 
-<h2 data-aos="fade-in">Contact Us</h2>
-<form action="/contact" method="POST" data-aos="fade-up">
-  <input type="hidden" value="<%= csrfToken %>" />
-  <input type="text" name="name" placeholder="Name" />
-  <input type="email" name="email" placeholder="Email" />
-  <textarea name="message" placeholder="Message"></textarea>
-  <button type="submit" class="btn holographic">Send</button>
-</form>
+<div class="page-container">
+  <!-- Hero Section -->
+  <section class="contact-hero">
+    <div class="container">
+      <div class="row justify-content-center text-center">
+        <div class="col-lg-8">
+          <h1 class="display-4 mb-4 bold">Get In Touch</h1>
+          <p class="lead text-light">
+            Have questions? We're here to help. Reach out to our team for expert
+            support and guidance on your investment journey.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Methods -->
+  <section class="contact-methods py-5">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="contact-card glass-card text-center">
+            <div class="contact-icon">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <h4>Email Us</h4>
+            <p>Get detailed responses within 24 hours</p>
+            <a href="mailto:support@meziumfx.com" class="contact-link"
+              >support@meziumfx.com</a
+            >
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="contact-card glass-card text-center">
+            <div class="contact-icon">
+              <i class="fas fa-phone"></i>
+            </div>
+            <h4>Call Us</h4>
+            <p>Speak directly with our support team</p>
+            <a href="tel:+1-555-123-4567" class="contact-link"
+              >+1 (555) 123-4567</a
+            >
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="contact-card glass-card text-center">
+            <div class="contact-icon">
+              <i class="fas fa-comments"></i>
+            </div>
+            <h4>Live Chat</h4>
+            <p>Instant help from our online team</p>
+            <button class="contact-link" onclick="openLiveChat()">
+              Start Chat
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Form & Info -->
+  <section class="contact-main py-5">
+    <div class="container">
+      <div class="row g-5">
+        <!-- Contact Form -->
+        <div class="col-lg-8">
+          <div class="glass-card">
+            <h3 class="card-title mb-4">Send us a Message</h3>
+            <form id="contactForm" class="contact-form">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input
+                      type="text"
+                      class="form-control glass-input"
+                      id="firstName"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input
+                      type="text"
+                      class="form-control glass-input"
+                      id="lastName"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input
+                      type="email"
+                      class="form-control glass-input"
+                      id="email"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="phone" class="form-label">Phone Number</label>
+                    <input
+                      type="tel"
+                      class="form-control glass-input"
+                      id="phone"
+                    />
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="subject" class="form-label">Subject</label>
+                    <select
+                      class="form-control glass-input"
+                      id="subject"
+                      required
+                    >
+                      <option value="">Select a topic</option>
+                      <option value="general">General Inquiry</option>
+                      <option value="technical">Technical Support</option>
+                      <option value="investment">Investment Advice</option>
+                      <option value="withdrawal">Withdrawal Issue</option>
+                      <option value="partnership">
+                        Partnership Opportunity
+                      </option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-group">
+                    <label for="message" class="form-label">Message</label>
+                    <textarea
+                      class="form-control glass-input"
+                      id="message"
+                      rows="6"
+                      required
+                      placeholder="Tell us how we can help you..."
+                    ></textarea>
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="form-check mb-4">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="consent"
+                      required
+                    />
+                    <label class="form-check-label" for="consent">
+                      I agree to the
+                      <a href="/privacy" class="text-primary">Privacy Policy</a>
+                      and
+                      <a href="/terms" class="text-primary">Terms of Service</a>
+                    </label>
+                  </div>
+                  <button type="submit" class="btn btn-primary btn-lg w-100">
+                    <i class="fas fa-paper-plane me-2"></i>Send Message
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="col-lg-4">
+          <div class="glass-card h-100">
+            <h3 class="card-title mb-4">Contact Information</h3>
+
+            <div class="info-item mb-4">
+              <div class="info-icon">
+                <i class="fas fa-map-marker-alt"></i>
+              </div>
+              <div class="info-content">
+                <h5>Headquarters</h5>
+                <p>
+                  123 Financial District<br />San Francisco, CA 94105<br />United
+                  States
+                </p>
+              </div>
+            </div>
+
+            <div class="info-item mb-4">
+              <div class="info-icon">
+                <i class="fas fa-clock"></i>
+              </div>
+              <div class="info-content">
+                <h5>Business Hours</h5>
+                <p>
+                  Monday - Friday: 9:00 AM - 6:00 PM PST<br />Saturday: 10:00 AM
+                  - 2:00 PM PST<br />Sunday: Closed
+                </p>
+              </div>
+            </div>
+
+            <div class="info-item mb-4">
+              <div class="info-icon">
+                <i class="fas fa-globe"></i>
+              </div>
+              <div class="info-content">
+                <h5>Global Offices</h5>
+                <p>London • Singapore • Dubai<br />Tokyo • Sydney • Zurich</p>
+              </div>
+            </div>
+
+            <!-- <div class="social-links mt-4">
+              <h5 class="mb-3">Follow Us</h5>
+              <div class="d-flex gap-3">
+                <a href="#" class="social-link">
+                  <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" class="social-link">
+                  <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="#" class="social-link">
+                  <i class="fab fa-facebook"></i>
+                </a>
+                <a href="#" class="social-link">
+                  <i class="fab fa-instagram"></i>
+                </a>
+              </div>
+            </div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq-section py-5">
+    <div class="container">
+      <div class="section-header text-center mb-5">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <p class="section-subtitle">Quick answers to common questions</p>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <div class="accordion glass-accordion" id="faqAccordion">
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button
+                  class="accordion-button"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faq1"
+                >
+                  How do I start investing with MeziumFx?
+                </button>
+              </h2>
+              <div
+                id="faq1"
+                class="accordion-collapse collapse show"
+                data-bs-parent="#faqAccordion"
+              >
+                <div class="accordion-body">
+                  Simply create an account, complete the verification process,
+                  deposit funds, and choose from our range of investment plans.
+                  Our platform guides you through each step seamlessly.
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faq2"
+                >
+                  Is my investment secure?
+                </button>
+              </h2>
+              <div
+                id="faq2"
+                class="accordion-collapse collapse"
+                data-bs-parent="#faqAccordion"
+              >
+                <div class="accordion-body">
+                  Yes, we employ bank-level security measures including SSL
+                  encryption, cold storage for digital assets, and regular
+                  security audits to ensure your funds and data are protected.
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#faq3"
+                >
+                  What are your fees?
+                </button>
+              </h2>
+              <div
+                id="faq3"
+                class="accordion-collapse collapse"
+                data-bs-parent="#faqAccordion"
+              >
+                <div class="accordion-body">
+                  We operate on a transparent fee structure. Management fees
+                  vary by investment plan and are clearly outlined before you
+                  commit. There are no hidden charges or surprise fees.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Live Chat Widget -->
+<div id="liveChat" class="live-chat-widget">
+  <div class="chat-header">
+    <h6>Live Support</h6>
+    <button class="chat-close" onclick="closeLiveChat()">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="chat-body">
+    <div class="chat-messages" id="chatMessages">
+      <div class="message bot-message">
+        <div class="message-content">Hello! How can we help you today?</div>
+        <div class="message-time">Just now</div>
+      </div>
+    </div>
+    <div class="chat-input">
+      <input type="text" placeholder="Type your message..." id="chatInput" />
+      <button onclick="sendChatMessage()">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function openLiveChat() {
+    document.getElementById("liveChat").classList.add("active");
+  }
+
+  function closeLiveChat() {
+    document.getElementById("liveChat").classList.remove("active");
+  }
+
+  function sendChatMessage() {
+    const input = document.getElementById("chatInput");
+    const message = input.value.trim();
+
+    if (message) {
+      const messagesContainer = document.getElementById("chatMessages");
+
+      // Add user message
+      const userMessage = document.createElement("div");
+      userMessage.className = "message user-message";
+      userMessage.innerHTML = `
+      <div class="message-content">${message}</div>
+      <div class="message-time">Just now</div>
+    `;
+      messagesContainer.appendChild(userMessage);
+
+      // Clear input
+      input.value = "";
+
+      // Simulate bot response
+      setTimeout(() => {
+        const botMessage = document.createElement("div");
+        botMessage.className = "message bot-message";
+        botMessage.innerHTML = `
+        <div class="message-content">Thank you for your message. Our support team will respond shortly. In the meantime, you can also email us at support@meziumfx.com for faster assistance.</div>
+        <div class="message-time">Just now</div>
+      `;
+        messagesContainer.appendChild(botMessage);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }, 1000);
+
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+  }
+
+  // Contact form submission
+  document
+    .getElementById("contactForm")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      // Simulate form submission
+      const submitBtn = this.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+
+      submitBtn.innerHTML =
+        '<i class="fas fa-spinner fa-spin me-2"></i>Sending...';
+      submitBtn.disabled = true;
+
+      setTimeout(() => {
+        submitBtn.innerHTML = '<i class="fas fa-check me-2"></i>Message Sent!';
+        submitBtn.classList.remove("btn-primary");
+        submitBtn.classList.add("btn-success");
+
+        setTimeout(() => {
+          this.reset();
+          submitBtn.innerHTML = originalText;
+          submitBtn.disabled = false;
+          submitBtn.classList.remove("btn-success");
+          submitBtn.classList.add("btn-primary");
+        }, 3000);
+      }, 2000);
+    });
+
+  // Enter key for chat
+  document
+    .getElementById("chatInput")
+    .addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        sendChatMessage();
+      }
+    });
+</script>

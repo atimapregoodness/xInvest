@@ -1,4 +1,4 @@
-<%- layout('layout/acctBoilerplate', { title: 'Finovex - Dashboard' }) %>
+<%- layout('layout/acctBoilerplate', { title: 'meziumFx - Dashboard' }) %>
 <%-partial("partials/floatingNav") %> <%- partial('partials/sideBar') %>
 
 <div class="dashboard">
@@ -113,8 +113,10 @@
 
     <!-- Transactions Table -->
     <div class="">
-      <h4 class="px-3 pt-4">History</h4>
       <div class="transactions-table-container">
+        <div class="header fixed-header">
+          <h4 class="px-3 pt-4">History</h4>
+        </div>
         <table class="transactions-table">
           <thead>
             <tr>
@@ -229,13 +231,11 @@
       </div>
 
       <form
-        action="/dashboard/deposit"
+        action="/dashboard/wallet/deposit"
         method="POST"
         enctype="multipart/form-data"
         id="depositForm"
       >
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-
         <div class="modal-body">
           <!-- Currency Selection -->
           <div class="form-group mb-3">
@@ -384,9 +384,7 @@
         ></button>
       </div>
 
-      <form action="/dashboard/withdraw" method="POST" id="withdrawForm">
-        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-
+      <form action="/dashboard/wallet/withdraw" method="POST" id="withdrawForm">
         <div class="modal-body">
           <!-- Currency -->
           <div class="form-group mb-3">
@@ -470,20 +468,6 @@
               <option value="bep20">BEP-20</option>
               <option value="trc20">TRC-20</option>
             </select>
-          </div>
-
-          <!-- 2FA -->
-          <div class="form-group mb-3">
-            <label for="withdraw2FA" class="form-label">2FA Code</label>
-            <input
-              type="text"
-              id="withdraw2FA"
-              name="twoFactorCode"
-              maxlength="6"
-              required
-              placeholder="Enter 6-digit code from authenticator"
-              class="form-control"
-            />
           </div>
 
           <!-- Terms -->

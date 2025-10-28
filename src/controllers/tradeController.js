@@ -98,7 +98,7 @@ exports.getTrades = async (req, res) => {
     res.locals.activeTradesCount = activeTradesCount;
 
     res.render("user/trade", {
-      title: "Finovex - Pending Trades",
+      title: "meziumFx - Pending Trades",
       user: req.user,
       trades: updatedTrades,
       activeTrades: 0,
@@ -141,13 +141,13 @@ exports.getPlaceTrade = async (req, res) => {
     const totalProfit = trades.reduce((sum, t) => sum + (t.profit || 0), 0);
 
     res.render("user/place-trade", {
-      title: "Finovex - Place Trade",
+      title: "meziumFx - Place Trade",
       user: req.user,
       plans,
       activeTrades: activeTrades.length,
       totalInvestment,
       totalProfit,
-      csrfToken: req.csrfToken(),
+
       success_msg: req.flash("success_msg"),
       error_msg: req.flash("error_msg"),
     });

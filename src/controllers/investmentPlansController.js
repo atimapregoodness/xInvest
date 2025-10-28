@@ -19,7 +19,7 @@ exports.getPlans = async (req, res) => {
       user: req.user,
       plans,
       userPlans,
-      csrfToken: req.csrfToken(),
+
       title: "Investment Plans Marketplace",
     });
   } catch (err) {

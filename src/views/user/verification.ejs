@@ -1,4 +1,4 @@
-<%- layout('layout/acctBoilerplate', { title: 'Finovex - Identity Verification'
+<%- layout('layout/acctBoilerplate', { title: 'meziumFx - Identity Verification'
 }) %> <%- partial("partials/floatingNav") %> <%- partial("partials/sideBar") %>
 
 <div class="verification-container dashboard">
@@ -7,14 +7,20 @@
     <p>Upload your government-issued ID to verify your identity.</p>
   </div>
 
-  <!-- Flash messages -->
-  <% if (messages && messages.error && messages.error.length > 0) { %>
-  <div class="alert alert-danger"><%= messages.error[0] %></div>
-  <% } %> <% if (messages && messages.success && messages.success.length > 0) {
-  %>
-  <div class="alert alert-success"><%= messages.success[0] %></div>
-  <% } %>
-
+  <% if (verification) { %> <% if (verification.status === 'pending') { %>
+  <div class="alert alert-warning">
+    Your verification is pending. Submitted on <%= new
+    Date(verification.createdAt).toLocaleString() %>.
+  </div>
+  <% } else if (verification.status === 'approved') { %>
+  <div class="alert alert-success">
+    Your identity has been verified successfully.
+  </div>
+  <% } else if (verification.status === 'rejected') { %>
+  <div class="alert alert-danger">
+    Your verification was rejected. Please upload a valid document.
+  </div>
+  <% } %> <% } else { %>
   <!-- Verification Form -->
   <form
     id="verificationForm"
@@ -23,7 +29,6 @@
     enctype="multipart/form-data"
   >
     <!-- CSRF Token -->
-    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
 
     <div class="upload-card">
       <div class="upload-icon"><i class="fa-solid fa-id-card"></i></div>
@@ -62,14 +67,36 @@
       </div>
     </div>
 
-    <div class="terms my-3">
+    <div class="mb-3 glass-form">
+      <label for="documentType" class="form-label fw-bold text-light">
+        Select Document Type:
+      </label>
+      <select
+        name="documentType"
+        id="documentType"
+        class="form-select"
+        required
+      >
+        <option value="" disabled selected>-- Select Document --</option>
+        <option value="ID">National ID</option>
+        <option value="Passport">Passport</option>
+        <option value="DriverLicense">Driver's License</option>
+        <option value="VoterCard">Voter's Card</option>
+      </select>
+    </div>
+
+    <div class="form-check my-3">
       <input
+        class="form-check-input"
         type="checkbox"
         name="termsAgreement"
         id="termsAgreement"
         required
       />
-      I certify that the document I'm uploading is authentic and belongs to me.
+      <label class="form-check-label" for="termsAgreement">
+        I certify that the document I'm uploading is authentic and belongs to
+        me.
+      </label>
     </div>
 
     <div class="d-flex justify-content-between">
@@ -79,6 +106,7 @@
       <button class="btn btn-primary" type="submit">Submit</button>
     </div>
   </form>
+  <% } %>
 </div>
 
 <script>

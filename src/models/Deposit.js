@@ -17,36 +17,28 @@ const depositSchema = new mongoose.Schema(
       default: "USD",
       enum: ["USD", "EUR", "GBP", "BTC", "ETH", "USDT"],
     },
-    paymentMethod: {
-      type: String,
+    receiptUrl: {
+      type: String, // path or Cloudinary URL
       required: true,
-      enum: ["bank", "crypto", "card", "wallet"],
     },
-    receipt: {
+    description: {
       type: String,
-      required: false,
+      default: "User deposit request",
     },
     status: {
       type: String,
       enum: ["pending", "approved", "rejected"],
       default: "pending",
     },
-    approvedBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: false,
-    },
     approvedAt: {
       type: Date,
-    },
-    note: {
-      type: String,
-      trim: true,
+      default: null,
     },
   },
   { timestamps: true }
 );
 
+// Add approvedAt timestamp when approved
 depositSchema.pre("save", function (next) {
   if (this.isModified("status") && this.status === "approved") {
     this.approvedAt = new Date();

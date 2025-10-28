@@ -1,6 +1,8 @@
 const nodemailer = require("nodemailer");
+const fs = require("fs");
+const path = require("path");
 
-// Create transporter (configure based on your email service)
+// SMTP transporter setup
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: process.env.SMTP_PORT,
@@ -11,124 +13,170 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Test transporter connection
-transporter.verify((error, success) => {
-  if (error) {
-    console.error("Email transporter error:", error);
-  } else {
-    console.log("Email server is ready to send messages");
-  }
-});
+// Load base HTML template
+const templatePath = path.join(__dirname, "../views/emailTemplate.html");
+const baseTemplate = fs.readFileSync(templatePath, "utf-8");
 
-// Send welcome email (optional)
-const sendWelcomeEmail = async (email, name) => {
+/**
+ * Send an email using the base template
+ * @param {Object} options
+ * @param {string} options.to - recipient email
+ * @param {string} options.subject - email subject
+ * @param {string} options.title - header in email
+ * @param {string} options.message - main HTML message
+ * @param {string} [options.buttonText] - CTA text
+ * @param {string} [options.buttonUrl] - CTA link
+ */
+async function sendMail({
+  to,
+  subject,
+  title,
+  message,
+  buttonText,
+  buttonUrl,
+}) {
   try {
-    const mailOptions = {
-      from: `"Finovex" <${process.env.SMTP_FROM}>`,
-      to: email,
-      subject: "Welcome to Finovex - Start Your Trading Journey",
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #0066FF;">Welcome to Finovex, ${name}!</h2>
-          <p>We're excited to have you join our professional trading platform.</p>
-          <p>With Finovex, you get access to:</p>
-          <ul>
-            <li>Institutional-grade trading tools</li>
-            <li>Real-time market data</li>
-            <li>Professional portfolio management</li>
-            <li>Secure and fast execution</li>
-          </ul>
-          <p>Start exploring your dashboard and get ready to trade like a professional!</p>
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${process.env.BASE_URL}/dashboard" style="background: #00D4AA; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; display: inline-block;">
-              Go to Dashboard
-            </a>
-          </div>
-          <p>Happy trading!<br>The Finovex Team</p>
-        </div>
-      `,
-    };
+    const html = baseTemplate
+      .replace(/{{title}}/g, title)
+      .replace(/{{message}}/g, message)
+      .replace(
+        /{{button}}/g,
+        buttonText && buttonUrl
+          ? `<a href="${buttonUrl}" class="btn">${buttonText}</a>`
+          : ""
+      );
 
-    await transporter.sendMail(mailOptions);
-    console.log(`Welcome email sent to: ${email}`);
-  } catch (error) {
-    console.error("Error sending welcome email:", error);
-    throw error;
+    await transporter.sendMail({
+      from: `"MeziumFx" <${process.env.SMTP_USER}>`,
+      to,
+      subject,
+      html,
+    });
+
+    console.log(`📨 Email sent to ${to} (${subject})`);
+  } catch (err) {
+    console.error("❌ Failed to send email:", err);
   }
-};
+}
 
-// Send password reset email
-const sendPasswordResetEmail = async (email, resetToken) => {
-  try {
-    const resetUrl = `${process.env.BASE_URL}/auth/reset-password?token=${resetToken}`;
+// ===================== Prebuilt Email Functions =====================
 
-    const mailOptions = {
-      from: `"Finovex" <${process.env.SMTP_FROM}>`,
-      to: email,
-      subject: "Password Reset Request - Finovex",
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #0066FF;">Password Reset Request</h2>
-          <p>You requested to reset your password for your Finovex account.</p>
-          <p>Click the button below to reset your password:</p>
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${resetUrl}" style="background: #0066FF; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; display: inline-block;">
-              Reset Password
-            </a>
-          </div>
-          <p>If the button doesn't work, copy and paste this link into your browser:</p>
-          <p style="word-break: break-all;">${resetUrl}</p>
-          <p>This link will expire in 1 hour.</p>
-          <p>If you didn't request a password reset, please ignore this email.</p>
-        </div>
-      `,
-    };
+// Welcome Email
+async function sendWelcomeEmail(email, name) {
+  return sendMail({
+    to: email,
+    subject: "Welcome to MeziumFx!",
+    title: `Welcome, ${name}!`,
+    message: `We're excited to have you on MeziumFx. Start exploring trading tools, real-time data, and secure portfolio management.`,
+    buttonText: "Go to Dashboard",
+    buttonUrl: `${process.env.BASE_URL}/dashboard`,
+  });
+}
 
-    await transporter.sendMail(mailOptions);
-    console.log(`Password reset email sent to: ${email}`);
-  } catch (error) {
-    console.error("Error sending password reset email:", error);
-    throw error;
-  }
-};
+// Deposit Email
+async function sendDepositEmail(
+  email,
+  name,
+  amount,
+  currency,
+  status,
+  receiptUrl
+) {
+  const message = `
+    Hello ${name},<br>
+    Your deposit of <b>${amount} ${currency}</b> has been <b>${status}</b>.<br>
+    ${
+      status === "approved" ? "The funds are now available in your wallet." : ""
+    }
+    <ul>
+      <li>Amount: ${amount} ${currency}</li>
+      <li>Status: ${status}</li>
+      ${
+        receiptUrl
+          ? `<li>Receipt: <a href="${receiptUrl}" target="_blank">View Receipt</a></li>`
+          : ""
+      }
+    </ul>
+  `;
+  return sendMail({
+    to: email,
+    subject: `Deposit ${status} - MeziumFx`,
+    title: `Deposit ${status}`,
+    message,
+    buttonText: "View Wallet",
+    buttonUrl: `${process.env.BASE_URL}/dashboard/wallet`,
+  });
+}
 
-// Send security alert email
-const sendSecurityAlertEmail = async (email, activity) => {
-  try {
-    const mailOptions = {
-      from: `"Finovex Security" <${process.env.SMTP_FROM}>`,
-      to: email,
-      subject: "Security Alert - Finovex",
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #FF375F;">Security Alert</h2>
-          <p>We detected suspicious activity on your Finovex account:</p>
-          <p><strong>Activity:</strong> ${activity}</p>
-          <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
-          <p>If this was you, you can safely ignore this email.</p>
-          <p>If this wasn't you, please contact our support team immediately and change your password.</p>
-          <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
-            <p style="margin: 0; color: #666; font-size: 14px;">
-              For your security, we recommend:<br>
-              • Using a strong, unique password<br>
-              • Enabling two-factor authentication<br>
-              • Regularly monitoring your account activity
-            </p>
-          </div>
-        </div>
-      `,
-    };
+// Withdrawal Email
+async function sendWithdrawalEmail(
+  email,
+  name,
+  amount,
+  currency,
+  fee,
+  totalDeducted,
+  balance
+) {
+  const message = `
+    Hello ${name},<br>
+    Your withdrawal has been processed successfully.<br>
+    <ul>
+      <li>Amount Withdrawn: ${amount} ${currency}</li>
+      <li>Fee Applied: ${fee} ${currency}</li>
+      <li>Total Deducted: ${totalDeducted} ${currency}</li>
+      <li>Remaining Balance: ${balance} ${currency}</li>
+    </ul>
+  `;
+  return sendMail({
+    to: email,
+    subject: "Withdrawal Successful - MeziumFx",
+    title: "Withdrawal Processed",
+    message,
+    buttonText: "View Wallet",
+    buttonUrl: `${process.env.BASE_URL}/dashboard/wallet`,
+  });
+}
 
-    await transporter.sendMail(mailOptions);
-    console.log(`Security alert email sent to: ${email}`);
-  } catch (error) {
-    console.error("Error sending security alert email:", error);
-    throw error;
-  }
-};
+// Password Reset Email
+async function sendPasswordResetEmail(email, resetToken) {
+  const resetUrl = `${process.env.BASE_URL}/auth/reset-password?token=${resetToken}`;
+  const message = `
+    You requested a password reset. Click the button below to reset your password.<br>
+    If you didn't request this, please ignore this email.<br>
+    <p style="word-break: break-all;">${resetUrl}</p>
+  `;
+  return sendMail({
+    to: email,
+    subject: "Password Reset Request - MeziumFx",
+    title: "Password Reset Request",
+    message,
+    buttonText: "Reset Password",
+    buttonUrl: resetUrl,
+  });
+}
+
+// Security Alert Email
+async function sendSecurityAlertEmail(email, activity) {
+  const message = `
+    Suspicious activity detected on your account:<br>
+    <strong>Activity:</strong> ${activity}<br>
+    <strong>Time:</strong> ${new Date().toLocaleString()}<br>
+    If this was not you, please contact support immediately.
+  `;
+  return sendMail({
+    to: email,
+    subject: "Security Alert - MeziumFx",
+    title: "Security Alert",
+    message,
+  });
+}
 
 module.exports = {
+  sendMail,
   sendWelcomeEmail,
+  sendDepositEmail,
+  sendWithdrawalEmail,
   sendPasswordResetEmail,
   sendSecurityAlertEmail,
   transporter,

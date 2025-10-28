@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const Wallet = require("../models/Wallet");
+const Deposit = require("../models/Deposit");
 const Transaction = require("../models/Transaction");
 
 // ===================== GET WALLET DETAILS =====================
@@ -16,8 +17,6 @@ exports.getWallet = async (req, res) => {
     }
 
     const transactions = await Transaction.find({ userId: req.user._id });
-
-    console.log(transactions);
 
     await user.wallet.calculateTotalBalance?.(); // optional balance update
 
@@ -40,36 +39,78 @@ exports.getWallet = async (req, res) => {
   }
 };
 
+const {
+  sendDepositEmail,
+  sendWithdrawalEmail,
+} = require("../utils/emailService");
+
 // ===================== DEPOSIT =====================
 exports.deposit = async (req, res) => {
   try {
     const { amount, currency, description } = req.body;
 
+    // Validate input
     if (!amount || amount <= 0) {
       req.flash("error_msg", "Invalid deposit amount.");
-      return res.redirect("/wallet");
-    }
-
-    const user = await User.findById(req.user._id).populate("wallet");
-    if (!user || !user.wallet) {
-      req.flash("error_msg", "Wallet not found.");
       return res.redirect("/dashboard/wallet");
     }
 
-    await user.wallet.addTransaction({
-      type: "deposit",
-      currency,
+    if (!req.file || !req.file.path) {
+      req.flash("error_msg", "Please upload a payment receipt.");
+      return res.redirect("/dashboard/wallet");
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      req.flash("error_msg", "User not found.");
+      return res.redirect("/dashboard/wallet");
+    }
+
+    // Create pending deposit
+    const newDeposit = new Deposit({
+      user: user._id,
       amount,
-      description: description || "Manual deposit",
-      fee: 0,
-      status: "completed",
+      currency: currency.toUpperCase(),
+      receiptUrl: req.file.path,
+      description: description || "Deposit request",
+      status: "pending",
     });
 
-    req.flash("success_msg", "Deposit successful!");
-    res.redirect("/wallet");
+    await newDeposit.save();
+
+    // Create transaction record
+    await Transaction.createRecord({
+      userId: user._id,
+      type: "deposit",
+      currency: currency.toUpperCase(),
+      amount,
+      netAmount: amount,
+      fee: 0,
+      status: "pending",
+      description: description || "Deposit request",
+    });
+
+    // Send professional email
+    await sendDepositEmail(
+      user.email,
+      user.username || "Investor",
+      amount,
+      currency.toUpperCase(),
+      "pending",
+      req.file.path
+    );
+
+    req.flash(
+      "success_msg",
+      "Deposit submitted successfully! Awaiting admin approval."
+    );
+    res.redirect("/dashboard/wallet");
   } catch (error) {
-    console.error("❌ Deposit error:", error);
-    req.flash("error_msg", "Failed to process deposit.");
+    console.error("❌ Deposit error:", error.stack || error);
+    req.flash(
+      "error_msg",
+      "Something went wrong while processing your deposit. Please try again."
+    );
     res.redirect("/dashboard/wallet");
   }
 };
@@ -79,37 +120,57 @@ exports.withdraw = async (req, res) => {
   try {
     const { amount, currency, description } = req.body;
 
-    if (!amount || amount <= 0) {
-      req.flash("error_msg", "Invalid withdrawal amount.");
-      return res.redirect("/dashboard/wallet");
-    }
-
     const user = await User.findById(req.user._id).populate("wallet");
     if (!user || !user.wallet) {
       req.flash("error_msg", "Wallet not found.");
       return res.redirect("/dashboard/wallet");
     }
 
-    if (user.wallet[currency] < amount) {
-      req.flash("error_msg", "Insufficient funds.");
+    const balance = user.wallet[currency] || 0;
+    const fee = amount * 0.01; // 1% fee
+    const total = amount + fee;
+
+    if (balance < total) {
+      req.flash("error_msg", "Insufficient funds to cover withdrawal + fee.");
       return res.redirect("/dashboard/wallet");
     }
 
+    // Deduct total from wallet
+    user.wallet[currency] -= total;
+    await user.wallet.save();
+
+    // Record transaction
     await user.wallet.addTransaction({
       type: "withdrawal",
       currency,
       amount,
+      fee,
+      total,
+      status: "completed", // admin review can be pending instead
       description: description || "User withdrawal",
-      fee: 0.01 * amount, // optional 1% fee
-      status: "pending",
+      date: new Date(),
     });
 
-    req.flash("success_msg", "Withdrawal request submitted successfully.");
+    // Send professional withdrawal email
+    await sendWithdrawalEmail(
+      user.email,
+      user.username || "Investor",
+      amount,
+      currency.toUpperCase(),
+      fee.toFixed(6),
+      total.toFixed(6),
+      user.wallet[currency].toFixed(6)
+    );
+
+    req.flash(
+      "success_msg",
+      `Withdrawal of ${amount} ${currency} processed successfully!`
+    );
     res.redirect("/dashboard/wallet");
   } catch (error) {
     console.error("❌ Withdrawal error:", error);
     req.flash("error_msg", "Failed to process withdrawal.");
-    res.redirect("/wallet");
+    res.redirect("/dashboard/wallet");
   }
 };
 

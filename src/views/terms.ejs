@@ -1,5 +1,1466 @@
-<%- include('layout') %>
+<%- layout('layout/acctBoilerplate', { title: 'MeziumFx - Terms & Conditions'
+})%>
 
-<h2 data-aos="fade-in">Terms of Service</h2>
-<p data-aos="fade-up">By using xCrypto, you agree to these terms.</p>
-<!-- Detailed terms -->
+<div class="page-container">
+  <!-- Hero Section -->
+  <section class="terms-hero">
+    <div class="container">
+      <div class="row justify-content-center text-center">
+        <div class="col-lg-10">
+          <h1 class="display-4 gradient-text mb-4">Terms & Conditions</h1>
+          <p class="lead text-light mb-4">
+            Last updated:
+            <span id="currentDate"
+              ><%= new Date().toLocaleDateString('en-US', { year: 'numeric',
+              month: 'long', day: 'numeric' }) %></span
+            >
+          </p>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <div class="stat-number">15K+</div>
+              <div class="stat-label">Active Users</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">24/7</div>
+              <div class="stat-label">Legal Compliance</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">100%</div>
+              <div class="stat-label">Transparent</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Navigation
+  <section class="terms-nav py-4">
+    <div class="container">
+      <div class="nav-scroller">
+        <nav class="nav nav-pills justify-content-center">
+          <a class="nav-link" href="#acceptance">Acceptance</a>
+          <a class="nav-link" href="#services">Services</a>
+          <a class="nav-link" href="#account">Account</a>
+          <a class="nav-link" href="#investments">Investments</a>
+          <a class="nav-link" href="#fees">Fees</a>
+          <a class="nav-link" href="#liability">Liability</a>
+          <a class="nav-link" href="#governing">Governing Law</a>
+          <a class="nav-link" href="#contact">Contact</a>
+        </nav>
+      </div>
+    </div>
+  </section> -->
+
+  <!-- Main Content -->
+  <section class="terms-content py-5">
+    <div class="container">
+      <div class="row">
+        <!-- Sidebar Navigation -->
+        <div class="col-lg-3 mb-4">
+          <div class="sidebar glass-card">
+            <h5 class="sidebar-title">Table of Contents</h5>
+            <nav class="terms-toc">
+              <ul>
+                <li>
+                  <a href="#introduction" class="toc-link active"
+                    >1. Introduction</a
+                  >
+                </li>
+                <li>
+                  <a href="#definitions" class="toc-link">2. Definitions</a>
+                </li>
+                <li>
+                  <a href="#eligibility" class="toc-link">3. Eligibility</a>
+                </li>
+                <li>
+                  <a href="#account-registration" class="toc-link"
+                    >4. Account Registration</a
+                  >
+                </li>
+                <li>
+                  <a href="#investment-services" class="toc-link"
+                    >5. Investment Services</a
+                  >
+                </li>
+                <li>
+                  <a href="#fees-charges" class="toc-link">6. Fees & Charges</a>
+                </li>
+                <li>
+                  <a href="#risk-disclosure" class="toc-link"
+                    >7. Risk Disclosure</a
+                  >
+                </li>
+                <li>
+                  <a href="#user-obligations" class="toc-link"
+                    >8. User Obligations</a
+                  >
+                </li>
+                <li>
+                  <a href="#prohibited-activities" class="toc-link"
+                    >9. Prohibited Activities</a
+                  >
+                </li>
+                <li>
+                  <a href="#intellectual-property" class="toc-link"
+                    >10. Intellectual Property</a
+                  >
+                </li>
+                <li>
+                  <a href="#privacy-data" class="toc-link"
+                    >11. Privacy & Data</a
+                  >
+                </li>
+                <li>
+                  <a href="#termination" class="toc-link">12. Termination</a>
+                </li>
+                <li>
+                  <a href="#limitation-liability" class="toc-link"
+                    >13. Limitation of Liability</a
+                  >
+                </li>
+                <li>
+                  <a href="#dispute-resolution" class="toc-link"
+                    >14. Dispute Resolution</a
+                  >
+                </li>
+                <li>
+                  <a href="#governing-law" class="toc-link"
+                    >15. Governing Law</a
+                  >
+                </li>
+                <li>
+                  <a href="#changes-terms" class="toc-link"
+                    >16. Changes to Terms</a
+                  >
+                </li>
+                <li>
+                  <a href="#contact-info" class="toc-link"
+                    >17. Contact Information</a
+                  >
+                </li>
+              </ul>
+            </nav>
+
+            <div class="acceptance-box mt-4">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="termsAcceptance"
+                />
+                <label class="form-check-label" for="termsAcceptance">
+                  I have read and agree to these terms
+                </label>
+              </div>
+              <button
+                class="btn btn-primary w-100 mt-2"
+                id="acceptTerms"
+                disabled
+              >
+                Accept Terms
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Terms Content -->
+        <div class="col-lg-9">
+          <div class="terms-container">
+            <!-- Introduction -->
+            <section id="introduction" class="terms-section">
+              <h2 class="section-title">1. Introduction</h2>
+              <div class="section-content">
+                <p>
+                  Welcome to MeziumFx ("Company", "we", "our", "us"). These
+                  Terms and Conditions ("Terms") govern your use of our
+                  investment platform, services, and website (collectively, the
+                  "Services").
+                </p>
+
+                <div class="alert alert-glass">
+                  <i class="fas fa-exclamation-circle me-2"></i>
+                  <strong>Important:</strong> By accessing or using our
+                  Services, you agree to be bound by these Terms and our Privacy
+                  Policy. If you disagree with any part of these Terms, you may
+                  not access our Services.
+                </div>
+
+                <h5>1.1 Agreement to Terms</h5>
+                <p>
+                  By creating an account, making an investment, or using any of
+                  our Services, you acknowledge that you have read, understood,
+                  and agree to be bound by these Terms. These Terms constitute a
+                  legally binding agreement between you and MeziumFx.
+                </p>
+
+                <h5>1.2 Modifications to Terms</h5>
+                <p>
+                  We reserve the right to modify these Terms at any time. We
+                  will provide notice of material changes through our platform
+                  or via email. Continued use of our Services after changes
+                  constitutes acceptance of the modified Terms.
+                </p>
+              </div>
+            </section>
+
+            <!-- Definitions -->
+            <section id="definitions" class="terms-section">
+              <h2 class="section-title">2. Definitions</h2>
+              <div class="section-content">
+                <p>For the purposes of these Terms:</p>
+
+                <div class="definitions-grid">
+                  <div class="definition-item">
+                    <h6>"Account"</h6>
+                    <p>
+                      The personalized access point to our Services created
+                      through registration.
+                    </p>
+                  </div>
+                  <div class="definition-item">
+                    <h6>"Investment Plan"</h6>
+                    <p>
+                      A predefined investment strategy with specific terms,
+                      returns, and conditions.
+                    </p>
+                  </div>
+                  <div class="definition-item">
+                    <h6>"Platform"</h6>
+                    <p>
+                      The MeziumFx website, mobile applications, and related
+                      services.
+                    </p>
+                  </div>
+                  <div class="definition-item">
+                    <h6>"User", "You", "Your"</h6>
+                    <p>
+                      Any individual or entity that accesses or uses our
+                      Services.
+                    </p>
+                  </div>
+                  <div class="definition-item">
+                    <h6>"Digital Assets"</h6>
+                    <p>
+                      Cryptocurrencies and other digital tokens available for
+                      investment.
+                    </p>
+                  </div>
+                  <div class="definition-item">
+                    <h6>"Fiat Currency"</h6>
+                    <p>
+                      Government-issued currency such as USD, EUR, GBP, etc.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Eligibility -->
+            <section id="eligibility" class="terms-section">
+              <h2 class="section-title">3. Eligibility</h2>
+              <div class="section-content">
+                <h5>3.1 Age Requirement</h5>
+                <p>
+                  You must be at least 18 years old to use our Services. By
+                  using our Services, you represent and warrant that you are of
+                  legal age to form a binding contract.
+                </p>
+
+                <h5>3.2 Jurisdictional Restrictions</h5>
+                <p>
+                  Our Services are not available to residents of certain
+                  jurisdictions where cryptocurrency trading or investment
+                  services are restricted or prohibited. You are responsible for
+                  ensuring that your use of our Services complies with local
+                  laws and regulations.
+                </p>
+
+                <h5>3.3 Capacity and Authority</h5>
+                <p>
+                  If you are using our Services on behalf of a company or other
+                  entity, you represent that you have the authority to bind that
+                  entity to these Terms.
+                </p>
+
+                <div class="restricted-countries">
+                  <h6>Currently Restricted Jurisdictions:</h6>
+                  <div class="country-tags">
+                    <span class="country-tag">United States</span>
+                    <span class="country-tag">North Korea</span>
+                    <span class="country-tag">Iran</span>
+                    <span class="country-tag">Syria</span>
+                    <span class="country-tag">Crimea</span>
+                    <span class="country-tag">Cuba</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Account Registration -->
+            <section id="account-registration" class="terms-section">
+              <h2 class="section-title">4. Account Registration</h2>
+              <div class="section-content">
+                <h5>4.1 Account Creation</h5>
+                <p>
+                  To access our Services, you must create an account by
+                  providing accurate and complete information. You agree to:
+                </p>
+                <ul>
+                  <li>
+                    Provide true, accurate, current, and complete information
+                  </li>
+                  <li>Maintain and promptly update your account information</li>
+                  <li>Maintain the security of your account credentials</li>
+                  <li>
+                    Accept responsibility for all activities that occur under
+                    your account
+                  </li>
+                </ul>
+
+                <h5>4.2 Identity Verification</h5>
+                <p>
+                  We are required by law to verify the identity of our users.
+                  You agree to provide identification documents and other
+                  information as requested for verification purposes.
+                </p>
+
+                <h5>4.3 Account Security</h5>
+                <p>
+                  You are responsible for maintaining the confidentiality of
+                  your account credentials and for all activities under your
+                  account. Notify us immediately of any unauthorized use of your
+                  account.
+                </p>
+
+                <div class="security-features">
+                  <h6>Recommended Security Measures:</h6>
+                  <div class="features-grid">
+                    <div class="feature-item">
+                      <i class="fas fa-shield-alt"></i>
+                      <span>Two-Factor Authentication</span>
+                    </div>
+                    <div class="feature-item">
+                      <i class="fas fa-key"></i>
+                      <span>Strong Password</span>
+                    </div>
+                    <div class="feature-item">
+                      <i class="fas fa-envelope"></i>
+                      <span>Email Verification</span>
+                    </div>
+                    <div class="feature-item">
+                      <i class="fas fa-bell"></i>
+                      <span>Security Alerts</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Investment Services -->
+            <section id="investment-services" class="terms-section">
+              <h2 class="section-title">5. Investment Services</h2>
+              <div class="section-content">
+                <h5>5.1 Investment Products</h5>
+                <p>
+                  We offer various investment plans with different risk profiles
+                  and return expectations. Each investment plan has specific
+                  terms, including but not limited to:
+                </p>
+
+                <div class="investment-terms">
+                  <div class="term-item">
+                    <i class="fas fa-calendar"></i>
+                    <div>
+                      <strong>Investment Period</strong>
+                      <span>Duration of the investment plan</span>
+                    </div>
+                  </div>
+                  <div class="term-item">
+                    <i class="fas fa-percentage"></i>
+                    <div>
+                      <strong>Expected Returns</strong>
+                      <span>Projected profitability (not guaranteed)</span>
+                    </div>
+                  </div>
+                  <div class="term-item">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    <div>
+                      <strong>Minimum Investment</strong>
+                      <span>Required initial capital</span>
+                    </div>
+                  </div>
+                  <div class="term-item">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <div>
+                      <strong>Risk Level</strong>
+                      <span>Associated investment risk</span>
+                    </div>
+                  </div>
+                </div>
+
+                <h5>5.2 No Investment Advice</h5>
+                <p>
+                  We do not provide investment advice, and nothing in our
+                  Services should be construed as such. All investment decisions
+                  are made at your own discretion and risk.
+                </p>
+
+                <h5>5.3 Performance Disclaimer</h5>
+                <p>
+                  Past performance is not indicative of future results.
+                  Investment returns are not guaranteed and may fluctuate based
+                  on market conditions.
+                </p>
+              </div>
+            </section>
+
+            <!-- Fees & Charges -->
+            <section id="fees-charges" class="terms-section">
+              <h2 class="section-title">6. Fees & Charges</h2>
+              <div class="section-content">
+                <h5>6.1 Management Fees</h5>
+                <p>
+                  We charge management fees as detailed in each investment plan.
+                  These fees are deducted from investment returns and are
+                  clearly disclosed before you commit to any investment.
+                </p>
+
+                <h5>6.2 Transaction Fees</h5>
+                <p>
+                  Certain transactions may incur additional fees, including but
+                  not limited to:
+                </p>
+
+                <div class="fees-table glass-card">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Service</th>
+                          <th>Fee</th>
+                          <th>Details</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Deposits</td>
+                          <td>0% - 2.5%</td>
+                          <td>Varies by payment method</td>
+                        </tr>
+                        <tr>
+                          <td>Withdrawals</td>
+                          <td>1% - 3%</td>
+                          <td>Plus network fees for crypto</td>
+                        </tr>
+                        <tr>
+                          <td>Inactivity</td>
+                          <td>$10/month</td>
+                          <td>After 12 months of inactivity</td>
+                        </tr>
+                        <tr>
+                          <td>Early Termination</td>
+                          <td>5% - 15%</td>
+                          <td>Varies by investment plan</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <h5>6.3 Fee Changes</h5>
+                <p>
+                  We reserve the right to modify our fee structure with 30 days'
+                  notice. Continued use of our Services after fee changes
+                  constitutes acceptance of the new fees.
+                </p>
+              </div>
+            </section>
+
+            <!-- Risk Disclosure -->
+            <section id="risk-disclosure" class="terms-section">
+              <h2 class="section-title">7. Risk Disclosure</h2>
+              <div class="section-content">
+                <div class="risk-warning alert alert-warning-glass">
+                  <i class="fas fa-radiation-alt me-2"></i>
+                  <strong>Investment Warning:</strong> All investments carry
+                  risk. You should carefully consider whether investing is
+                  suitable for you in light of your financial circumstances.
+                </div>
+
+                <h5>7.1 Market Risk</h5>
+                <p>
+                  Investment values may fluctuate due to market conditions,
+                  economic factors, and other variables beyond our control.
+                </p>
+
+                <h5>7.2 Liquidity Risk</h5>
+                <p>
+                  Some investments may have limited liquidity, meaning you may
+                  not be able to access your funds immediately.
+                </p>
+
+                <h5>7.3 Technology Risk</h5>
+                <p>
+                  Our platform relies on technology that may be subject to
+                  outages, cyber attacks, or other technical issues.
+                </p>
+
+                <h5>7.4 Regulatory Risk</h5>
+                <p>
+                  Changes in laws and regulations may affect the legality or
+                  profitability of certain investments.
+                </p>
+
+                <div class="risk-acknowledgment">
+                  <p>
+                    <strong
+                      >By using our Services, you acknowledge that:</strong
+                    >
+                  </p>
+                  <ul>
+                    <li>You understand the risks involved in investing</li>
+                    <li>You are solely responsible for investment decisions</li>
+                    <li>You can afford to lose your investment capital</li>
+                    <li>
+                      You have sought independent financial advice if necessary
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </section>
+
+            <!-- User Obligations -->
+            <section id="user-obligations" class="terms-section">
+              <h2 class="section-title">8. User Obligations</h2>
+              <div class="section-content">
+                <h5>8.1 Compliance with Laws</h5>
+                <p>
+                  You agree to comply with all applicable laws, regulations, and
+                  tax obligations related to your use of our Services.
+                </p>
+
+                <h5>8.2 Accurate Information</h5>
+                <p>
+                  You must provide accurate and complete information and keep it
+                  updated throughout your use of our Services.
+                </p>
+
+                <h5>8.3 Prohibited Conduct</h5>
+                <p>You agree not to engage in any activities that:</p>
+                <ul>
+                  <li>Violate any laws or regulations</li>
+                  <li>Infringe on others' rights</li>
+                  <li>Interfere with our Services</li>
+                  <li>Attempt to gain unauthorized access</li>
+                  <li>Provide false or misleading information</li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- Prohibited Activities -->
+            <section id="prohibited-activities" class="terms-section">
+              <h2 class="section-title">9. Prohibited Activities</h2>
+              <div class="section-content">
+                <p>
+                  You may not use our Services for any illegal or unauthorized
+                  purpose. Prohibited activities include but are not limited to:
+                </p>
+
+                <div class="prohibited-list">
+                  <div class="prohibited-item">
+                    <i class="fas fa-ban text-danger"></i>
+                    <span>Money laundering or terrorist financing</span>
+                  </div>
+                  <div class="prohibited-item">
+                    <i class="fas fa-ban text-danger"></i>
+                    <span>Fraud or deceptive practices</span>
+                  </div>
+                  <div class="prohibited-item">
+                    <i class="fas fa-ban text-danger"></i>
+                    <span>Market manipulation</span>
+                  </div>
+                  <div class="prohibited-item">
+                    <i class="fas fa-ban text-danger"></i>
+                    <span>Tax evasion</span>
+                  </div>
+                  <div class="prohibited-item">
+                    <i class="fas fa-ban text-danger"></i>
+                    <span>Unauthorized access or hacking</span>
+                  </div>
+                  <div class="prohibited-item">
+                    <i class="fas fa-ban text-danger"></i>
+                    <span>Spamming or phishing</span>
+                  </div>
+                </div>
+
+                <p>
+                  We reserve the right to investigate and take appropriate legal
+                  action against anyone who violates these provisions.
+                </p>
+              </div>
+            </section>
+
+            <!-- Intellectual Property -->
+            <section id="intellectual-property" class="terms-section">
+              <h2 class="section-title">10. Intellectual Property</h2>
+              <div class="section-content">
+                <h5>10.1 Ownership</h5>
+                <p>
+                  All intellectual property rights in our Platform, Services,
+                  and content are owned by or licensed to MeziumFx. These rights
+                  are protected by copyright, trademark, and other laws.
+                </p>
+
+                <h5>10.2 License Grant</h5>
+                <p>
+                  We grant you a limited, non-exclusive, non-transferable
+                  license to access and use our Services for personal,
+                  non-commercial purposes.
+                </p>
+
+                <h5>10.3 Restrictions</h5>
+                <p>You may not:</p>
+                <ul>
+                  <li>Copy, modify, or create derivative works</li>
+                  <li>Reverse engineer or decompile our technology</li>
+                  <li>Use our trademarks without permission</li>
+                  <li>Remove any proprietary notices</li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- Privacy & Data -->
+            <section id="privacy-data" class="terms-section">
+              <h2 class="section-title">11. Privacy & Data Protection</h2>
+              <div class="section-content">
+                <h5>11.1 Privacy Policy</h5>
+                <p>
+                  Your use of our Services is also governed by our Privacy
+                  Policy, which explains how we collect, use, and protect your
+                  personal information.
+                </p>
+
+                <h5>11.2 Data Collection</h5>
+                <p>
+                  We collect information necessary to provide our Services,
+                  including:
+                </p>
+                <ul>
+                  <li>Personal identification information</li>
+                  <li>Financial information for verification</li>
+                  <li>Transaction history</li>
+                  <li>Technical and usage data</li>
+                </ul>
+
+                <h5>11.3 Data Security</h5>
+                <p>
+                  We implement appropriate security measures to protect your
+                  data, but cannot guarantee absolute security.
+                </p>
+
+                <h5>11.4 International Transfers</h5>
+                <p>
+                  Your data may be transferred to and processed in countries
+                  outside your residence.
+                </p>
+              </div>
+            </section>
+
+            <!-- Termination -->
+            <section id="termination" class="terms-section">
+              <h2 class="section-title">12. Termination</h2>
+              <div class="section-content">
+                <h5>12.1 By You</h5>
+                <p>
+                  You may terminate your account at any time by contacting our
+                  support team. Termination may be subject to completion of
+                  ongoing investments and payment of applicable fees.
+                </p>
+
+                <h5>12.2 By Us</h5>
+                <p>
+                  We may suspend or terminate your account if we believe you
+                  have violated these Terms or applicable laws.
+                </p>
+
+                <h5>12.3 Effects of Termination</h5>
+                <p>Upon termination:</p>
+                <ul>
+                  <li>Your right to use our Services immediately ceases</li>
+                  <li>You remain liable for all obligations</li>
+                  <li>We may retain your information as required by law</li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- Limitation of Liability -->
+            <section id="limitation-liability" class="terms-section">
+              <h2 class="section-title">13. Limitation of Liability</h2>
+              <div class="section-content">
+                <div class="liability-disclaimer alert alert-danger-glass">
+                  <i class="fas fa-exclamation-triangle me-2"></i>
+                  <strong>Important Limitation:</strong> To the maximum extent
+                  permitted by law, our liability is limited as described below.
+                </div>
+
+                <h5>13.1 No Warranty</h5>
+                <p>
+                  Our Services are provided "as is" and "as available" without
+                  warranties of any kind, either express or implied.
+                </p>
+
+                <h5>13.2 Limitation of Damages</h5>
+                <p>
+                  In no event shall MeziumFx be liable for any indirect,
+                  incidental, special, consequential, or punitive damages.
+                </p>
+
+                <h5>13.3 Maximum Liability</h5>
+                <p>
+                  Our total liability to you for all claims shall not exceed the
+                  amount of fees you paid to us in the six months preceding the
+                  claim.
+                </p>
+
+                <h5>13.4 Essential Purpose</h5>
+                <p>
+                  You acknowledge that the limitations in this section are
+                  fundamental elements of the basis of the bargain between us.
+                </p>
+              </div>
+            </section>
+
+            <!-- Dispute Resolution -->
+            <section id="dispute-resolution" class="terms-section">
+              <h2 class="section-title">14. Dispute Resolution</h2>
+              <div class="section-content">
+                <h5>14.1 Informal Resolution</h5>
+                <p>
+                  We encourage you to contact us first to resolve any disputes
+                  informally before initiating formal proceedings.
+                </p>
+
+                <h5>14.2 Arbitration</h5>
+                <p>
+                  Any disputes shall be resolved through binding arbitration in
+                  accordance with the rules of the International Chamber of
+                  Commerce.
+                </p>
+
+                <h5>14.3 Class Action Waiver</h5>
+                <p>
+                  You waive any right to participate in class actions, class
+                  arbitrations, or representative actions.
+                </p>
+
+                <h5>14.4 Governing Law</h5>
+                <p>
+                  These Terms shall be governed by the laws of [Jurisdiction],
+                  without regard to its conflict of law provisions.
+                </p>
+              </div>
+            </section>
+
+            <!-- Governing Law -->
+            <section id="governing-law" class="terms-section">
+              <h2 class="section-title">15. Governing Law</h2>
+              <div class="section-content">
+                <p>
+                  These Terms and any separate agreements whereby we provide you
+                  Services shall be governed by and construed in accordance with
+                  the laws of the British Virgin Islands.
+                </p>
+
+                <h5>15.1 Jurisdiction</h5>
+                <p>
+                  Any legal suit, action, or proceeding arising out of, or
+                  related to, these Terms or the Services shall be instituted in
+                  the courts of the British Virgin Islands.
+                </p>
+
+                <h5>15.2 International Users</h5>
+                <p>
+                  If you access our Services from outside the British Virgin
+                  Islands, you are responsible for compliance with local laws.
+                </p>
+              </div>
+            </section>
+
+            <!-- Changes to Terms -->
+            <section id="changes-terms" class="terms-section">
+              <h2 class="section-title">16. Changes to Terms</h2>
+              <div class="section-content">
+                <h5>16.1 Modification Rights</h5>
+                <p>
+                  We reserve the right to modify these Terms at any time. We
+                  will provide notice of material changes through our platform
+                  or via email.
+                </p>
+
+                <h5>16.2 Acceptance of Changes</h5>
+                <p>
+                  Continued use of our Services after changes constitutes
+                  acceptance of the modified Terms. If you disagree with
+                  changes, you must stop using our Services.
+                </p>
+
+                <h5>16.3 Historical Versions</h5>
+                <p>
+                  Previous versions of these Terms are archived and available
+                  upon request.
+                </p>
+              </div>
+            </section>
+
+            <!-- Contact Information -->
+            <section id="contact-info" class="terms-section">
+              <h2 class="section-title">17. Contact Information</h2>
+              <div class="section-content">
+                <p>
+                  If you have any questions about these Terms, please contact
+                  us:
+                </p>
+
+                <div class="contact-methods">
+                  <div class="contact-method">
+                    <i class="fas fa-envelope"></i>
+                    <div>
+                      <strong>Email</strong>
+                      <span>legal@meziumfx.com</span>
+                    </div>
+                  </div>
+                  <div class="contact-method">
+                    <i class="fas fa-globe"></i>
+                    <div>
+                      <strong>Website</strong>
+                      <span>www.meziumfx.com/legal</span>
+                    </div>
+                  </div>
+                  <div class="contact-method">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                      <strong>Registered Office</strong>
+                      <span
+                        >MeziumFx Ltd, Road Town, Tortola, British Virgin
+                        Islands</span
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <div class="legal-notice mt-4">
+                  <p>
+                    <strong>Legal Notice:</strong> These Terms constitute the
+                    entire agreement between you and MeziumFx regarding our
+                    Services.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <!-- Acceptance Footer -->
+            <div class="acceptance-footer glass-card mt-5">
+              <div class="row align-items-center">
+                <div class="col-md-8">
+                  <h5>Ready to proceed?</h5>
+                  <p class="mb-0">
+                    By accepting these terms, you acknowledge that you have
+                    read, understood, and agree to be bound by all provisions.
+                  </p>
+                </div>
+                <div class="col-md-4 text-end">
+                  <div class="form-check mb-2">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="finalAcceptance"
+                    />
+                    <label class="form-check-label" for="finalAcceptance">
+                      I accept the Terms & Conditions
+                    </label>
+                  </div>
+                  <button class="btn btn-primary" id="finalAcceptBtn" disabled>
+                    Confirm Acceptance
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<style>
+  .terms-hero {
+    background: linear-gradient(
+      135deg,
+      var(--dark) 0%,
+      rgba(30, 42, 58, 0.9) 100%
+    );
+    backdrop-filter: blur(20px);
+    padding: 100px 0 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .terms-hero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+      circle at 30% 20%,
+      rgba(15, 184, 150, 0.1) 0%,
+      transparent 50%
+    );
+    pointer-events: none;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 2rem;
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+
+  .stat-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+
+  .terms-nav {
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--glass-border);
+  }
+
+  .nav-scroller {
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .nav-pills .nav-link {
+    color: var(--text-secondary);
+    border-radius: 20px;
+    padding: 0.5rem 1.5rem;
+    margin: 0 0.25rem;
+    transition: var(--transition);
+    border: 1px solid transparent;
+  }
+
+  .nav-pills .nav-link:hover,
+  .nav-pills .nav-link.active {
+    color: var(--primary);
+    background: rgba(15, 184, 150, 0.1);
+    border-color: rgba(15, 184, 150, 0.3);
+  }
+
+  .sidebar {
+    padding: 1.5rem;
+    position: sticky;
+    top: 100px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+  }
+
+  .sidebar-title {
+    color: var(--text);
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 0.75rem;
+  }
+
+  .terms-toc ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .terms-toc li {
+    margin-bottom: 0.5rem;
+  }
+
+  .toc-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius);
+    display: block;
+    transition: var(--transition);
+    border-left: 3px solid transparent;
+  }
+
+  .toc-link:hover,
+  .toc-link.active {
+    color: var(--primary);
+    background: rgba(15, 184, 150, 0.1);
+    border-left-color: var(--primary);
+  }
+
+  .acceptance-box {
+    padding: 1rem;
+    background: rgba(15, 184, 150, 0.05);
+    border-radius: var(--radius);
+    border: 1px solid rgba(15, 184, 150, 0.2);
+  }
+
+  .terms-section {
+    margin-bottom: 3rem;
+    scroll-margin-top: 2rem;
+  }
+
+  .section-title {
+    color: var(--text);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary);
+  }
+
+  .section-content {
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  .section-content h5 {
+    color: var(--text);
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+
+  .section-content h6 {
+    color: var(--text);
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .alert-glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius);
+    padding: 1rem 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .alert-warning-glass {
+    background: rgba(255, 184, 0, 0.1);
+    border-color: rgba(255, 184, 0, 0.3);
+    color: #ffb800;
+  }
+
+  .alert-danger-glass {
+    background: rgba(255, 55, 95, 0.1);
+    border-color: rgba(255, 55, 95, 0.3);
+    color: #ff375f;
+  }
+
+  .definitions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .definition-item {
+    padding: 1rem;
+    background: var(--glass);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+  }
+
+  .definition-item h6 {
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .restricted-countries {
+    margin: 1.5rem 0;
+  }
+
+  .country-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .country-tag {
+    background: rgba(255, 55, 95, 0.1);
+    color: #ff375f;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    border: 1px solid rgba(255, 55, 95, 0.3);
+  }
+
+  .security-features {
+    margin: 1.5rem 0;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: var(--glass);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+  }
+
+  .feature-item i {
+    color: var(--primary);
+    width: 20px;
+  }
+
+  .investment-terms {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .term-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--glass);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+  }
+
+  .term-item i {
+    color: var(--primary);
+    font-size: 1.5rem;
+  }
+
+  .fees-table {
+    margin: 1.5rem 0;
+    padding: 1rem;
+  }
+
+  .table {
+    color: var(--text-secondary);
+    margin: 0;
+  }
+
+  .table th {
+    border-bottom: 2px solid var(--glass-border);
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .table td {
+    border-bottom: 1px solid var(--glass-border);
+  }
+
+  .risk-acknowledgment {
+    background: rgba(255, 184, 0, 0.05);
+    border: 1px solid rgba(255, 184, 0, 0.2);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .prohibited-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 0.75rem;
+    margin: 1.5rem 0;
+  }
+
+  .prohibited-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: rgba(255, 55, 95, 0.05);
+    border-radius: var(--radius);
+    border: 1px solid rgba(255, 55, 95, 0.2);
+  }
+
+  .contact-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .contact-method {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--glass);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+  }
+
+  .contact-method i {
+    color: var(--primary);
+    font-size: 1.2rem;
+    width: 20px;
+  }
+
+  .legal-notice {
+    background: rgba(15, 184, 150, 0.05);
+    border: 1px solid rgba(15, 184, 150, 0.2);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+  }
+
+  .acceptance-footer {
+    padding: 2rem;
+    background: rgba(15, 184, 150, 0.1);
+    border: 2px solid rgba(15, 184, 150, 0.3);
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .terms-hero {
+      padding: 80px 0 30px;
+    }
+
+    .hero-stats {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .definitions-grid,
+    .features-grid,
+    .investment-terms {
+      grid-template-columns: 1fr;
+    }
+
+    .nav-pills .nav-link {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+    }
+
+    .sidebar {
+      position: static;
+      margin-bottom: 2rem;
+    }
+  }
+
+  /* Print styles */
+  @media print {
+    .terms-nav,
+    .sidebar,
+    .acceptance-box,
+    .acceptance-footer {
+      display: none !important;
+    }
+
+    .terms-hero {
+      padding: 2rem 0 !important;
+    }
+
+    .glass-card {
+      background: white !important;
+      color: black !important;
+      border: 1px solid #ccc !important;
+      box-shadow: none !important;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Initialize terms page functionality
+    initSmoothScrolling();
+    initTocNavigation();
+    initAcceptanceTracking();
+    initActiveSectionTracking();
+  });
+
+  // Smooth scrolling for anchor links
+  function initSmoothScrolling() {
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+      anchor.addEventListener("click", function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute("href"));
+        if (target) {
+          target.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      });
+    });
+  }
+
+  // Table of Contents navigation
+  function initTocNavigation() {
+    const tocLinks = document.querySelectorAll(".toc-link");
+    const sections = document.querySelectorAll(".terms-section");
+
+    // Update active TOC link based on scroll position
+    function updateActiveTocLink() {
+      let currentSection = "";
+
+      sections.forEach((section) => {
+        const sectionTop = section.offsetTop - 100;
+        if (window.scrollY >= sectionTop) {
+          currentSection = section.getAttribute("id");
+        }
+      });
+
+      tocLinks.forEach((link) => {
+        link.classList.remove("active");
+        if (link.getAttribute("href") === `#${currentSection}`) {
+          link.classList.add("active");
+        }
+      });
+    }
+
+    window.addEventListener("scroll", updateActiveTocLink);
+    updateActiveTocLink(); // Initial call
+  }
+
+  // Acceptance tracking
+  function initAcceptanceTracking() {
+    const acceptanceCheckbox = document.getElementById("termsAcceptance");
+    const acceptButton = document.getElementById("acceptTerms");
+    const finalCheckbox = document.getElementById("finalAcceptance");
+    const finalButton = document.getElementById("finalAcceptBtn");
+
+    // Sidebar acceptance
+    acceptanceCheckbox.addEventListener("change", function () {
+      acceptButton.disabled = !this.checked;
+    });
+
+    acceptButton.addEventListener("click", function () {
+      if (acceptanceCheckbox.checked) {
+        showAcceptanceSuccess();
+        acceptanceCheckbox.checked = false;
+        this.disabled = true;
+      }
+    });
+
+    // Final acceptance
+    finalCheckbox.addEventListener("change", function () {
+      finalButton.disabled = !this.checked;
+    });
+
+    finalButton.addEventListener("click", function () {
+      if (finalCheckbox.checked) {
+        showAcceptanceSuccess();
+        finalCheckbox.checked = false;
+        this.disabled = true;
+
+        // Store acceptance in localStorage
+        localStorage.setItem("termsAccepted", new Date().toISOString());
+      }
+    });
+  }
+
+  function showAcceptanceSuccess() {
+    // Create success notification
+    const notification = document.createElement("div");
+    notification.className = "alert alert-success glass-card position-fixed";
+    notification.style.cssText = `
+    top: 20px;
+    right: 20px;
+    z-index: 1060;
+    min-width: 300px;
+    backdrop-filter: blur(20px);
+  `;
+    notification.innerHTML = `
+    <div class="d-flex align-items-center">
+      <i class="fas fa-check-circle text-success me-2"></i>
+      <div>
+        <strong>Terms Accepted</strong>
+        <div class="small">Thank you for accepting our Terms & Conditions</div>
+      </div>
+      <button type="button" class="btn-close btn-close-white ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
+    </div>
+  `;
+
+    document.body.appendChild(notification);
+
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+      if (notification.parentElement) {
+        notification.remove();
+      }
+    }, 5000);
+  }
+
+  // Active section tracking for quick nav
+  function initActiveSectionTracking() {
+    const sections = document.querySelectorAll(".terms-section");
+    const navLinks = document.querySelectorAll(".nav-pills .nav-link");
+
+    function updateActiveNavLink() {
+      let currentSection = "";
+
+      sections.forEach((section) => {
+        const sectionTop = section.offsetTop - 150;
+        if (window.scrollY >= sectionTop) {
+          currentSection = section.getAttribute("id");
+        }
+      });
+
+      navLinks.forEach((link) => {
+        link.classList.remove("active");
+        if (link.getAttribute("href") === `#${currentSection}`) {
+          link.classList.add("active");
+        }
+      });
+    }
+
+    window.addEventListener("scroll", updateActiveNavLink);
+    updateActiveNavLink(); // Initial call
+  }
+
+  // Check if user has already accepted terms
+  function checkPreviousAcceptance() {
+    const accepted = localStorage.getItem("termsAccepted");
+    if (accepted) {
+      const acceptDate = new Date(accepted).toLocaleDateString();
+      console.log(`Terms previously accepted on: ${acceptDate}`);
+    }
+  }
+
+  // Initialize on load
+  checkPreviousAcceptance();
+</script>

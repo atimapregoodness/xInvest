@@ -209,3 +209,13 @@ exports.getRequests = async (req, res) => {
     res.redirect("/admin");
   }
 };
+
+exports.approveVerification = async (req, res) => {
+  await Verification.findByIdAndUpdate(req.params.id, { status: "approved" });
+  const verifications = await Verification.find({ status: "pending" }).populate(
+    "user"
+  );
+  const deposits = await Deposit.find({ status: "pending" }).populate("user");
+  req.io.emit("updateRequests", { verifications, deposits });
+  res.redirect("/admin/request");
+};

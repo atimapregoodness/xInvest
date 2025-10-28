@@ -147,28 +147,42 @@ exports.getUserBots = async (req, res) => {
   }
 };
 
-exports.getVerificationPage = (req, res) => {
-  res.cookie("XSRF-TOKEN", req.csrfToken());
+exports.getVerificationPage = async (req, res) => {
+  let verification = null;
+
+  try {
+    // Find the latest verification record for this user
+    verification = await Verification.findOne({ user: req.user._id }).sort({
+      createdAt: -1,
+    });
+  } catch (err) {
+    console.error("Error fetching verification:", err);
+    req.flash("error", "Could not load verification info.");
+  }
+
+  // Render the page with messages and verification info
   res.render("user/verification", {
     title: "User Verification",
-    csrfToken: req.csrfToken(),
     messages: {
       error: req.flash("error"),
       success: req.flash("success"),
     },
+    verification,
   });
 };
 
 exports.submitVerification = async (req, res) => {
   try {
+    const { documentType } = req.body;
     if (!req.file) {
       req.flash("error", "ID image is required.");
+      cont;
       return res.redirect("/dashboard/personal/verification");
     }
 
     const verification = new Verification({
       user: req.user._id,
-      documentType: "ID",
+      documentType,
       documentUrl: `/uploads/verifications/${req.file.filename}`,
     });
 

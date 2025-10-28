@@ -153,9 +153,9 @@
 
 .floating-nav {
   position: fixed;
-  bottom: 0 !important;
+
   left: 50%;
-  bottom: 0.3em !important;
+  bottom: 0.6em !important;
   margin: 0 !important;
   transform: translateX(-50%);
   background: var(--glass);
@@ -167,8 +167,8 @@
   gap: 0.4rem;
   z-index: 1000;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-  min-width: 93vw;
-  max-width: 93vw;
+  min-width: 90vw;
+  max-width: 90vw;
   border-radius: 1.5em;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 

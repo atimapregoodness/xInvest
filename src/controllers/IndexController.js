@@ -37,3 +37,15 @@ exports.getContact = (req, res) => {
 exports.getSupport = (req, res) => {
   res.render("support", { title: "Support" });
 };
+
+exports.getFAQs = (req, res) => {
+  res.render("faqs", { title: "FAQs" });
+};
+
+exports.getTerms = (req, res) => {
+  res.render("terms", { title: "Terms & Conditions" });
+};
+
+exports.getPrivacy = (req, res) => {
+  res.render("privacy", { title: "Privacy Policy" });
+};

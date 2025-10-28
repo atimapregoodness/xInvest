@@ -1,4 +1,4 @@
-<%- layout('layout/acctBoilerplate', { title: 'Finovex - Place Trade' }) %> <%-
+<%- layout('layout/acctBoilerplate', { title: 'meziumFx - Place Trade' }) %> <%-
 partial("partials/floatingNav") %> <%- partial("partials/sideBar") %>
 
 <div class="dashboard">
@@ -9,8 +9,6 @@ partial("partials/floatingNav") %> <%- partial("partials/sideBar") %>
       <div class="trade-form-card glass-card">
         <h2>Place Trade</h2>
         <form id="tradeForm">
-          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-
           <!-- Trading Pair -->
           <div class="form-group">
             <label class="form-label">Trading Pair</label>

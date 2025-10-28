@@ -1,5 +1,1655 @@
-<%- include('layout') %>
+<%- layout('layout/acctBoilerplate', { title: 'MeziumFx - Privacy Policy' }) %>
 
-<h2 data-aos="fade-in">Privacy Policy</h2>
-<p data-aos="fade-up">We value your privacy. This policy explains how we collect and use data.</p>
-<!-- Detailed policy text from best practices -->
+<div class="page-container">
+  <!-- Hero Section -->
+  <section class="privacy-hero">
+    <div class="container">
+      <div class="row justify-content-center text-center">
+        <div class="col-lg-10">
+          <h1 class="display-4 gradient-text mb-4">Privacy Policy</h1>
+          <p class="lead text-light mb-4">
+            Last updated:
+            <span id="currentDate"
+              ><%= new Date().toLocaleDateString('en-US', { year: 'numeric',
+              month: 'long', day: 'numeric' }) %></span
+            >
+          </p>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <div class="stat-number">GDPR</div>
+              <div class="stat-label">Compliant</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">CCPA</div>
+              <div class="stat-label">Ready</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">256-bit</div>
+              <div class="stat-label">Encryption</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Navigation -->
+  <!-- <section class="privacy-nav py-4">
+    <div class="container">
+      <div class="nav-scroller">
+        <nav class="nav nav-pills justify-content-center">
+          <a class="nav-link" href="#introduction">Introduction</a>
+          <a class="nav-link" href="#data-collection">Data Collection</a>
+          <a class="nav-link" href="#data-usage">Data Usage</a>
+          <a class="nav-link" href="#data-sharing">Data Sharing</a>
+          <a class="nav-link" href="#data-security">Data Security</a>
+          <a class="nav-link" href="#your-rights">Your Rights</a>
+          <a class="nav-link" href="#cookies">Cookies</a>
+          <a class="nav-link" href="#contact">Contact</a>
+        </nav>
+      </div>
+    </div>
+  </section> -->
+
+  <!-- Main Content -->
+  <section class="privacy-content py-5">
+    <div class="container">
+      <div class="row">
+        <!-- Sidebar Navigation -->
+        <div class="col-lg-3 mb-4">
+          <div class="sidebar glass-card">
+            <h5 class="sidebar-title">Table of Contents</h5>
+            <nav class="privacy-toc">
+              <ul>
+                <li>
+                  <a href="#introduction" class="toc-link active"
+                    >1. Introduction & Scope</a
+                  >
+                </li>
+                <li>
+                  <a href="#information-collection" class="toc-link"
+                    >2. Information We Collect</a
+                  >
+                </li>
+                <li>
+                  <a href="#how-we-use" class="toc-link"
+                    >3. How We Use Your Information</a
+                  >
+                </li>
+                <li>
+                  <a href="#legal-basis" class="toc-link"
+                    >4. Legal Basis for Processing</a
+                  >
+                </li>
+                <li>
+                  <a href="#data-sharing" class="toc-link"
+                    >5. Data Sharing & Disclosure</a
+                  >
+                </li>
+                <li>
+                  <a href="#international-transfers" class="toc-link"
+                    >6. International Transfers</a
+                  >
+                </li>
+                <li>
+                  <a href="#data-security" class="toc-link">7. Data Security</a>
+                </li>
+                <li>
+                  <a href="#data-retention" class="toc-link"
+                    >8. Data Retention</a
+                  >
+                </li>
+                <li>
+                  <a href="#your-rights" class="toc-link"
+                    >9. Your Privacy Rights</a
+                  >
+                </li>
+                <li>
+                  <a href="#cookies-tracking" class="toc-link"
+                    >10. Cookies & Tracking</a
+                  >
+                </li>
+                <li>
+                  <a href="#third-party" class="toc-link"
+                    >11. Third-Party Services</a
+                  >
+                </li>
+                <li>
+                  <a href="#children-privacy" class="toc-link"
+                    >12. Children's Privacy</a
+                  >
+                </li>
+                <li>
+                  <a href="#policy-changes" class="toc-link"
+                    >13. Policy Changes</a
+                  >
+                </li>
+                <li>
+                  <a href="#contact-us" class="toc-link">14. Contact Us</a>
+                </li>
+              </ul>
+            </nav>
+
+            <div class="privacy-badges mt-4">
+              <div class="badge-item">
+                <i class="fas fa-shield-alt text-primary"></i>
+                <span>GDPR Compliant</span>
+              </div>
+              <div class="badge-item">
+                <i class="fas fa-lock text-success"></i>
+                <span>Encrypted Data</span>
+              </div>
+              <div class="badge-item">
+                <i class="fas fa-user-shield text-info"></i>
+                <span>Privacy First</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Privacy Content -->
+        <div class="col-lg-9">
+          <div class="privacy-container">
+            <!-- Introduction -->
+            <section id="introduction" class="privacy-section">
+              <h2 class="section-title">1. Introduction & Scope</h2>
+              <div class="section-content">
+                <div class="privacy-alert alert alert-glass">
+                  <i class="fas fa-info-circle me-2"></i>
+                  <strong>Transparency Commitment:</strong> We believe in being
+                  clear about how we collect, use, and protect your personal
+                  information.
+                </div>
+
+                <h5>1.1 Welcome</h5>
+                <p>
+                  Welcome to MeziumFx ("we", "our", "us"). We are committed to
+                  protecting your privacy and ensuring the security of your
+                  personal information. This Privacy Policy explains how we
+                  collect, use, disclose, and safeguard your information when
+                  you use our investment platform and services.
+                </p>
+
+                <h5>1.2 Scope</h5>
+                <p>
+                  This policy applies to all personal information we collect
+                  through our website, mobile applications, and any related
+                  services (collectively, the "Services"). By using our
+                  Services, you consent to the data practices described in this
+                  policy.
+                </p>
+
+                <h5>1.3 Definitions</h5>
+                <div class="definitions-grid">
+                  <div class="definition-item">
+                    <h6>"Personal Information"</h6>
+                    <p>
+                      Any information that identifies or can be used to identify
+                      an individual
+                    </p>
+                  </div>
+                  <div class="definition-item">
+                    <h6>"Processing"</h6>
+                    <p>Any operation performed on personal information</p>
+                  </div>
+                  <div class="definition-item">
+                    <h6>"Data Controller"</h6>
+                    <p>MeziumFx, who determines the purposes of processing</p>
+                  </div>
+                  <div class="definition-item">
+                    <h6>"Data Subject"</h6>
+                    <p>
+                      You, the individual to whom the personal information
+                      relates
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Information Collection -->
+            <section id="information-collection" class="privacy-section">
+              <h2 class="section-title">2. Information We Collect</h2>
+              <div class="section-content">
+                <h5>2.1 Information You Provide Directly</h5>
+                <p>We collect information you provide when you:</p>
+
+                <div class="collection-categories">
+                  <div class="category-card">
+                    <div class="category-header">
+                      <i class="fas fa-user"></i>
+                      <h6>Account Information</h6>
+                    </div>
+                    <ul>
+                      <li>Full name and contact details</li>
+                      <li>Date of birth and nationality</li>
+                      <li>Government-issued identification</li>
+                      <li>Proof of address documents</li>
+                    </ul>
+                  </div>
+
+                  <div class="category-card">
+                    <div class="category-header">
+                      <i class="fas fa-money-bill-wave"></i>
+                      <h6>Financial Information</h6>
+                    </div>
+                    <ul>
+                      <li>Bank account details</li>
+                      <li>Payment card information</li>
+                      <li>Cryptocurrency wallet addresses</li>
+                      <li>Transaction history</li>
+                    </ul>
+                  </div>
+
+                  <div class="category-card">
+                    <div class="category-header">
+                      <i class="fas fa-chart-line"></i>
+                      <h6>Investment Information</h6>
+                    </div>
+                    <ul>
+                      <li>Investment preferences</li>
+                      <li>Risk tolerance assessment</li>
+                      <li>Portfolio performance data</li>
+                      <li>Trading activity records</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <h5>2.2 Information Collected Automatically</h5>
+                <div class="auto-collection">
+                  <div class="auto-item">
+                    <i class="fas fa-desktop"></i>
+                    <div>
+                      <strong>Technical Data</strong>
+                      <span
+                        >IP address, device type, browser type, operating
+                        system</span
+                      >
+                    </div>
+                  </div>
+                  <div class="auto-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                      <strong>Usage Data</strong>
+                      <span
+                        >Pages visited, features used, time spent on
+                        platform</span
+                      >
+                    </div>
+                  </div>
+                  <div class="auto-item">
+                    <i class="fas fa-cookie"></i>
+                    <div>
+                      <strong>Cookie Data</strong>
+                      <span
+                        >Session information, preferences, authentication
+                        tokens</span
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <h5>2.3 Information from Third Parties</h5>
+                <p>We may receive information about you from:</p>
+                <ul>
+                  <li>Identity verification services</li>
+                  <li>Credit reference agencies</li>
+                  <li>Financial institutions</li>
+                  <li>Marketing partners (with your consent)</li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- How We Use Information -->
+            <section id="how-we-use" class="privacy-section">
+              <h2 class="section-title">3. How We Use Your Information</h2>
+              <div class="section-content">
+                <h5>3.1 Primary Purposes</h5>
+                <p>We use your information for the following core purposes:</p>
+
+                <div class="purpose-grid">
+                  <div class="purpose-item">
+                    <div class="purpose-icon">
+                      <i class="fas fa-user-check"></i>
+                    </div>
+                    <h6>Account Management</h6>
+                    <p>
+                      Create and maintain your account, verify your identity,
+                      and provide customer support
+                    </p>
+                  </div>
+
+                  <div class="purpose-item">
+                    <div class="purpose-icon">
+                      <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <h6>Transaction Processing</h6>
+                    <p>
+                      Process deposits, withdrawals, and investment transactions
+                      securely
+                    </p>
+                  </div>
+
+                  <div class="purpose-item">
+                    <div class="purpose-icon">
+                      <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h6>Security & Compliance</h6>
+                    <p>
+                      Prevent fraud, money laundering, and comply with legal
+                      obligations
+                    </p>
+                  </div>
+
+                  <div class="purpose-item">
+                    <div class="purpose-icon">
+                      <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h6>Service Improvement</h6>
+                    <p>
+                      Enhance our platform, develop new features, and optimize
+                      user experience
+                    </p>
+                  </div>
+                </div>
+
+                <h5>3.2 Communication Purposes</h5>
+                <div class="communication-types">
+                  <div class="comm-type">
+                    <span class="comm-badge operational">Operational</span>
+                    <div class="comm-details">
+                      <strong>Essential Communications</strong>
+                      <p>
+                        Account notifications, security alerts, transaction
+                        confirmations
+                      </p>
+                    </div>
+                  </div>
+                  <div class="comm-type">
+                    <span class="comm-badge marketing">Marketing</span>
+                    <div class="comm-details">
+                      <strong>Promotional Communications</strong>
+                      <p>
+                        Investment opportunities, platform updates, market
+                        insights (with consent)
+                      </p>
+                    </div>
+                  </div>
+                  <div class="comm-type">
+                    <span class="comm-badge legal">Legal</span>
+                    <div class="comm-details">
+                      <strong>Regulatory Communications</strong>
+                      <p>
+                        Policy updates, legal notices, compliance requirements
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <h5>3.3 Analytics & Research</h5>
+                <p>We use aggregated, anonymized data for:</p>
+                <ul>
+                  <li>Market trend analysis</li>
+                  <li>Platform performance monitoring</li>
+                  <li>User behavior research</li>
+                  <li>Product development planning</li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- Legal Basis -->
+            <section id="legal-basis" class="privacy-section">
+              <h2 class="section-title">4. Legal Basis for Processing</h2>
+              <div class="section-content">
+                <div class="legal-alert alert alert-info-glass">
+                  <i class="fas fa-balance-scale me-2"></i>
+                  <strong>GDPR Compliance:</strong> For users in the European
+                  Economic Area, we process your data under specific legal bases
+                  as required by the General Data Protection Regulation.
+                </div>
+
+                <h5>4.1 Contractual Necessity</h5>
+                <p>
+                  We process your information when necessary to perform our
+                  contract with you, including:
+                </p>
+                <ul>
+                  <li>Account creation and verification</li>
+                  <li>Investment transaction processing</li>
+                  <li>Customer support services</li>
+                  <li>Platform functionality maintenance</li>
+                </ul>
+
+                <h5>4.2 Legal Obligations</h5>
+                <p>
+                  We process your information to comply with legal requirements,
+                  such as:
+                </p>
+                <ul>
+                  <li>Anti-money laundering regulations</li>
+                  <li>Tax reporting obligations</li>
+                  <li>Financial services compliance</li>
+                  <li>Court orders and legal proceedings</li>
+                </ul>
+
+                <h5>4.3 Legitimate Interests</h5>
+                <p>
+                  We process information for our legitimate business interests,
+                  including:
+                </p>
+                <ul>
+                  <li>Fraud prevention and security</li>
+                  <li>Service improvement and innovation</li>
+                  <li>Marketing analysis (with appropriate safeguards)</li>
+                  <li>Business administration and operations</li>
+                </ul>
+
+                <h5>4.4 Consent</h5>
+                <p>
+                  For certain processing activities, we rely on your explicit
+                  consent, including:
+                </p>
+                <ul>
+                  <li>Marketing communications</li>
+                  <li>Cookie usage beyond essential functions</li>
+                  <li>Special category data processing</li>
+                  <li>Data sharing with third-party partners</li>
+                </ul>
+
+                <div class="withdrawal-notice">
+                  <h6>Consent Withdrawal</h6>
+                  <p>
+                    You may withdraw your consent at any time by contacting us
+                    or using the privacy controls in your account settings.
+                    Withdrawal does not affect the lawfulness of processing
+                    before withdrawal.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <!-- Data Sharing -->
+            <section id="data-sharing" class="privacy-section">
+              <h2 class="section-title">5. Data Sharing & Disclosure</h2>
+              <div class="section-content">
+                <h5>5.1 Service Providers</h5>
+                <p>
+                  We share information with trusted service providers who assist
+                  us in operating our platform:
+                </p>
+
+                <div class="provider-categories">
+                  <div class="provider-category">
+                    <h6>Infrastructure Providers</h6>
+                    <div class="provider-tags">
+                      <span class="provider-tag">Cloud Hosting</span>
+                      <span class="provider-tag">Database Management</span>
+                      <span class="provider-tag">Network Security</span>
+                    </div>
+                  </div>
+                  <div class="provider-category">
+                    <h6>Financial Partners</h6>
+                    <div class="provider-tags">
+                      <span class="provider-tag">Payment Processors</span>
+                      <span class="provider-tag">Banking Institutions</span>
+                      <span class="provider-tag">Verification Services</span>
+                    </div>
+                  </div>
+                  <div class="provider-category">
+                    <h6>Analytics & Marketing</h6>
+                    <div class="provider-tags">
+                      <span class="provider-tag">Usage Analytics</span>
+                      <span class="provider-tag">Customer Support</span>
+                      <span class="provider-tag">Communication Tools</span>
+                    </div>
+                  </div>
+                </div>
+
+                <h5>5.2 Legal & Regulatory Disclosures</h5>
+                <p>
+                  We may disclose your information when required by law or to:
+                </p>
+                <ul>
+                  <li>Comply with legal processes and court orders</li>
+                  <li>Respond to government and regulatory requests</li>
+                  <li>Protect our rights, property, or safety</li>
+                  <li>Investigate potential violations of our terms</li>
+                </ul>
+
+                <h5>5.3 Business Transfers</h5>
+                <p>
+                  In the event of a merger, acquisition, or sale of assets, your
+                  information may be transferred to the new entity, subject to
+                  the same privacy protections.
+                </p>
+
+                <h5>5.4 Aggregated Data</h5>
+                <p>
+                  We may share aggregated, anonymized data that cannot
+                  reasonably be used to identify you for market analysis,
+                  research, and business development purposes.
+                </p>
+              </div>
+            </section>
+
+            <!-- International Transfers -->
+            <section id="international-transfers" class="privacy-section">
+              <h2 class="section-title">6. International Data Transfers</h2>
+              <div class="section-content">
+                <div class="transfer-alert alert alert-warning-glass">
+                  <i class="fas fa-globe me-2"></i>
+                  <strong>Global Operations:</strong> Your personal information
+                  may be transferred to and processed in countries outside your
+                  country of residence.
+                </div>
+
+                <h5>6.1 Transfer Locations</h5>
+                <p>
+                  We may transfer your information to the following locations:
+                </p>
+
+                <div class="transfer-locations">
+                  <div class="location-item">
+                    <i class="fas fa-server"></i>
+                    <div>
+                      <strong>United States</strong>
+                      <span>Primary data hosting and processing</span>
+                    </div>
+                  </div>
+                  <div class="location-item">
+                    <i class="fas fa-building"></i>
+                    <div>
+                      <strong>European Union</strong>
+                      <span>Regional operations and customer support</span>
+                    </div>
+                  </div>
+                  <div class="location-item">
+                    <i class="fas fa-cloud"></i>
+                    <div>
+                      <strong>Singapore</strong>
+                      <span>Backup and disaster recovery</span>
+                    </div>
+                  </div>
+                </div>
+
+                <h5>6.2 Transfer Safeguards</h5>
+                <p>
+                  When transferring data internationally, we implement
+                  appropriate safeguards including:
+                </p>
+                <ul>
+                  <li>EU Standard Contractual Clauses</li>
+                  <li>Adequacy decisions for approved countries</li>
+                  <li>Binding corporate rules for intra-company transfers</li>
+                  <li>Additional technical and organizational measures</li>
+                </ul>
+
+                <h5>6.3 Your Rights Regarding Transfers</h5>
+                <p>
+                  You may request information about the specific safeguards
+                  applied to your data and object to certain transfers where
+                  applicable under local law.
+                </p>
+              </div>
+            </section>
+
+            <!-- Data Security -->
+            <section id="data-security" class="privacy-section">
+              <h2 class="section-title">7. Data Security</h2>
+              <div class="section-content">
+                <div class="security-alert alert alert-success-glass">
+                  <i class="fas fa-lock me-2"></i>
+                  <strong>Bank-Level Security:</strong> We implement
+                  comprehensive security measures to protect your personal
+                  information.
+                </div>
+
+                <h5>7.1 Technical Measures</h5>
+                <div class="security-measures">
+                  <div class="measure-item">
+                    <i class="fas fa-key"></i>
+                    <div>
+                      <strong>Encryption</strong>
+                      <span
+                        >256-bit SSL encryption for data in transit and at
+                        rest</span
+                      >
+                    </div>
+                  </div>
+                  <div class="measure-item">
+                    <i class="fas fa-network-wired"></i>
+                    <div>
+                      <strong>Network Security</strong>
+                      <span
+                        >Firewalls, intrusion detection, and DDoS
+                        protection</span
+                      >
+                    </div>
+                  </div>
+                  <div class="measure-item">
+                    <i class="fas fa-user-lock"></i>
+                    <div>
+                      <strong>Access Control</strong>
+                      <span
+                        >Multi-factor authentication and role-based access</span
+                      >
+                    </div>
+                  </div>
+                  <div class="measure-item">
+                    <i class="fas fa-history"></i>
+                    <div>
+                      <strong>Monitoring</strong>
+                      <span
+                        >24/7 security monitoring and anomaly detection</span
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <h5>7.2 Organizational Measures</h5>
+                <ul>
+                  <li>Regular security training for employees</li>
+                  <li>Strict confidentiality agreements</li>
+                  <li>Background checks for personnel with data access</li>
+                  <li>Physical security controls for data centers</li>
+                </ul>
+
+                <h5>7.3 Incident Response</h5>
+                <p>
+                  We maintain an incident response plan to address potential
+                  data breaches, including:
+                </p>
+                <ul>
+                  <li>Immediate containment and investigation</li>
+                  <li>
+                    Regulatory and individual notifications as required by law
+                  </li>
+                  <li>Remediation and prevention measures</li>
+                  <li>Post-incident review and improvement</li>
+                </ul>
+
+                <div class="security-note">
+                  <h6>Important Note</h6>
+                  <p>
+                    While we implement robust security measures, no method of
+                    transmission over the Internet or electronic storage is 100%
+                    secure. We cannot guarantee absolute security but we
+                    continuously work to maintain the highest standards.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <!-- Data Retention -->
+            <section id="data-retention" class="privacy-section">
+              <h2 class="section-title">8. Data Retention</h2>
+              <div class="section-content">
+                <h5>8.1 Retention Periods</h5>
+                <p>
+                  We retain your personal information only for as long as
+                  necessary to fulfill the purposes outlined in this policy,
+                  unless a longer retention period is required or permitted by
+                  law.
+                </p>
+
+                <div class="retention-table glass-card">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th>Data Category</th>
+                          <th>Retention Period</th>
+                          <th>Basis</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>Account Information</td>
+                          <td>7 years after account closure</td>
+                          <td>Legal & Regulatory</td>
+                        </tr>
+                        <tr>
+                          <td>Financial Transactions</td>
+                          <td>10 years after transaction</td>
+                          <td>Tax & Compliance</td>
+                        </tr>
+                        <tr>
+                          <td>Marketing Data</td>
+                          <td>3 years after last activity</td>
+                          <td>Business Operations</td>
+                        </tr>
+                        <tr>
+                          <td>Technical Logs</td>
+                          <td>2 years</td>
+                          <td>Security & Maintenance</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <h5>8.2 Deletion Procedures</h5>
+                <p>
+                  When retention periods expire, we securely delete or anonymize
+                  your data using industry-standard methods that prevent
+                  recovery or reconstruction.
+                </p>
+
+                <h5>8.3 Archiving for Legal Holds</h5>
+                <p>
+                  In certain circumstances, we may need to retain data longer
+                  due to legal holds, ongoing investigations, or dispute
+                  resolution processes.
+                </p>
+              </div>
+            </section>
+
+            <!-- Your Rights -->
+            <section id="your-rights" class="privacy-section">
+              <h2 class="section-title">9. Your Privacy Rights</h2>
+              <div class="section-content">
+                <div class="rights-alert alert alert-primary-glass">
+                  <i class="fas fa-user-shield me-2"></i>
+                  <strong>Your Control Matters:</strong> You have important
+                  rights regarding your personal information. We are committed
+                  to helping you exercise these rights.
+                </div>
+
+                <div class="rights-grid">
+                  <div class="right-item">
+                    <div class="right-icon">
+                      <i class="fas fa-eye"></i>
+                    </div>
+                    <h6>Right to Access</h6>
+                    <p>
+                      Request a copy of the personal information we hold about
+                      you
+                    </p>
+                  </div>
+
+                  <div class="right-item">
+                    <div class="right-icon">
+                      <i class="fas fa-edit"></i>
+                    </div>
+                    <h6>Right to Rectification</h6>
+                    <p>Correct inaccurate or incomplete personal information</p>
+                  </div>
+
+                  <div class="right-item">
+                    <div class="right-icon">
+                      <i class="fas fa-trash-alt"></i>
+                    </div>
+                    <h6>Right to Erasure</h6>
+                    <p>
+                      Request deletion of your personal information in certain
+                      circumstances
+                    </p>
+                  </div>
+
+                  <div class="right-item">
+                    <div class="right-icon">
+                      <i class="fas fa-pause"></i>
+                    </div>
+                    <h6>Right to Restriction</h6>
+                    <p>Limit how we use your personal information</p>
+                  </div>
+
+                  <div class="right-item">
+                    <div class="right-icon">
+                      <i class="fas fa-download"></i>
+                    </div>
+                    <h6>Right to Portability</h6>
+                    <p>
+                      Receive your data in a structured, machine-readable format
+                    </p>
+                  </div>
+
+                  <div class="right-item">
+                    <div class="right-icon">
+                      <i class="fas fa-ban"></i>
+                    </div>
+                    <h6>Right to Object</h6>
+                    <p>Object to certain processing activities</p>
+                  </div>
+                </div>
+
+                <h5>9.1 Exercising Your Rights</h5>
+                <p>To exercise your rights, you may:</p>
+                <ul>
+                  <li>Use the privacy controls in your account settings</li>
+                  <li>Contact our Data Protection Officer</li>
+                  <li>Submit a formal request via email or postal mail</li>
+                </ul>
+
+                <h5>9.2 Verification & Response</h5>
+                <p>
+                  We will verify your identity before processing rights requests
+                  and respond within 30 days as required by applicable law.
+                </p>
+
+                <h5>9.3 Right to Lodge Complaints</h5>
+                <p>
+                  You have the right to lodge a complaint with your local data
+                  protection authority if you believe we have violated your
+                  privacy rights.
+                </p>
+              </div>
+            </section>
+
+            <!-- Cookies & Tracking -->
+            <section id="cookies-tracking" class="privacy-section">
+              <h2 class="section-title">10. Cookies & Tracking Technologies</h2>
+              <div class="section-content">
+                <h5>10.1 Types of Cookies We Use</h5>
+
+                <div class="cookies-categories">
+                  <div class="cookie-category essential">
+                    <div class="category-header">
+                      <h6>Essential Cookies</h6>
+                      <span class="cookie-badge">Required</span>
+                    </div>
+                    <p>
+                      Necessary for basic platform functionality and security
+                    </p>
+                    <ul>
+                      <li>Session management</li>
+                      <li>Authentication</li>
+                      <li>Security protection</li>
+                    </ul>
+                  </div>
+
+                  <div class="cookie-category functional">
+                    <div class="category-header">
+                      <h6>Functional Cookies</h6>
+                      <span class="cookie-badge">Optional</span>
+                    </div>
+                    <p>Enhance user experience and remember preferences</p>
+                    <ul>
+                      <li>Language settings</li>
+                      <li>Display preferences</li>
+                      <li>Feature customization</li>
+                    </ul>
+                  </div>
+
+                  <div class="cookie-category analytics">
+                    <div class="category-header">
+                      <h6>Analytics Cookies</h6>
+                      <span class="cookie-badge">Optional</span>
+                    </div>
+                    <p>
+                      Help us understand how users interact with our platform
+                    </p>
+                    <ul>
+                      <li>Usage statistics</li>
+                      <li>Performance monitoring</li>
+                      <li>Feature improvement</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <h5>10.2 Cookie Management</h5>
+                <p>You can control cookies through:</p>
+                <ul>
+                  <li>Browser settings to block or delete cookies</li>
+                  <li>Our cookie preference center in account settings</li>
+                  <li>Opt-out mechanisms for specific tracking technologies</li>
+                </ul>
+
+                <div class="cookie-note">
+                  <h6>Note on Essential Cookies</h6>
+                  <p>
+                    Blocking essential cookies may affect platform functionality
+                    and your ability to use certain features.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <!-- Third-Party Services -->
+            <section id="third-party" class="privacy-section">
+              <h2 class="section-title">11. Third-Party Services</h2>
+              <div class="section-content">
+                <h5>11.1 Integrated Services</h5>
+                <p>
+                  Our platform may integrate with or link to third-party
+                  services. These services have their own privacy policies, and
+                  we encourage you to review them.
+                </p>
+
+                <h5>11.2 Social Media & Advertising</h5>
+                <p>
+                  We may use third-party advertising and social media platforms
+                  that collect information about your interactions with our
+                  content.
+                </p>
+
+                <h5>11.3 Your Choices</h5>
+                <p>
+                  You can often control how third-party services collect and use
+                  your information through their privacy settings and opt-out
+                  mechanisms.
+                </p>
+              </div>
+            </section>
+
+            <!-- Children's Privacy -->
+            <section id="children-privacy" class="privacy-section">
+              <h2 class="section-title">12. Children's Privacy</h2>
+              <div class="section-content">
+                <div class="children-alert alert alert-danger-glass">
+                  <i class="fas fa-child me-2"></i>
+                  <strong>Age Restriction:</strong> Our Services are not
+                  intended for individuals under the age of 18.
+                </div>
+
+                <h5>12.1 No Collection from Children</h5>
+                <p>
+                  We do not knowingly collect personal information from children
+                  under 18. If we become aware that we have collected such
+                  information, we will take steps to delete it promptly.
+                </p>
+
+                <h5>12.2 Parental Controls</h5>
+                <p>
+                  Parents and guardians should monitor their children's online
+                  activities and use parental control tools to provide a safe
+                  online environment.
+                </p>
+              </div>
+            </section>
+
+            <!-- Policy Changes -->
+            <section id="policy-changes" class="privacy-section">
+              <h2 class="section-title">13. Policy Changes</h2>
+              <div class="section-content">
+                <h5>13.1 Updates & Revisions</h5>
+                <p>
+                  We may update this Privacy Policy from time to time to reflect
+                  changes in our practices, services, or legal requirements.
+                </p>
+
+                <h5>13.2 Notification of Changes</h5>
+                <p>We will notify you of material changes by:</p>
+                <ul>
+                  <li>Posting a prominent notice on our platform</li>
+                  <li>Sending email notifications to registered users</li>
+                  <li>
+                    Updating the "Last updated" date at the top of this policy
+                  </li>
+                </ul>
+
+                <h5>13.3 Your Acceptance</h5>
+                <p>
+                  Continued use of our Services after changes constitutes
+                  acceptance of the revised Privacy Policy.
+                </p>
+
+                <h5>13.4 Historical Versions</h5>
+                <p>
+                  Previous versions of this Privacy Policy are archived and
+                  available upon request.
+                </p>
+              </div>
+            </section>
+
+            <!-- Contact Us -->
+            <section id="contact-us" class="privacy-section">
+              <h2 class="section-title">14. Contact Us</h2>
+              <div class="section-content">
+                <h5>14.1 Data Protection Officer</h5>
+                <p>
+                  For privacy-related inquiries and to exercise your rights,
+                  contact our Data Protection Officer:
+                </p>
+
+                <div class="contact-methods">
+                  <div class="contact-method">
+                    <i class="fas fa-envelope"></i>
+                    <div>
+                      <strong>Email</strong>
+                      <span>dpo@meziumfx.com</span>
+                    </div>
+                  </div>
+                  <div class="contact-method">
+                    <i class="fas fa-phone"></i>
+                    <div>
+                      <strong>Phone</strong>
+                      <span>+1 (555) 123-PRIV</span>
+                    </div>
+                  </div>
+                  <div class="contact-method">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                      <strong>Postal Address</strong>
+                      <span
+                        >Data Protection Officer<br />MeziumFx Ltd<br />Road
+                        Town, Tortola<br />British Virgin Islands</span
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <h5>14.2 Response Time</h5>
+                <p>
+                  We strive to respond to all privacy inquiries within 30 days
+                  as required by applicable law.
+                </p>
+
+                <div class="regulatory-info">
+                  <h6>Regulatory Information</h6>
+                  <p>
+                    Our lead supervisory authority for GDPR purposes is the
+                    Information Commissioner's Office (ICO) in the United
+                    Kingdom.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <!-- Privacy Controls -->
+            <div class="privacy-controls glass-card mt-5">
+              <div class="row align-items-center">
+                <div class="col-md-8">
+                  <h5>Manage Your Privacy Settings</h5>
+                  <p class="mb-0">
+                    Take control of your privacy preferences directly from your
+                    account dashboard.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<style>
+  .privacy-hero {
+    background: linear-gradient(
+      135deg,
+      var(--dark) 0%,
+      rgba(30, 42, 58, 0.9) 100%
+    );
+    backdrop-filter: blur(20px);
+    padding: 100px 0 50px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .privacy-hero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+      circle at 30% 20%,
+      rgba(15, 184, 150, 0.1) 0%,
+      transparent 50%
+    );
+    pointer-events: none;
+  }
+
+  .privacy-nav {
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--glass-border);
+  }
+
+  .privacy-badges {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .badge-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: rgba(15, 184, 150, 0.05);
+    border-radius: var(--radius);
+    border: 1px solid rgba(15, 184, 150, 0.2);
+    font-size: 0.9rem;
+  }
+
+  .badge-item i {
+    width: 16px;
+  }
+
+  .collection-categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .category-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+  }
+
+  .category-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--glass-border);
+  }
+
+  .category-header i {
+    color: var(--primary);
+    font-size: 1.5rem;
+  }
+
+  .category-header h6 {
+    margin: 0;
+    color: var(--text);
+  }
+
+  .category-card ul {
+    margin: 0;
+    padding-left: 1.25rem;
+  }
+
+  .category-card li {
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+  }
+
+  .auto-collection {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .auto-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--glass);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+  }
+
+  .auto-item i {
+    color: var(--primary);
+    font-size: 1.2rem;
+    width: 24px;
+  }
+
+  .purpose-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .purpose-item {
+    text-align: center;
+    padding: 1.5rem 1rem;
+    background: var(--glass);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+  }
+
+  .purpose-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+  }
+
+  .purpose-icon i {
+    font-size: 1.5rem;
+    color: var(--text);
+  }
+
+  .purpose-item h6 {
+    color: var(--text);
+    margin-bottom: 0.75rem;
+  }
+
+  .purpose-item p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .communication-types {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .comm-type {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--glass);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+  }
+
+  .comm-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .comm-badge.operational {
+    background: rgba(15, 184, 150, 0.2);
+    color: var(--primary);
+    border: 1px solid rgba(15, 184, 150, 0.3);
+  }
+
+  .comm-badge.marketing {
+    background: rgba(96, 165, 250, 0.2);
+    color: #60a5fa;
+    border: 1px solid rgba(96, 165, 250, 0.3);
+  }
+
+  .comm-badge.legal {
+    background: rgba(148, 163, 184, 0.2);
+    color: #94a3b8;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+  }
+
+  .comm-details {
+    flex: 1;
+  }
+
+  .comm-details strong {
+    color: var(--text);
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .comm-details p {
+    color: var(--text-secondary);
+    margin: 0;
+    font-size: 0.9rem;
+  }
+
+  .provider-categories {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .provider-category {
+    padding: 1rem;
+    background: var(--glass);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+  }
+
+  .provider-category h6 {
+    color: var(--text);
+    margin-bottom: 0.75rem;
+  }
+
+  .provider-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .provider-tag {
+    background: rgba(15, 184, 150, 0.1);
+    color: var(--primary);
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    border: 1px solid rgba(15, 184, 150, 0.2);
+  }
+
+  .transfer-locations {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .location-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--glass);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+  }
+
+  .location-item i {
+    color: var(--primary);
+    font-size: 1.2rem;
+    width: 24px;
+  }
+
+  .security-measures {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  .measure-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--glass);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+  }
+
+  .measure-item i {
+    color: var(--primary);
+    font-size: 1.2rem;
+    width: 24px;
+  }
+
+  .retention-table {
+    margin: 1.5rem 0;
+    padding: 1rem;
+  }
+
+  .rights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .right-item {
+    text-align: center;
+    padding: 1.5rem 1rem;
+    background: var(--glass);
+    border-radius: var(--radius);
+    border: 1px solid var(--glass-border);
+  }
+
+  .right-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+  }
+
+  .right-icon i {
+    font-size: 1.5rem;
+    color: var(--text);
+  }
+
+  .right-item h6 {
+    color: var(--text);
+    margin-bottom: 0.75rem;
+  }
+
+  .right-item p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .cookies-categories {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .cookie-category {
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    border: 1px solid;
+  }
+
+  .cookie-category.essential {
+    background: rgba(15, 184, 150, 0.05);
+    border-color: rgba(15, 184, 150, 0.3);
+  }
+
+  .cookie-category.functional {
+    background: rgba(96, 165, 250, 0.05);
+    border-color: rgba(96, 165, 250, 0.3);
+  }
+
+  .cookie-category.analytics {
+    background: rgba(148, 163, 184, 0.05);
+    border-color: rgba(148, 163, 184, 0.3);
+  }
+
+  .category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid;
+  }
+
+  .cookie-category.essential .category-header {
+    border-bottom-color: rgba(15, 184, 150, 0.3);
+  }
+
+  .cookie-category.functional .category-header {
+    border-bottom-color: rgba(96, 165, 250, 0.3);
+  }
+
+  .cookie-category.analytics .category-header {
+    border-bottom-color: rgba(148, 163, 184, 0.3);
+  }
+
+  .cookie-badge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .cookie-category.essential .cookie-badge {
+    background: rgba(15, 184, 150, 0.2);
+    color: var(--primary);
+  }
+
+  .cookie-category.functional .cookie-badge,
+  .cookie-category.analytics .cookie-badge {
+    background: rgba(148, 163, 184, 0.2);
+    color: #94a3b8;
+  }
+
+  .privacy-controls {
+    padding: 2rem;
+    background: rgba(15, 184, 150, 0.1);
+    border: 2px solid rgba(15, 184, 150, 0.3);
+  }
+
+  /* Alert variations */
+  .alert-info-glass {
+    background: rgba(96, 165, 250, 0.1);
+    border-color: rgba(96, 165, 250, 0.3);
+    color: #60a5fa;
+  }
+
+  .alert-success-glass {
+    background: rgba(15, 184, 150, 0.1);
+    border-color: rgba(15, 184, 150, 0.3);
+    color: var(--primary);
+  }
+
+  .alert-primary-glass {
+    background: rgba(102, 126, 234, 0.1);
+    border-color: rgba(102, 126, 234, 0.3);
+    color: #667eea;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .privacy-hero {
+      padding: 80px 0 30px;
+    }
+
+    .hero-stats {
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .collection-categories,
+    .purpose-grid,
+    .rights-grid,
+    .cookies-categories {
+      grid-template-columns: 1fr;
+    }
+
+    .security-measures {
+      grid-template-columns: 1fr;
+    }
+
+    .nav-pills .nav-link {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+    }
+
+    .sidebar {
+      position: static;
+      margin-bottom: 2rem;
+    }
+  }
+
+  /* Print styles */
+  @media print {
+    .privacy-nav,
+    .sidebar,
+    .privacy-controls {
+      display: none !important;
+    }
+
+    .privacy-hero {
+      padding: 2rem 0 !important;
+    }
+
+    .glass-card {
+      background: white !important;
+      color: black !important;
+      border: 1px solid #ccc !important;
+      box-shadow: none !important;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Initialize privacy page functionality
+    initSmoothScrolling();
+    initTocNavigation();
+    initActiveSectionTracking();
+  });
+
+  // Smooth scrolling for anchor links
+  function initSmoothScrolling() {
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+      anchor.addEventListener("click", function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute("href"));
+        if (target) {
+          target.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+        }
+      });
+    });
+  }
+
+  // Table of Contents navigation
+  function initTocNavigation() {
+    const tocLinks = document.querySelectorAll(".toc-link");
+    const sections = document.querySelectorAll(".privacy-section");
+
+    // Update active TOC link based on scroll position
+    function updateActiveTocLink() {
+      let currentSection = "";
+
+      sections.forEach((section) => {
+        const sectionTop = section.offsetTop - 100;
+        if (window.scrollY >= sectionTop) {
+          currentSection = section.getAttribute("id");
+        }
+      });
+
+      tocLinks.forEach((link) => {
+        link.classList.remove("active");
+        if (link.getAttribute("href") === `#${currentSection}`) {
+          link.classList.add("active");
+        }
+      });
+    }
+
+    window.addEventListener("scroll", updateActiveTocLink);
+    updateActiveTocLink(); // Initial call
+  }
+
+  // Active section tracking for quick nav
+  function initActiveSectionTracking() {
+    const sections = document.querySelectorAll(".privacy-section");
+    const navLinks = document.querySelectorAll(".nav-pills .nav-link");
+
+    function updateActiveNavLink() {
+      let currentSection = "";
+
+      sections.forEach((section) => {
+        const sectionTop = section.offsetTop - 150;
+        if (window.scrollY >= sectionTop) {
+          currentSection = section.getAttribute("id");
+        }
+      });
+
+      navLinks.forEach((link) => {
+        link.classList.remove("active");
+        if (link.getAttribute("href") === `#${currentSection}`) {
+          link.classList.add("active");
+        }
+      });
+    }
+
+    window.addEventListener("scroll", updateActiveNavLink);
+    updateActiveNavLink(); // Initial call
+  }
+
+  // Check if user has privacy preferences saved
+  function checkPrivacyPreferences() {
+    const preferences = localStorage.getItem("privacyPreferences");
+    if (preferences) {
+      console.log("Privacy preferences found:", JSON.parse(preferences));
+    }
+  }
+
+  // Initialize on load
+  checkPrivacyPreferences();
+</script>

@@ -9,6 +9,39 @@
 html {
   scroll-behavior: smooth;
 }
+
+.glass-form select.form-select {
+  background: rgba(20, 20, 20, 0.5) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-radius: 0.5rem;
+  padding: 0.6rem 1rem;
+  appearance: none; /* remove default arrow */
+}
+
+.glass-form option {
+  background-color: #111 !important;
+  color: #fff !important;
+}
+
+label {
+  color: #fff !important;
+}
+/* Apply to all select elements */
+select {
+  background: var(--glass) !important;
+  color: #fff; /* optional: make text visible on glass background */
+
+  border-radius: 0.25rem; /* optional: rounded corners */
+}
+
+/* Apply to all option elements */
+select option {
+  background: var(--glass) !important;
+  color: #fff; /* ensure the text is visible */
+}
+
 @import "invest";
 @import "nav";
 @import "variables";

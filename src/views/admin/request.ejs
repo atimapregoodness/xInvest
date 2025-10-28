@@ -1,37 +1,36 @@
 <%- layout('layout/adminBoilerplate') %>
 
 <div
-  class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-3 mb-4 border-bottom border-secondary"
+  class="d-flex justify-content-between align-items-center flex-wrap mb-4 border-bottom border-secondary pb-3"
 >
-  <h1 class="h2">
-    <i class="fa fa-inbox text-primary me-2"></i>
-    Requests Center
+  <h1 class="h3 fw-bold text-light">
+    <i class="fa-solid fa-inbox text-primary me-2"></i> Requests Center
   </h1>
-  <div>
-    <a href="/admin/dashboard" class="btn btn-sm btn-outline-light">
-      <i class="fa fa-arrow-left me-1"></i> Back to Dashboard
-    </a>
-  </div>
+  <a href="/admin/dashboard" class="btn btn-outline-light btn-sm mt-2 mt-md-0">
+    <i class="fa-solid fa-arrow-left me-1"></i> Dashboard
+  </a>
 </div>
 
-<!-- Two-column layout -->
 <div class="row g-4">
-  <!-- User Verification Requests -->
-  <div class="col-lg-6">
-    <div class="card h-100">
+  <!-- Verification Requests -->
+  <div class="col-12 col-lg-6">
+    <div class="card shadow-sm border-0 h-100">
       <div
-        class="card-header border-bottom border-secondary d-flex justify-content-between align-items-center"
+        class="card-header bg-dark text-white d-flex justify-content-between align-items-center"
       >
-        <h5 class="mb-0 text-primary">
-          <i class="fa fa-user-check me-2"></i>User Verification Requests
-        </h5>
-        <span class="badge bg-primary"><%= verifications.length %></span>
+        <h6 class="mb-0">
+          <i class="fa-solid fa-user-check me-2 text-primary"></i>User
+          Verifications
+        </h6>
+        <span id="verCount" class="badge bg-primary">
+          <%= verifications.length %>
+        </span>
       </div>
 
-      <div class="card-body p-0">
+      <div class="card-body p-0" id="verificationsTable">
         <% if (verifications.length > 0) { %>
         <div class="table-responsive">
-          <table class="table table-hover mb-0">
+          <table class="table table-hover align-middle mb-0 text-nowrap">
             <thead class="table-light">
               <tr>
                 <th>User</th>
@@ -44,30 +43,52 @@
             <tbody>
               <% verifications.forEach(req => { %>
               <tr>
-                <td><%= req.user.fullName %></td>
-                <td><%= req.user.email %></td>
+                <td class="text-truncate" style="max-width: 120px">
+                  <%= req.user.fullName %>
+                </td>
+                <td class="text-truncate" style="max-width: 150px">
+                  <%= req.user.email %>
+                </td>
                 <td><%= req.idType %></td>
                 <td><%= new Date(req.createdAt).toLocaleDateString() %></td>
                 <td>
-                  <a
-                    href="<%= req.idImage %>"
-                    target="_blank"
-                    class="btn btn-sm btn-outline-info"
-                  >
-                    <i class="fa fa-eye"></i>
-                  </a>
-                  <a
-                    href="/admin/verify/approve/<%= req._id %>"
-                    class="btn btn-sm btn-outline-success"
-                  >
-                    <i class="fa fa-check"></i>
-                  </a>
-                  <a
-                    href="/admin/verify/reject/<%= req._id %>"
-                    class="btn btn-sm btn-outline-danger"
-                  >
-                    <i class="fa fa-times"></i>
-                  </a>
+                  <div class="dropdown">
+                    <button
+                      class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                      <li>
+                        <a
+                          href="<%= req.idImage %>"
+                          target="_blank"
+                          class="dropdown-item text-info"
+                        >
+                          <i class="fa-solid fa-eye me-2"></i>View ID
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="/admin/verify/approve/<%= req._id %>"
+                          class="dropdown-item text-success"
+                        >
+                          <i class="fa-solid fa-check me-2"></i>Approve
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="/admin/verify/reject/<%= req._id %>"
+                          class="dropdown-item text-danger"
+                        >
+                          <i class="fa-solid fa-times me-2"></i>Reject
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
                 </td>
               </tr>
               <% }) %>
@@ -76,8 +97,8 @@
         </div>
         <% } else { %>
         <div class="p-4 text-center text-muted">
-          <i class="fa fa-info-circle mb-2 d-block"></i>No pending verification
-          requests.
+          <i class="fa-regular fa-circle-info fa-2x mb-2 d-block"></i>
+          No pending verification requests.
         </div>
         <% } %>
       </div>
@@ -85,21 +106,23 @@
   </div>
 
   <!-- Deposit Requests -->
-  <div class="col-lg-6">
-    <div class="card h-100">
+  <div class="col-12 col-lg-6">
+    <div class="card shadow-sm border-0 h-100">
       <div
-        class="card-header border-bottom border-secondary d-flex justify-content-between align-items-center"
+        class="card-header bg-dark text-white d-flex justify-content-between align-items-center"
       >
-        <h5 class="mb-0 text-warning">
-          <i class="fa fa-wallet me-2"></i>Deposit Requests
-        </h5>
-        <span class="badge bg-warning text-dark"><%= deposits.length %></span>
+        <h6 class="mb-0">
+          <i class="fa-solid fa-wallet me-2 text-warning"></i>Deposit Requests
+        </h6>
+        <span id="depCount" class="badge bg-warning text-dark">
+          <%= deposits.length %>
+        </span>
       </div>
 
-      <div class="card-body p-0">
+      <div class="card-body p-0" id="depositsTable">
         <% if (deposits.length > 0) { %>
         <div class="table-responsive">
-          <table class="table table-hover mb-0">
+          <table class="table table-hover align-middle mb-0 text-nowrap">
             <thead class="table-light">
               <tr>
                 <th>User</th>
@@ -112,30 +135,50 @@
             <tbody>
               <% deposits.forEach(dep => { %>
               <tr>
-                <td><%= dep.user.fullName %></td>
+                <td class="text-truncate" style="max-width: 120px">
+                  <%= dep.user.fullName %>
+                </td>
                 <td class="text-success">$<%= dep.amount.toFixed(2) %></td>
                 <td><%= dep.currency %></td>
                 <td><%= new Date(dep.createdAt).toLocaleDateString() %></td>
                 <td>
-                  <a
-                    href="<%= dep.receipt %>"
-                    target="_blank"
-                    class="btn btn-sm btn-outline-info"
-                  >
-                    <i class="fa fa-receipt"></i>
-                  </a>
-                  <a
-                    href="/admin/deposit/approve/<%= dep._id %>"
-                    class="btn btn-sm btn-outline-success"
-                  >
-                    <i class="fa fa-check"></i>
-                  </a>
-                  <a
-                    href="/admin/deposit/reject/<%= dep._id %>"
-                    class="btn btn-sm btn-outline-danger"
-                  >
-                    <i class="fa fa-times"></i>
-                  </a>
+                  <div class="dropdown">
+                    <button
+                      class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <i class="fa-solid fa-ellipsis-vertical"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                      <li>
+                        <a
+                          href="<%= dep.receipt %>"
+                          target="_blank"
+                          class="dropdown-item text-info"
+                        >
+                          <i class="fa-solid fa-receipt me-2"></i>View Receipt
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="/admin/deposit/approve/<%= dep._id %>"
+                          class="dropdown-item text-success"
+                        >
+                          <i class="fa-solid fa-check me-2"></i>Approve
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="/admin/deposit/reject/<%= dep._id %>"
+                          class="dropdown-item text-danger"
+                        >
+                          <i class="fa-solid fa-times me-2"></i>Reject
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
                 </td>
               </tr>
               <% }) %>
@@ -144,11 +187,41 @@
         </div>
         <% } else { %>
         <div class="p-4 text-center text-muted">
-          <i class="fa fa-info-circle mb-2 d-block"></i>No pending deposit
-          requests.
+          <i class="fa-regular fa-circle-info fa-2x mb-2 d-block"></i>
+          No pending deposit requests.
         </div>
         <% } %>
       </div>
     </div>
   </div>
 </div>
+
+<!-- ✅ Real-time Updates -->
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const socket = io();
+
+    socket.on("updateRequests", async (data) => {
+      try {
+        if (data.verifications) {
+          document.getElementById("verCount").textContent =
+            data.verifications.length;
+          const res = await fetch("/admin/requests/partial/verifications");
+          const html = await res.text();
+          document.getElementById("verificationsTable").innerHTML = html;
+        }
+
+        if (data.deposits) {
+          document.getElementById("depCount").textContent =
+            data.deposits.length;
+          const res = await fetch("/admin/requests/partial/deposits");
+          const html = await res.text();
+          document.getElementById("depositsTable").innerHTML = html;
+        }
+      } catch (err) {
+        console.error("Error updating tables:", err);
+      }
+    });
+  });
+</script>

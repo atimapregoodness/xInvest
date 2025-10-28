@@ -1,13 +1,201 @@
-<%- include('layout') %>
+<%- layout('layout/boilerplate', { title: 'MeziumFx - About Us' }) %>
 
-<h2 data-aos="fade-right">About xCrypto Premium</h2>
-<p data-aos="fade-left">xCrypto is a premium simulated platform for Bitcoin and USDT investments. We prioritize education, security, and user experience to help you understand crypto without real risks.</p>
+<div class="page-container">
+  <!-- Hero Section -->
+  <section class="about-hero">
+    <div class="container-fluid">
+      <div class="row align-items-center min-vh-80">
+        <div class="col-lg-6">
+          <div class="hero-content">
+            <h1 class="display-4 gradient-text mb-4">
+              Redefining Digital Wealth Management
+            </h1>
+            <p class="lead text-light mb-4">
+              MeziumFx combines cutting-edge technology with financial expertise
+              to deliver sophisticated investment solutions for the modern
+              investor.
+            </p>
+            <div class="hero-stats">
+              <div class="stat-item">
+                <div class="stat-number">$2.1B+</div>
+                <div class="stat-label">Assets Managed</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number">150K+</div>
+                <div class="stat-label">Active Investors</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-number">98.7%</div>
+                <div class="stat-label">Success Rate</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="hero-visual">
+            <div class="floating-card card-1">
+              <i class="fas fa-shield-alt"></i>
+              <h5>Secure</h5>
+            </div>
+            <div class="floating-card card-2">
+              <i class="fas fa-bolt"></i>
+              <h5>Fast</h5>
+            </div>
+            <div class="floating-card card-3">
+              <i class="fas fa-chart-line"></i>
+              <h5>Profitable</h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<section class="info" data-aos="fade-up">
-  <h3>Our Mission</h3>
-  <p>Empower users with knowledge and tools for informed crypto decisions.</p>
-  <h3>Security</h3>
-  <p>Simulated cold storage, SSL encryption, and compliance with KYC/AML standards.</p>
-  <h3>Team</h3>
-  <p>Experienced in blockchain and finance.</p>
-</section>
+  <!-- Mission & Vision -->
+  <section class="mission-vision py-5">
+    <div class="container">
+      <div class="row g-4">
+        <div class="col-md-6">
+          <div class="glass-card h-100">
+            <div class="card-icon">
+              <i class="fas fa-bullseye"></i>
+            </div>
+            <h3 class="card-title">Our Mission</h3>
+            <p class="card-text">
+              To democratize access to sophisticated investment strategies
+              through innovative technology, making professional-grade wealth
+              management accessible to investors worldwide.
+            </p>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="glass-card h-100">
+            <div class="card-icon">
+              <i class="fas fa-eye"></i>
+            </div>
+            <h3 class="card-title">Our Vision</h3>
+            <p class="card-text">
+              Creating a future where every investor can achieve financial
+              independence through intelligent, automated, and transparent
+              digital investment solutions.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Core Values -->
+  <section class="core-values py-5">
+    <div class="container">
+      <div class="section-header text-center mb-5">
+        <h2 class="section-title">Our Core Values</h2>
+        <p class="section-subtitle">
+          The principles that guide everything we do
+        </p>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="value-card glass-card text-center">
+            <div class="value-icon">
+              <i class="fas fa-lock"></i>
+            </div>
+            <h4>Security First</h4>
+            <p>
+              Enterprise-grade security protocols to protect your assets and
+              data
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="value-card glass-card text-center">
+            <div class="value-icon">
+              <i class="fas fa-transparency"></i>
+            </div>
+            <h4>Total Transparency</h4>
+            <p>
+              Clear, honest reporting with no hidden fees or complicated terms
+            </p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="value-card glass-card text-center">
+            <div class="value-icon">
+              <i class="fas fa-rocket"></i>
+            </div>
+            <h4>Innovation</h4>
+            <p>
+              Constantly evolving our technology to stay ahead of market trends
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Technology Stack -->
+  <section class="technology py-5">
+    <div class="container">
+      <div class="section-header text-center mb-5">
+        <h2 class="section-title">Advanced Technology</h2>
+        <p class="section-subtitle">
+          Powered by cutting-edge financial technology
+        </p>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-3 col-6">
+          <div class="tech-item text-center">
+            <div class="tech-icon">
+              <i class="fas fa-robot"></i>
+            </div>
+            <h6>AI Algorithms</h6>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="tech-item text-center">
+            <div class="tech-icon">
+              <i class="fas fa-brain"></i>
+            </div>
+            <h6>Machine Learning</h6>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="tech-item text-center">
+            <div class="tech-icon">
+              <i class="fas fa-shield-alt"></i>
+            </div>
+            <h6>Blockchain</h6>
+          </div>
+        </div>
+        <div class="col-md-3 col-6">
+          <div class="tech-item text-center">
+            <div class="tech-icon">
+              <i class="fas fa-cloud"></i>
+            </div>
+            <h6>Cloud Infrastructure</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section py-5">
+    <div class="container">
+      <div class="cta-card glass-card text-center">
+        <h2 class="cta-title">Ready to Start Your Investment Journey?</h2>
+        <p class="cta-text mb-4">
+          Join thousands of successful investors today
+        </p>
+        <div class="cta-buttons d-flex justify-content-center flex-wrap gap-3">
+          <a href="/auth/login" class="btn btn-primary btn-lg me-3">
+            <i class="fas fa-play me-2"></i>Start Investing
+          </a>
+          <a href="/contact" class="btn btn-outline-light btn-lg">
+            <i class="fas fa-question-circle me-2"></i>Get Help
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
