@@ -1,4 +1,4 @@
-<%- layout('layout/acctBoilerplate', { title: 'meziumFx - Dashboard' }) %>
+<%- layout('layout/acctBoilerplate', { title: 'Crybiance - Dashboard' }) %>
 <%-partial("partials/floatingNav") %> <%- partial('partials/sideBar') %>
 
 <div class="dashboard">
@@ -34,9 +34,9 @@
           <i class="fas fa-arrow-up"></i>
           <span>Withdraw</span>
         </button>
-        <a href="/dashboard/invest" class="balance-btn">
+        <a href="/dashboard/trade" class="balance-btn">
           <i class="fas fa-chart-line"></i>
-          <span>Invest</span>
+          <span>Trade</span>
         </a>
       </div>
 
@@ -292,7 +292,7 @@
             <label class="form-label">Send to this address</label>
             <div class="address-container">
               <div class="address-text" id="depositWalletAddress">
-                bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh
+                <%=walletBTC%>
               </div>
               <button type="button" class="copy-btn" id="copyDepositAddress">
                 <i class="fas fa-copy"></i>
@@ -663,9 +663,9 @@
 
     function updateDepositAddress(currency) {
       const addresses = {
-        'BTC': 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
-        'ETH': '0x71C7656EC7ab88b098defB751B7401B5f6d8976F',
-        'USDT': '0xdAC17F958D2ee523a2206206994597C13D831ec7'
+        'BTC': '<%=walletBTC%>',
+        'ETH': '<%=walletETH%>',
+        'USDT': '<%=walletUSDT%>'
       };
       document.getElementById('depositWalletAddress').textContent = addresses[currency];
     }

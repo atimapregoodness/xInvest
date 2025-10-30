@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title><%= title %> | meziumFx Admin</title>
+    <title><%= title %> | Crybiance Admin</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- ✅ Bootstrap -->
@@ -16,6 +16,8 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
+
     <!-- ====== FONT AWESOME (Kit + Fallback) ====== -->
     <!-- Fallback CSS (in case kit fails to load) -->
     <link
@@ -196,7 +198,7 @@
         </button>
 
         <h4 class="m-0 text-light">
-          <i class="fa fa-shield-halved me-2 text-primary"></i> meziumFx Admin
+          <i class="fa fa-shield-halved me-2 text-primary"></i> Crybiance Admin
         </h4>
       </div>
     </nav>
@@ -242,21 +244,13 @@
           <li class="nav-item">
             <a
               class="nav-link d-flex align-items-center gap-2"
-              href="/admin/investments"
+              href="/admin/email/composer"
             >
-              <i class="fa fa-chart-line text-light"></i>
-              <span>Investments</span>
+              <i class="fa fa-envelope text-light"></i>
+              <span>Send Mail</span>
             </a>
           </li>
-          <li class="nav-item">
-            <a
-              class="nav-link d-flex align-items-center gap-2"
-              href="/admin/plans"
-            >
-              <i class="fa fa-layer-group text-light"></i>
-              <span>Plans</span>
-            </a>
-          </li>
+
           <li class="nav-item">
             <a
               class="nav-link d-flex align-items-center gap-2 <%= title === 'Admin Settings' ? 'active' : '' %>"

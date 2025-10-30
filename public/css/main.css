@@ -722,7 +722,6 @@ select option {
   transform: translateX(-50%);
   background: var(--glass);
   backdrop-filter: blur(16px);
-  border-top: 1px solid var(--glass-border);
   padding: 0.5rem;
   display: none;
   gap: 0.4rem;
@@ -5739,6 +5738,9 @@ transaction .verification-banner .verify-btn:hover {
   .faq-hero {
     padding: 80px 0 30px;
   }
+  #realData {
+    scroll-margin-top: 1.2rem;
+  }
   .hero-stats,
   .category-list {
     flex-direction: column;
@@ -6347,4 +6349,11 @@ select:focus-visible {
   .loader-logo h3 {
     font-size: 1.25rem;
   }
+}
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  justify-items: center;
+  align-items: start;
 }/*# sourceMappingURL=main.css.map */

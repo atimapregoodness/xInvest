@@ -55,7 +55,7 @@ exports.getTrades = async (req, res) => {
     );
 
     res.render("user/trade", {
-      title: "meziumFx - My Trades",
+      title: "Crybiance - My Trades",
       user: req.user,
       activeTrades: activeTrades.length,
       totalInvestment,
@@ -138,7 +138,7 @@ exports.getPlaceTrade = async (req, res) => {
     const totalProfit = trades.reduce((sum, t) => sum + (t.profit || 0), 0);
 
     res.render("user/place-trade", {
-      title: "meziumFx - Place Trade",
+      title: "Crybiance - Place Trade",
       user: req.user,
       plans,
       activeTrades: activeTrades.length,

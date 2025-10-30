@@ -1,20 +1,9 @@
 <%- layout('layout/adminBoilerplate') %>
 
-<div
-  class="d-flex justify-content-between align-items-center flex-wrap mb-4 border-bottom border-secondary pb-3"
->
-  <h1 class="h3 fw-bold text-light">
-    <i class="fa-solid fa-inbox text-primary me-2"></i> Requests Center
-  </h1>
-  <a href="/admin/dashboard" class="btn btn-outline-light btn-sm mt-2 mt-md-0">
-    <i class="fa-solid fa-arrow-left me-1"></i> Dashboard
-  </a>
-</div>
-
-<div class="row g-4">
+<div class="row g-4 w-100">
   <!-- Verification Requests -->
   <div class="col-12 col-lg-6">
-    <div class="card shadow-sm border-0 h-100">
+    <div class="card shadow-sm border-0 h-100" id="div">
       <div
         class="card-header bg-dark text-white d-flex justify-content-between align-items-center"
       >
@@ -27,73 +16,83 @@
         </span>
       </div>
 
-      <div class="card-body p-0" id="verificationsTable">
+      <div class="card-body" id="verificationsDropdown">
         <% if (verifications.length > 0) { %>
-        <div class="table-responsive">
-          <table class="table table-hover align-middle mb-0 text-nowrap">
-            <thead class="table-light">
-              <tr>
-                <th>User</th>
-                <th>Email</th>
-                <th>ID Type</th>
-                <th>Date</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% verifications.forEach(req => { %>
-              <tr>
-                <td class="text-truncate" style="max-width: 120px">
-                  <%= req.user.fullName %>
-                </td>
-                <td class="text-truncate" style="max-width: 150px">
-                  <%= req.user.email %>
-                </td>
-                <td><%= req.idType %></td>
-                <td><%= new Date(req.createdAt).toLocaleDateString() %></td>
-                <td>
-                  <div class="dropdown">
-                    <button
-                      class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                      type="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      <i class="fa-solid fa-ellipsis-vertical"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                      <li>
-                        <a
-                          href="<%= req.idImage %>"
-                          target="_blank"
-                          class="dropdown-item text-info"
-                        >
-                          <i class="fa-solid fa-eye me-2"></i>View ID
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="/admin/verify/approve/<%= req._id %>"
-                          class="dropdown-item text-success"
-                        >
-                          <i class="fa-solid fa-check me-2"></i>Approve
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="/admin/verify/reject/<%= req._id %>"
-                          class="dropdown-item text-danger"
-                        >
-                          <i class="fa-solid fa-times me-2"></i>Reject
-                        </a>
-                      </li>
-                    </ul>
+        <div class="dropdown w-100">
+          <button
+            class="btn btn-primary dropdown-toggle w-100"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Pending Verifications (<%= verifications.length %>)
+          </button>
+
+          <ul
+            class="dropdown-menu w-100 p-2"
+            style="max-height: 400px; overflow-y: auto"
+          >
+            <% verifications.forEach(req => { %>
+            <li class="mb-2">
+              <div class="card shadow-sm border-0">
+                <div class="card-body p-3">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <div>
+                      <h6 class="mb-1 fw-semibold text-light">
+                        <%= req.user.fullName %>
+                      </h6>
+                      <p class="mb-1 text-light small">
+                        <i class="fa-solid fa-envelope me-1"></i><%=
+                        req.user.email %>
+                      </p>
+                      <p class="mb-0 text-light small">
+                        <i class="fa-solid fa-id-card me-1"></i><%= req.idType
+                        %> • <%= new Date(req.createdAt).toLocaleDateString() %>
+                      </p>
+                    </div>
+                    <div class="dropdown">
+                      <button
+                        class="btn btn-sm btn-outline-secondary dropdown-toggle"
+                        data-bs-toggle="dropdown"
+                      >
+                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                      </button>
+                      <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                          <a
+                            href="<%= req.idImage %>"
+                            target="_blank"
+                            class="dropdown-item text-info"
+                          >
+                            <i class="fa-solid fa-eye me-2"></i> View ID
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            href="/admin/verify/approve/<%= req._id %>"
+                            class="dropdown-item text-success"
+                          >
+                            <i class="fa-solid fa-check me-2"></i> Approve
+                          </a>
+                        </li>
+                        <li>
+                          <a
+                            href="/admin/verify/reject/<%= req._id %>"
+                            class="dropdown-item text-danger"
+                          >
+                            <i class="fa-solid fa-times me-2"></i> Reject
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
-                </td>
-              </tr>
-              <% }) %>
-            </tbody>
-          </table>
+                </div>
+              </div>
+            </li>
+            <% }) %>
+          </ul>
         </div>
         <% } else { %>
         <div class="p-4 text-center text-muted">
@@ -107,7 +106,7 @@
 
   <!-- Deposit Requests -->
   <div class="col-12 col-lg-6">
-    <div class="card shadow-sm border-0 h-100">
+    <div class="card shadow-sm border-0 h-100" id="div">
       <div
         class="card-header bg-dark text-white d-flex justify-content-between align-items-center"
       >
@@ -135,12 +134,14 @@
             <tbody>
               <% deposits.forEach(dep => { %>
               <tr>
-                <td class="text-truncate" style="max-width: 120px">
+                <td class="text-truncate text-light" style="max-width: 120px">
                   <%= dep.user.fullName %>
                 </td>
                 <td class="text-success">$<%= dep.amount.toFixed(2) %></td>
-                <td><%= dep.currency %></td>
-                <td><%= new Date(dep.createdAt).toLocaleDateString() %></td>
+                <td class="text-light"><%= dep.currency %></td>
+                <td class="text-light">
+                  <%= new Date(dep.createdAt).toLocaleDateString() %>
+                </td>
                 <td>
                   <div class="dropdown">
                     <button

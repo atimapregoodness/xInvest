@@ -69,7 +69,9 @@ app.use(
           "https://cdnjs.cloudflare.com",
           "https://fonts.googleapis.com",
           "https://kit-free.fontawesome.com",
+          "https://www.smartsupp.com",
           "https://ka-f.fontawesome.com",
+          "https://www.smartsuppchat.com/loader.js",
         ],
         scriptSrc: [
           "'self'",
@@ -78,6 +80,8 @@ app.use(
           "https://cdn.jsdelivr.net",
           "https://cdnjs.cloudflare.com",
           "https://kit.fontawesome.com",
+          "https://www.smartsupp.com",
+          "https://www.smartsuppchat.com/loader.js",
           "https://ka-f.fontawesome.com",
         ],
         fontSrc: [
@@ -86,6 +90,7 @@ app.use(
           "https://fonts.gstatic.com",
           "https://cdnjs.cloudflare.com",
           "https://cdn.jsdelivr.net",
+          "https://www.smartsuppchat.com/loader.js",
           "https://ka-f.fontawesome.com",
         ],
         imgSrc: [
@@ -95,6 +100,7 @@ app.use(
           "https://ka-f.fontawesome.com",
           "https://res.cloudinary.com",
           "https://cdn.jsdelivr.net",
+          "https://www.smartsuppchat.com/loader.js",
           "https://cdnjs.cloudflare.com",
         ],
         connectSrc: [
@@ -102,6 +108,8 @@ app.use(
           "https://ka-f.fontawesome.com",
           "https://api.coingecko.com",
           "https://api.binance.com",
+          "https://www.smartsuppchat.com/loader.js",
+          "https://www.smartsupp.com",
         ],
         frameSrc: ["'self'"],
         objectSrc: ["'none'"],
@@ -198,6 +206,7 @@ app.use((req, res, next) => {
   res.locals.error_msg = req.flash("error_msg");
   res.locals.error = req.flash("error");
   res.locals.isVercel = isVercel;
+  res.locals.title = "Professional Forex Investment Platform";
   next();
 });
 
@@ -362,6 +371,8 @@ if (!isVercel) {
   }, FETCH_INTERVAL);
 }
 
+app.use(require("./middleware/globalSettings"));
+
 // =========================
 // Cron Job: Investment Updates
 // =========================
@@ -434,6 +445,7 @@ app.use(
   require("./routes/dashboard")
 );
 app.use("/admin", require("./routes/admin"));
+app.use("/admin/email", require("./routes/email"));
 app.use("/dashboard/trade", require("./routes/trade"));
 app.use("/dashboard/plans", require("./routes/investmentPlans"));
 app.use("/dashboard/wallet", require("./routes/wallet"));
@@ -587,7 +599,7 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error(err);
   const status = err.status || 500;
   res.status(status).render("error/err", {
     title: `${status} - Server Error`,

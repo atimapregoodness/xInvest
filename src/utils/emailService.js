@@ -47,7 +47,7 @@ async function sendMail({
       );
 
     await transporter.sendMail({
-      from: `"MeziumFx" <${process.env.SMTP_USER}>`,
+      from: `"Crybiance" <${process.env.SMTP_USER}>`,
       to,
       subject,
       html,
@@ -62,18 +62,23 @@ async function sendMail({
 // ===================== Prebuilt Email Functions =====================
 
 // Welcome Email
+
 async function sendWelcomeEmail(email, name) {
   return sendMail({
     to: email,
-    subject: "Welcome to MeziumFx!",
+    subject: "Welcome to Crybiance!",
     title: `Welcome, ${name}!`,
-    message: `We're excited to have you on MeziumFx. Start exploring trading tools, real-time data, and secure portfolio management.`,
+    message: `
+      We're excited to have you on Crybiance.<br>
+      Start exploring secure trading tools, real-time data, and portfolio management with confidence.
+    `,
     buttonText: "Go to Dashboard",
     buttonUrl: `${process.env.BASE_URL}/dashboard`,
   });
 }
 
-// Deposit Email
+module.exports = { sendWelcomeEmail };
+
 async function sendDepositEmail(
   email,
   name,
@@ -82,56 +87,60 @@ async function sendDepositEmail(
   status,
   receiptUrl
 ) {
-  const message = `
-    Hello ${name},<br>
-    Your deposit of <b>${amount} ${currency}</b> has been <b>${status}</b>.<br>
-    ${
-      status === "approved" ? "The funds are now available in your wallet." : ""
-    }
-    <ul>
-      <li>Amount: ${amount} ${currency}</li>
-      <li>Status: ${status}</li>
-      ${
-        receiptUrl
-          ? `<li>Receipt: <a href="${receiptUrl}" target="_blank">View Receipt</a></li>`
-          : ""
-      }
-    </ul>
-  `;
-  return sendMail({
-    to: email,
-    subject: `Deposit ${status} - MeziumFx`,
-    title: `Deposit ${status}`,
-    message,
-    buttonText: "View Wallet",
-    buttonUrl: `${process.env.BASE_URL}/dashboard/wallet`,
-  });
-}
+  // Define message and styling by status
+  let statusMessage = "";
+  let extraNote = "";
+  let color = "";
 
-// Withdrawal Email
-async function sendWithdrawalEmail(
-  email,
-  name,
-  amount,
-  currency,
-  fee,
-  totalDeducted,
-  balance
-) {
+  switch (status) {
+    case "approved":
+      statusMessage = "Your deposit has been approved successfully!";
+      extraNote = "The funds are now available in your wallet.";
+      color = "#28a745"; // green
+      break;
+
+    case "failed":
+      statusMessage = "Your deposit was declined.";
+      extraNote =
+        "Unfortunately, your deposit could not be processed at this time. Please verify your transaction details or contact support for help.";
+      color = "#dc3545"; // red
+      break;
+
+    case "pending":
+      statusMessage = "Your deposit request is pending review.";
+      extraNote =
+        "Our compliance team is currently reviewing your transaction. You’ll receive an update once it’s approved.";
+      color = "#ffc107"; // yellow
+      break;
+
+    default:
+      statusMessage = "Deposit update";
+      color = "#6c757d"; // gray
+  }
+
   const message = `
-    Hello ${name},<br>
-    Your withdrawal has been processed successfully.<br>
-    <ul>
-      <li>Amount Withdrawn: ${amount} ${currency}</li>
-      <li>Fee Applied: ${fee} ${currency}</li>
-      <li>Total Deducted: ${totalDeducted} ${currency}</li>
-      <li>Remaining Balance: ${balance} ${currency}</li>
-    </ul>
+    <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+      <p>Hello ${name},</p>
+      <p style="color: ${color}; font-weight: bold;">${statusMessage}</p>
+      <ul>
+        <li><strong>Amount:</strong> ${amount} ${currency}</li>
+        <li><strong>Status:</strong> <span style="color: ${color};">${status}</span></li>
+        ${
+          receiptUrl
+            ? `<li><strong>Receipt:</strong> <a href="${receiptUrl}" target="_blank" style="color: #007bff;">View Receipt</a></li>`
+            : ""
+        }
+      </ul>
+      <p>${extraNote}</p>
+    </div>
   `;
+
   return sendMail({
     to: email,
-    subject: "Withdrawal Successful - MeziumFx",
-    title: "Withdrawal Processed",
+    subject: `Deposit ${
+      status.charAt(0).toUpperCase() + status.slice(1)
+    } - Crybiance`,
+    title: `Deposit ${status.charAt(0).toUpperCase() + status.slice(1)}`,
     message,
     buttonText: "View Wallet",
     buttonUrl: `${process.env.BASE_URL}/dashboard/wallet`,
@@ -148,7 +157,7 @@ async function sendPasswordResetEmail(email, resetToken) {
   `;
   return sendMail({
     to: email,
-    subject: "Password Reset Request - MeziumFx",
+    subject: "Password Reset Request - Crybiance",
     title: "Password Reset Request",
     message,
     buttonText: "Reset Password",
@@ -166,9 +175,54 @@ async function sendSecurityAlertEmail(email, activity) {
   `;
   return sendMail({
     to: email,
-    subject: "Security Alert - MeziumFx",
+    subject: "Security Alert - Crybiance",
     title: "Security Alert",
     message,
+  });
+}
+
+async function sendWithdrawalEmail(
+  email,
+  name,
+  amount,
+  currency,
+  fee,
+  totalDeducted,
+  balance
+) {
+  const title = "Withdrawal Processed Successfully";
+  const message = `
+    <p>Hello ${name},</p>
+    <p>Your withdrawal request has been processed and the funds have been sent to your designated address.</p>
+    <div style="background: white; border-radius: 6px; padding: 1rem; margin: 1rem 0; border: 1px solid #e2e8f0;">
+      <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #f1f5f9;">
+        <span style="color: #64748b; font-weight: 500;">Amount Withdrawn:</span>
+        <span style="color: #1e293b; font-weight: 600;">${amount} ${currency}</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #f1f5f9;">
+        <span style="color: #64748b; font-weight: 500;">Processing Fee:</span>
+        <span style="color: #1e293b; font-weight: 600;">${fee} ${currency}</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #f1f5f9;">
+        <span style="color: #64748b; font-weight: 500;">Total Deducted:</span>
+        <span style="color: #1e293b; font-weight: 600;">${totalDeducted} ${currency}</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
+        <span style="color: #64748b; font-weight: 500;">Remaining Balance:</span>
+        <span style="color: #1e293b; font-weight: 600;">${balance} ${currency}</span>
+      </div>
+    </div>
+    <p>The funds should reflect in your account within 1-3 business days, depending on your bank's processing time.</p>
+  `;
+  const button = `<a href="${process.env.BASE_URL}/dashboard/wallet" class="btn">View Wallet Balance</a>`;
+
+  return sendMail({
+    to: email,
+    subject: "Withdrawal Successful - Crybiance",
+    title: title,
+    message: message,
+    button: button,
+    email: email,
   });
 }
 

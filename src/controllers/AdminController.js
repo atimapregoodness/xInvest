@@ -1,26 +1,25 @@
 const User = require("../models/User");
 const Wallet = require("../models/Wallet");
 const Transaction = require("../models/Transaction");
+const { sendDepositEmail } = require("../utils/emailService");
+const Trade = require("../models/Trade");
 
+// routes/admin.js
 exports.getDashboard = async (req, res) => {
-  try {
-    const userCount = await User.countDocuments();
-    const txCount = await Transaction.countDocuments();
-    const recentTx = await Transaction.find()
-      .populate("userId", "fullName email")
-      .sort({ createdAt: -1 })
-      .limit(5);
+  // Example: pull real data from MongoDB
+  const totalRevenue = await Transaction.aggregate([
+    { $match: { status: "approved" } },
+    { $group: { _id: null, sum: { $sum: "$amount" } } },
+  ]).then((r) => (r[0] ? r[0].sum : 0));
 
-    res.render("admin/admin_dashboard", {
-      title: "Admin Dashboard",
-      stats: { userCount, txCount },
-      recentTx,
-    });
-  } catch (err) {
-    console.error(err);
-    req.flash("error_msg", "Failed to load admin dashboard.");
-    res.redirect("/dashboard");
-  }
+  const totalUsers = await User.countDocuments();
+  const totalOrders = await Trade.countDocuments({ status: "completed" });
+
+  res.render("admin/admin_dashboard", {
+    totalRevenue,
+    totalUsers,
+    totalOrders,
+  });
 };
 
 exports.getUsers = async (req, res) => {
@@ -218,4 +217,201 @@ exports.approveVerification = async (req, res) => {
   const deposits = await Deposit.find({ status: "pending" }).populate("user");
   req.io.emit("updateRequests", { verifications, deposits });
   res.redirect("/admin/request");
+};
+
+exports.approveVerification = async (req, res) => {
+  try {
+    const verify = await Verification.findById(req.params.id).populate("user");
+    const user = verify.user;
+
+    console.log(user, verify);
+
+    user.isVerified = true;
+    verify.status = "approved";
+
+    await verify.save();
+    await user.save();
+
+    req.flash("success_msg", "User successfully verified.");
+    res.redirect("/admin/request");
+  } catch (err) {
+    console.error(err);
+    req.flash("error_msg", "Failed to verify user.");
+    res.redirect("/admin/request");
+  }
+};
+
+exports.rejectVerification = async (req, res) => {
+  try {
+    const verify = await Verification.findById(req.params.id);
+    // const user = await User.findById(req.params.id);
+
+    // user.isVerified = false;
+
+    verify.status = "rejected";
+
+    await verify.save();
+    await user.save();
+
+    req.flash("success_msg", "User verification rejected.");
+    res.redirect("/admin/request");
+  } catch (err) {
+    console.error(err);
+    req.flash("error_msg", "Failed to reject user verification.");
+    res.redirect("/admin/request");
+  }
+};
+
+exports.approveDeposit = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Find the deposit
+    const deposit = await Deposit.findById(id);
+    if (!deposit) {
+      req.flash("error_msg", "Deposit not found.");
+      return res.redirect("/admin/request");
+    }
+
+    // Find the user
+    const user = await User.findById(deposit.user);
+    if (!user) {
+      req.flash("error_msg", "User not found.");
+      return res.redirect("/admin/request");
+    }
+
+    // Find or create user wallet
+    let wallet = await Wallet.findOne({ userId: user._id });
+    if (!wallet) {
+      wallet = new Wallet({ userId: user._id });
+    }
+
+    // Normalize currency name
+    const currency = deposit.currency.toUpperCase();
+    if (!["BTC", "ETH", "USDT"].includes(currency)) {
+      req.flash("error_msg", `Invalid currency type: ${currency}`);
+      return res.redirect("/admin/request");
+    }
+
+    // Update wallet currency balance
+    wallet[currency] += deposit.amount;
+
+    // Update investment stats
+    wallet.investmentStats.totalDeposit += deposit.amount;
+    wallet.investmentStats.depositBreakdown[currency] += deposit.amount;
+
+    // Recalculate total wallet value in USD (via schema pre-save hook)
+    await wallet.save();
+
+    // Mark deposit as successful
+    deposit.status = "successful";
+    deposit.processedAt = new Date();
+    await deposit.save();
+
+    // Update or create transaction
+    await Transaction.findOneAndUpdate(
+      {
+        userId: user._id,
+        type: "deposit",
+        amount: deposit.amount,
+        currency: deposit.currency,
+        status: "pending",
+      },
+      {
+        status: "completed",
+        netAmount: deposit.amount,
+        fee: 0,
+        processedAt: new Date(),
+        walletBalance: wallet.totalBalance,
+      },
+      { new: true }
+    );
+
+    // Send deposit confirmation email
+    await sendDepositEmail(
+      user.email,
+      user.fullName || "Investor",
+      deposit.amount,
+      deposit.currency,
+      "successful",
+      deposit.receiptUrl,
+      wallet.totalBalance
+    );
+
+    req.flash("success_msg", "Deposit approved successfully!");
+    res.redirect("/admin/request");
+  } catch (error) {
+    console.error("❌ Deposit approval error:", error);
+    req.flash("error_msg", "Failed to approve deposit. Please try again.");
+    res.redirect("/admin/request");
+  }
+};
+
+exports.rejectDeposit = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Find the deposit
+    const deposit = await Deposit.findById(id);
+    if (!deposit) {
+      req.flash("error_msg", "Deposit not found.");
+      return res.redirect("/admin/request");
+    }
+
+    // Check if already processed
+    if (deposit.status === "successful") {
+      req.flash("error_msg", "Deposit already approved.");
+      return res.redirect("/admin/request");
+    } else if (deposit.status === "failed") {
+      req.flash("error_msg", "Deposit already rejected.");
+      return res.redirect("/admin/request");
+    }
+
+    // Find the user
+    const user = await User.findById(deposit.user);
+    if (!user) {
+      req.flash("error_msg", "User not found.");
+      return res.redirect("/admin/request");
+    }
+
+    // Update deposit status
+    deposit.status = "failed";
+    deposit.processedAt = new Date();
+    await deposit.save();
+
+    // Update corresponding transaction if exists
+    await Transaction.findOneAndUpdate(
+      {
+        userId: user._id,
+        type: "deposit",
+        amount: deposit.amount,
+        currency: deposit.currency,
+        status: "pending",
+      },
+      {
+        status: "failed",
+        processedAt: new Date(),
+        failureReason: "Deposit request was rejected.",
+      },
+      { new: true }
+    );
+
+    // Send rejection email
+    await sendDepositEmail(
+      user.email,
+      user.fullName || "Investor",
+      deposit.amount,
+      deposit.currency,
+      "failed",
+      deposit.receiptUrl,
+      null // No wallet balance for failed deposits
+    );
+
+    req.flash("success_msg", "Deposit rejected successfully!");
+    res.redirect("/admin/request");
+  } catch (error) {
+    console.error("❌ Deposit rejection error:", error);
+    req.flash("error_msg", "Failed to reject deposit. Please try again.");
+    res.redirect("/admin/request");
+  }
 };

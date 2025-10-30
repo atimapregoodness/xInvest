@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const investmentPlansController = require("../controllers/InvestmentPlansController");
-const { ensureAuthenticated } = require("../middleware/auth");
+const { isVerified, ensureAuthenticated } = require("../middleware/auth");
+router.use(ensureAuthenticated);
 
-router.get("/", ensureAuthenticated, investmentPlansController.getPlans);
+router.get("/", investmentPlansController.getPlans);
 router.post(
   "/purchase/:id",
-  ensureAuthenticated,
+  isVerified,
   investmentPlansController.purchasePlan
 );
 

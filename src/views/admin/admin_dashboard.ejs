@@ -1,231 +1,111 @@
 <%- layout('layout/adminBoilerplate') %>
 
-<div
-  class="d-flex justify-content-between align-items-center flex-wrap mb-4 border-bottom border-secondary pb-3"
->
-  <h1 class="h3 fw-bold text-light">
-    <i class="fa-solid fa-inbox text-primary me-2"></i> Requests Center
-  </h1>
-  <a href="/admin/dashboard" class="btn btn-outline-light btn-sm">
-    <i class="fa-solid fa-arrow-left me-1"></i> Dashboard
-  </a>
-</div>
-
-<div class="row g-4">
-  <!-- USER VERIFICATION REQUESTS -->
-  <div class="col-lg-6">
-    <div class="card shadow-sm border-0 h-100">
-      <div
-        class="card-header bg-dark text-white d-flex justify-content-between align-items-center"
-      >
-        <h6 class="mb-0">
-          <i class="fa-solid fa-user-check me-2 text-primary"></i> User
-          Verifications
-        </h6>
-        <span id="verCount" class="badge bg-primary"
-          ><%= verifications.length %></span
+<div class="dashboard">
+  <div class="content">
+    <!-- Stats Cards -->
+    <div class="stats-cards">
+      <div class="stat-card">
+        <div
+          class="stat-icon"
+          style="
+            background-color: rgba(15, 184, 150, 0.2);
+            color: var(--primary);
+          "
         >
+          <i class="fas fa-wallet"></i>
+        </div>
+        <div class="stat-info">
+          <h3>$<%= totalRevenue.toLocaleString() %></h3>
+          <p>Total Revenue</p>
+        </div>
       </div>
-
-      <div class="card-body p-0">
-        <% if (verifications.length > 0) { %>
-        <div class="table-responsive">
-          <table class="table table-hover align-middle mb-0 text-nowrap">
-            <thead class="table-light">
-              <tr>
-                <th>User</th>
-                <th>Email</th>
-                <th>ID Type</th>
-                <th>Date</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% verifications.forEach((req, i) => { %>
-              <tr>
-                <td><%= req.user.fullName %></td>
-                <td><%= req.user.email %></td>
-                <td><%= req.idType %></td>
-                <td><%= new Date(req.createdAt).toLocaleDateString() %></td>
-                <td>
-                  <div class="dropdown">
-                    <button
-                      class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                      type="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      <i class="fa-solid fa-ellipsis-vertical"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-                      <li>
-                        <a
-                          href="<%= req.idImage %>"
-                          target="_blank"
-                          class="dropdown-item text-info"
-                        >
-                          <i class="fa-solid fa-eye me-2"></i> View ID
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="/admin/verify/approve/<%= req._id %>"
-                          class="dropdown-item text-success"
-                        >
-                          <i class="fa-solid fa-check me-2"></i> Approve
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="/admin/verify/reject/<%= req._id %>"
-                          class="dropdown-item text-danger"
-                        >
-                          <i class="fa-solid fa-times me-2"></i> Reject
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-              <% }) %>
-            </tbody>
-          </table>
+      <div class="stat-card">
+        <div
+          class="stat-icon"
+          style="
+            background-color: rgba(0, 217, 140, 0.2);
+            color: var(--success);
+          "
+        >
+          <i class="fas fa-users"></i>
         </div>
-        <% } else { %>
-        <div class="p-4 text-center text-muted">
-          <i class="fa-regular fa-circle-info fa-2x mb-2 d-block"></i>
-          No pending verification requests.
+        <div class="stat-info">
+          <h3><%= totalUsers %></h3>
+          <p>Total Users</p>
         </div>
-        <% } %>
+      </div>
+      <div class="stat-card">
+        <div
+          class="stat-icon"
+          style="
+            background-color: rgba(255, 184, 0, 0.2);
+            color: var(--warning);
+          "
+        >
+          <i class="fas fa-shopping-cart"></i>
+        </div>
+        <div class="stat-info">
+          <h3><%= totalOrders %></h3>
+          <p>New Orders</p>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- DEPOSIT REQUESTS -->
-  <div class="col-lg-6">
-    <div class="card shadow-sm border-0 h-100">
-      <div
-        class="card-header bg-dark text-white d-flex justify-content-between align-items-center"
-      >
-        <h6 class="mb-0">
-          <i class="fa-solid fa-wallet me-2 text-warning"></i> Deposit Requests
-        </h6>
-        <span id="depCount" class="badge bg-warning text-dark"
-          ><%= deposits.length %></span
-        >
+    <!-- Charts -->
+    <div class="charts-container">
+      <div class="chart-card">
+        <div class="chart-header">Revenue Growth</div>
+        <canvas id="revenueChart"></canvas>
       </div>
-
-      <div class="card-body p-0">
-        <% if (deposits.length > 0) { %>
-        <div class="table-responsive">
-          <table class="table table-hover align-middle mb-0 text-nowrap">
-            <thead class="table-light">
-              <tr>
-                <th>User</th>
-                <th>Amount</th>
-                <th>Currency</th>
-                <th>Date</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% deposits.forEach((dep, i) => { %>
-              <tr>
-                <td><%= dep.user.fullName %></td>
-                <td class="text-success">$<%= dep.amount.toFixed(2) %></td>
-                <td><%= dep.currency %></td>
-                <td><%= new Date(dep.createdAt).toLocaleDateString() %></td>
-                <td>
-                  <div class="dropdown">
-                    <button
-                      class="btn btn-sm btn-outline-secondary dropdown-toggle"
-                      type="button"
-                      data-bs-toggle="dropdown"
-                      aria-expanded="false"
-                    >
-                      <i class="fa-solid fa-ellipsis-vertical"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end shadow-sm bg-dark>
-                      <li>
-                        <a
-                          href="console.cloudinary.com/<%= dep.receiptUrl %>"
-                          target="_blank"
-                          class="dropdown-item text-info"
-                        >
-                          <i class="fa-solid fa-receipt me-2"></i> View Receipt
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="/admin/deposit/approve/<%= dep._id %>"
-                          class="dropdown-item text-success"
-                        >
-                          <i class="fa-solid fa-check me-2"></i> Approve
-                        </a>
-                      </li>
-                      <li>
-                        <a
-                          href="/admin/deposit/reject/<%= dep._id %>"
-                          class="dropdown-item text-danger"
-                        >
-                          <i class="fa-solid fa-times me-2"></i> Reject
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                </td>
-              </tr>
-              <% }) %>
-            </tbody>
-          </table>
-        </div>
-        <% } else { %>
-        <div class="p-4 text-center text-muted">
-          <i class="fa-regular fa-circle-info fa-2x mb-2 d-block"></i>
-          No pending deposit requests.
-        </div>
-        <% } %>
+      <div class="chart-card">
+        <div class="chart-header">User Distribution</div>
+        <canvas id="userChart"></canvas>
       </div>
     </div>
   </div>
 </div>
 
-<!-- SOCKET.IO + DROPDOWN INITIALIZATION -->
-<script src="/socket.io/socket.io.js"></script>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
-  const socket = io();
+  // Mock data (replace with backend JSON)
+  const revenueData = {
+    labels: ["Jan", "Feb", "Mar", "Apr", "May"],
+    datasets: [
+      {
+        label: "Revenue ($)",
+        data: [1000, 1500, 1200, 1800, 2200],
+        backgroundColor: "rgba(15, 184, 150, 0.3)",
+        borderColor: "var(--primary)",
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4,
+      },
+    ],
+  };
 
-  socket.on("updateRequests", (data) => {
-    if (data.verifications) {
-      document.getElementById("verCount").textContent =
-        data.verifications.length;
-    }
-    if (data.deposits) {
-      document.getElementById("depCount").textContent = data.deposits.length;
-    }
+  const userDistribution = {
+    labels: ["Active", "Inactive", "Pending"],
+    datasets: [
+      {
+        data: [70, 20, 10],
+        backgroundColor: ["var(--primary)", "var(--warning)", "var(--danger)"],
+      },
+    ],
+  };
+
+  const revCtx = document.getElementById("revenueChart").getContext("2d");
+  new Chart(revCtx, {
+    type: "line",
+    data: revenueData,
+    options: { responsive: true, maintainAspectRatio: false },
   });
 
-  // Reinitialize Bootstrap dropdowns on DOM changes
-  document.addEventListener("DOMContentLoaded", () => {
-    const dropdownElements = [].slice.call(
-      document.querySelectorAll(".dropdown-toggle")
-    );
-    dropdownElements.map((el) => new bootstrap.Dropdown(el));
+  const usrCtx = document.getElementById("userChart").getContext("2d");
+  new Chart(usrCtx, {
+    type: "doughnut",
+    data: userDistribution,
+    options: { responsive: true, maintainAspectRatio: false },
   });
 </script>
-
-<style>
-  /* Responsive & clean table styles */
-  @media (max-width: 768px) {
-    table {
-      font-size: 0.85rem;
-    }
-    th,
-    td {
-      white-space: nowrap;
-    }
-    .dropdown-menu {
-      font-size: 0.85rem;
-    }
-  }
-</style>

@@ -1,4 +1,4 @@
-<%- layout('layout/boilerplate', { title: 'MeziumFx - Contact Us' }) %>
+<%- layout('layout/boilerplate', { title: 'Crybiance - Contact Us' }) %>
 
 <div class="page-container">
   <!-- Hero Section -->
@@ -27,8 +27,8 @@
             </div>
             <h4>Email Us</h4>
             <p>Get detailed responses within 24 hours</p>
-            <a href="mailto:support@meziumfx.com" class="contact-link"
-              >support@meziumfx.com</a
+            <a href="mailto:<%= companyEmail %>" class="contact-link"
+              ><%= companyEmail %></a
             >
           </div>
         </div>
@@ -39,8 +39,8 @@
             </div>
             <h4>Call Us</h4>
             <p>Speak directly with our support team</p>
-            <a href="tel:+1-555-123-4567" class="contact-link"
-              >+1 (555) 123-4567</a
+            <a href="tel:<%= companyPhone %>" class="contact-link"
+              ><%= companyPhone %></a
             >
           </div>
         </div>
@@ -63,117 +63,11 @@
   <!-- Contact Form & Info -->
   <section class="contact-main py-5">
     <div class="container">
-      <div class="row g-5">
-        <!-- Contact Form -->
-        <div class="col-lg-8">
-          <div class="glass-card">
-            <h3 class="card-title mb-4">Send us a Message</h3>
-            <form id="contactForm" class="contact-form">
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="firstName" class="form-label">First Name</label>
-                    <input
-                      type="text"
-                      class="form-control glass-input"
-                      id="firstName"
-                      required
-                    />
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="lastName" class="form-label">Last Name</label>
-                    <input
-                      type="text"
-                      class="form-control glass-input"
-                      id="lastName"
-                      required
-                    />
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="email" class="form-label">Email Address</label>
-                    <input
-                      type="email"
-                      class="form-control glass-input"
-                      id="email"
-                      required
-                    />
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="phone" class="form-label">Phone Number</label>
-                    <input
-                      type="tel"
-                      class="form-control glass-input"
-                      id="phone"
-                    />
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="form-group">
-                    <label for="subject" class="form-label">Subject</label>
-                    <select
-                      class="form-control glass-input"
-                      id="subject"
-                      required
-                    >
-                      <option value="">Select a topic</option>
-                      <option value="general">General Inquiry</option>
-                      <option value="technical">Technical Support</option>
-                      <option value="investment">Investment Advice</option>
-                      <option value="withdrawal">Withdrawal Issue</option>
-                      <option value="partnership">
-                        Partnership Opportunity
-                      </option>
-                      <option value="other">Other</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="form-group">
-                    <label for="message" class="form-label">Message</label>
-                    <textarea
-                      class="form-control glass-input"
-                      id="message"
-                      rows="6"
-                      required
-                      placeholder="Tell us how we can help you..."
-                    ></textarea>
-                  </div>
-                </div>
-                <div class="col-12">
-                  <div class="form-check mb-4">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      id="consent"
-                      required
-                    />
-                    <label class="form-check-label" for="consent">
-                      I agree to the
-                      <a href="/privacy" class="text-primary">Privacy Policy</a>
-                      and
-                      <a href="/terms" class="text-primary">Terms of Service</a>
-                    </label>
-                  </div>
-                  <button type="submit" class="btn btn-primary btn-lg w-100">
-                    <i class="fas fa-paper-plane me-2"></i>Send Message
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-
+      <div class="">
         <!-- Contact Info -->
-        <div class="col-lg-4">
-          <div class="glass-card h-100">
-            <h3 class="card-title mb-4">Contact Information</h3>
-
+        <div class="">
+          <h3 class="card-title mb-4 text-center mb-2">Contact Information</h3>
+          <div class="contact-info justify-content-center contact-grid">
             <div class="info-item mb-4">
               <div class="info-icon">
                 <i class="fas fa-map-marker-alt"></i>
@@ -251,7 +145,7 @@
                   data-bs-toggle="collapse"
                   data-bs-target="#faq1"
                 >
-                  How do I start investing with MeziumFx?
+                  How do I start investing with Crybiance?
                 </button>
               </h2>
               <div
@@ -376,7 +270,7 @@
         const botMessage = document.createElement("div");
         botMessage.className = "message bot-message";
         botMessage.innerHTML = `
-        <div class="message-content">Thank you for your message. Our support team will respond shortly. In the meantime, you can also email us at support@meziumfx.com for faster assistance.</div>
+        <div class="message-content">Thank you for your message. Our support team will respond shortly. In the meantime, you can also email us at support@Crybiance.com for faster assistance.</div>
         <div class="message-time">Just now</div>
       `;
         messagesContainer.appendChild(botMessage);

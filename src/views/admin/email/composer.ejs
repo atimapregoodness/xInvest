@@ -1,0 +1,240 @@
+<%- layout('layout/adminBoilerplate', { title: 'Email Composer - Crybiance' })%>
+
+<style>
+  .email-composer {
+    background: var(--darker);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--glass-border);
+  }
+
+  .email-header {
+    background: var(--secondary);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 1.5rem;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+
+  .email-body {
+    min-height: 400px;
+  }
+
+  .recipient-input {
+    background: var(--darker);
+    border: 1px solid var(--glass-border);
+    color: var(--text);
+    border-radius: var(--radius);
+  }
+
+  .recipient-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem rgba(15, 184, 150, 0.25);
+  }
+
+  .email-editor {
+    background: var(--darker);
+    border: 1px solid var(--glass-border);
+    color: var(--text);
+    border-radius: var(--radius);
+    min-height: 300px;
+    width: 100%;
+    padding: 15px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+</style>
+
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h1 class="h3 text-white mb-1">Email Composer</h1>
+          <p class="text-muted mb-0">Send professional emails to your users</p>
+          <% if (!process.env.SMTP_SUPPORT_USER) { %>
+          <div class="alert alert-warning mt-2 mb-0">
+            <i class="fas fa-info-circle me-2"></i>
+            Running in development mode - emails will be logged to console
+          </div>
+          <% } %>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-light" id="testSMTP">
+            <i class="fas fa-vial me-2"></i>Test Connection
+          </button>
+          <button class="btn btn-outline-light" id="previewEmail">
+            <i class="fas fa-eye me-2"></i>Preview
+          </button>
+          <button class="btn btn-accent" id="sendEmail">
+            <i class="fas fa-paper-plane me-2"></i>Send Email
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <div class="email-composer">
+        <div class="email-header">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label text-light small">To *</label>
+              <input
+                type="text"
+                class="form-control recipient-input"
+                placeholder="recipient@example.com"
+                id="emailTo"
+                required
+              />
+              <div class="form-text text-muted">
+                Separate multiple emails with commas
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-light small">Subject *</label>
+              <input
+                type="text"
+                class="form-control recipient-input"
+                placeholder="Email subject"
+                id="emailSubject"
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="email-body p-3">
+          <textarea
+            class="email-editor"
+            id="emailBody"
+            placeholder="Compose your email here..."
+          ></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const emailBody = document.getElementById("emailBody");
+    const emailTo = document.getElementById("emailTo");
+    const emailSubject = document.getElementById("emailSubject");
+
+    // Test SMTP connection
+    document
+      .getElementById("testSMTP")
+      .addEventListener("click", async function () {
+        const btn = this;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Testing...';
+        btn.disabled = true;
+
+        try {
+          const response = await fetch("/admin/email/test-smtp");
+          const data = await response.json();
+
+          if (data.success) {
+            showAlert("SMTP connection successful!", "success");
+          } else {
+            showAlert(data.message, "warning");
+          }
+        } catch (error) {
+          showAlert("Failed to test connection: " + error.message, "error");
+        } finally {
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+        }
+      });
+
+    // Send email
+    document
+      .getElementById("sendEmail")
+      .addEventListener("click", async function () {
+        const to = emailTo.value.trim();
+        const subject = emailSubject.value.trim();
+        const content = emailBody.value.trim();
+
+        // Validation
+        if (!to) {
+          showAlert("Please enter recipient email address", "error");
+          return;
+        }
+
+        if (!subject) {
+          showAlert("Please enter email subject", "error");
+          return;
+        }
+
+        if (!content) {
+          showAlert("Please add email content", "error");
+          return;
+        }
+
+        const btn = this;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sending...';
+        btn.disabled = true;
+
+        try {
+          const response = await fetch("/admin/email/send", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              to,
+              subject,
+              htmlContent: content.replace(/\n/g, "<br>"),
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            showAlert(data.message, "success");
+            // Clear form
+            emailTo.value = "";
+            emailSubject.value = "";
+            emailBody.value = "";
+          } else {
+            throw new Error(data.message);
+          }
+        } catch (error) {
+          showAlert("Failed to send email: " + error.message, "error");
+        } finally {
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+        }
+      });
+
+    function showAlert(message, type) {
+      const alert = document.createElement("div");
+      alert.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+      alert.style.cssText = `
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+      min-width: 300px;
+    `;
+      alert.innerHTML = `
+      <div class="d-flex align-items-center">
+        <i class="fas ${
+          type === "success" ? "fa-check-circle" : "fa-exclamation-circle"
+        } me-2"></i>
+        <span>${message}</span>
+        <button type="button" class="btn-close ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
+      </div>
+    `;
+
+      document.body.appendChild(alert);
+
+      setTimeout(() => {
+        if (alert.parentNode) {
+          alert.remove();
+        }
+      }, 5000);
+    }
+  });
+</script>

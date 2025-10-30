@@ -11,7 +11,7 @@
   --info: #3b82f6;
   --glass: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.1);
-  --text: #f9fafb;
+  --text: #ffffff;
   --text-secondary: #d1d5db;
   --text-muted: #9ca3af;
   --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
@@ -92,6 +92,14 @@ body {
 
 .admin-main.expanded {
   margin-left: 60px;
+}
+
+#div {
+  margin: 0 !important;
+}
+
+.table-responsive {
+  height: 70vh;
 }
 
 .nav-link {
@@ -579,4 +587,182 @@ body {
   .loader-logo h3 {
     font-size: 1.25rem;
   }
+}
+.content {
+  padding: 30px;
+}
+
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  background: linear-gradient(145deg, var(--secondary), var(--darker));
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--glass-border);
+  transition: var(--transition);
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--primary);
+}
+
+.stat-icon {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 15px;
+  font-size: 24px;
+  border-radius: var(--radius);
+}
+
+.stat-info h3 {
+  font-size: 1.8rem;
+  color: var(--text);
+  margin-bottom: 5px;
+}
+
+.stat-info p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.charts-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 25px;
+}
+
+.chart-card {
+  background: var(--secondary);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+.chart-header {
+  margin-bottom: 15px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+canvas {
+  width: 100% !important;
+  height: 300px !important;
+}
+
+.email-composer {
+  background: var(--darker);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--glass-border);
+}
+
+.email-header {
+  background: var(--secondary);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 1.5rem;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.email-toolbar {
+  background: var(--dark);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 1rem 1.5rem;
+}
+
+.email-body {
+  min-height: 500px;
+}
+
+.recipient-input {
+  background: var(--darker);
+  border: 1px solid var(--glass-border);
+  color: var(--text);
+  border-radius: var(--radius);
+}
+
+.recipient-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 0.2rem rgba(15, 184, 150, 0.25);
+}
+
+.template-sidebar {
+  background: var(--secondary);
+  border-right: 1px solid var(--glass-border);
+  height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+.template-item {
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.template-item:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+.ql-toolbar {
+  background: var(--dark) !important;
+  border-color: var(--glass-border) !important;
+}
+
+.ql-container {
+  background: var(--darker) !important;
+  border-color: var(--glass-border) !important;
+  color: var(--text) !important;
+  min-height: 400px;
+}
+
+.ql-editor {
+  color: var(--text) !important;
+  font-family: inherit !important;
+}
+
+.ql-editor.ql-blank::before {
+  color: var(--text-muted) !important;
+}
+
+.ql-toolbar .ql-stroke {
+  stroke: var(--text) !important;
+}
+
+.ql-toolbar .ql-fill {
+  fill: var(--text) !important;
+}
+
+.ql-toolbar .ql-picker-label {
+  color: var(--text) !important;
+}
+
+.ql-toolbar .ql-picker-options {
+  background: var(--dark) !important;
+  border-color: var(--glass-border) !important;
+}
+
+.email-preview-modal .modal-content {
+  background: var(--darker);
+  border: 1px solid var(--glass-border);
+}
+
+.email-preview-frame {
+  width: 100%;
+  height: 600px;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  background: white;
 }/*# sourceMappingURL=admin.css.map */

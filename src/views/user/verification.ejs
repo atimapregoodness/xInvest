@@ -1,4 +1,4 @@
-<%- layout('layout/acctBoilerplate', { title: 'meziumFx - Identity Verification'
+<%- layout('layout/acctBoilerplate', {title:'Crybiance - Identity Verification'
 }) %> <%- partial("partials/floatingNav") %> <%- partial("partials/sideBar") %>
 
 <div class="verification-container dashboard">
@@ -20,6 +20,91 @@
   <div class="alert alert-danger">
     Your verification was rejected. Please upload a valid document.
   </div>
+  <!-- Verification Form -->
+  <form
+    id="verificationForm"
+    action="/dashboard/personal/verification"
+    method="POST"
+    enctype="multipart/form-data"
+  >
+    <!-- CSRF Token -->
+
+    <div class="upload-card">
+      <div class="upload-icon"><i class="fa-solid fa-id-card"></i></div>
+
+      <div class="upload-area" id="idUploadArea">
+        <i class="fa-solid fa-cloud-upload-alt"></i>
+        <p>Drag & Drop or Click to Upload (JPG, PNG only)</p>
+
+        <input
+          type="file"
+          name="idUpload"
+          id="idUpload"
+          style="display: none"
+          accept=".jpg,.jpeg,.png"
+          required
+        />
+
+        <button
+          class="btn btn-primary mt-2"
+          type="button"
+          onclick="document.getElementById('idUpload').click()"
+        >
+          Select File
+        </button>
+      </div>
+
+      <div id="idFilePreview" class="file-preview" style="display: none">
+        <i class="fa-solid fa-file-image"></i>
+        <div class="file-info">
+          <div id="idFileName" class="file-name"></div>
+          <div id="idFileSize" class="file-size"></div>
+        </div>
+        <button type="button" class="btn btn-outline" onclick="removeIdFile()">
+          Remove
+        </button>
+      </div>
+    </div>
+
+    <div class="mb-3 glass-form">
+      <label for="documentType" class="form-label fw-bold text-light">
+        Select Document Type:
+      </label>
+      <select
+        name="documentType"
+        id="documentType"
+        class="form-select"
+        required
+      >
+        <option value="" disabled selected>-- Select Document --</option>
+        <option value="ID">National ID</option>
+        <option value="Passport">Passport</option>
+        <option value="DriverLicense">Driver's License</option>
+        <option value="VoterCard">Voter's Card</option>
+      </select>
+    </div>
+
+    <div class="form-check my-3">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        name="termsAgreement"
+        id="termsAgreement"
+        required
+      />
+      <label class="form-check-label" for="termsAgreement">
+        I certify that the document I'm uploading is authentic and belongs to
+        me.
+      </label>
+    </div>
+
+    <div class="d-flex justify-content-between">
+      <button class="btn btn-outline" type="button" onclick="showProfilePage()">
+        Back
+      </button>
+      <button class="btn btn-primary" type="submit">Submit</button>
+    </div>
+  </form>
   <% } %> <% } else { %>
   <!-- Verification Form -->
   <form

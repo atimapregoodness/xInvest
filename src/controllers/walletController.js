@@ -93,7 +93,7 @@ exports.deposit = async (req, res) => {
     // Send professional email
     await sendDepositEmail(
       user.email,
-      user.username || "Investor",
+      user.fullname || "Investor",
       amount,
       currency.toUpperCase(),
       "pending",
@@ -154,7 +154,7 @@ exports.withdraw = async (req, res) => {
     // Send professional withdrawal email
     await sendWithdrawalEmail(
       user.email,
-      user.username || "Investor",
+      user.fullname || "Investor",
       amount,
       currency.toUpperCase(),
       fee.toFixed(6),

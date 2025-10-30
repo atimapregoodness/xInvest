@@ -1,11 +1,13 @@
-<%- layout('layout/acctBoilerplate', { title: 'meziumFx - Dashboard' }) %>
+<%- layout('layout/acctBoilerplate', { title: 'Crybiance - Dashboard' }) %>
 <%-partial("partials/floatingNav") %> <%- partial('partials/sideBar') %>
 
 <div class="dashboard">
   <div class="profile-header">
-    <div class="profile-avatar">JD</div>
+    <div class="profile-avatar">
+      <%= user.fullName ? user.fullName.charAt(0).toUpperCase() : "U" %>
+    </div>
     <div class="profile-info">
-      <h2><%= user.fullName %></h2>
+      <h3><%= user.fullName %></h3>
       <p><%= user.email %></p>
       <div
         class="verification-status <%= user.isVerified ? 'status-verified' : 'status-unverified' %>"
@@ -129,6 +131,7 @@
                   <%= user.isVerified ? 'Verified' : 'Unverified' %>
                 </div>
               </div>
+              <% if (!user.isVerified) { %>
               <div class="mt-4">
                 <a
                   href="
@@ -141,6 +144,7 @@
                   </button>
                 </a>
               </div>
+              <% } %>
             </div>
           </div>
         </div>

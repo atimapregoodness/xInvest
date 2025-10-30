@@ -2,12 +2,14 @@
 const express = require("express");
 const router = express.Router();
 const tradeController = require("../controllers/tradeController");
-const { ensureAuthenticated } = require("../middleware/auth");
+const { isVerified, ensureAuthenticated } = require("../middleware/auth");
+
+router.use(ensureAuthenticated);
 
 // Advanced trading routes
-router.get("/", ensureAuthenticated, tradeController.getTrades);
-router.get("/place", ensureAuthenticated, tradeController.getPlaceTrade);
-router.post("/start", ensureAuthenticated, tradeController.startTrade);
-router.get("/status", ensureAuthenticated, tradeController.getTradeStatus);
+router.get("/", tradeController.getTrades);
+router.get("/place", tradeController.getPlaceTrade);
+router.post("/start", isVerified, tradeController.startTrade);
+router.get("/status", tradeController.getTradeStatus);
 
 module.exports = router;

@@ -10,7 +10,7 @@ exports.getLogin = (req, res) => {
     return res.redirect("/dashboard");
   } else {
     res.render("auth/login", {
-      title: "meziumFx - Login",
+      title: "Crybiance - Login",
       formData: { email: "" },
     });
   }
@@ -64,7 +64,7 @@ exports.getRegister = (req, res) => {
     return res.redirect("/dashboard");
   } else {
     res.render("auth/register", {
-      title: "meziumFx - Sign Up",
+      title: "Crybiance - Sign Up",
       formData: { fullName: "", email: "", country: "", phone: "" },
     });
   }
@@ -76,6 +76,7 @@ exports.postRegister = async (req, res) => {
       req.body;
     let error = null;
 
+    // Basic validation
     if (!fullName) error = "Full Name is required.";
     else if (!email) error = "Email is required.";
     else if (!country) error = "Country is required.";
@@ -97,7 +98,7 @@ exports.postRegister = async (req, res) => {
       })
     )
       error =
-        "Password must be at least 8 characters and include letters and numbers.";
+        "Password must be at least 8 characters and include both letters and numbers.";
 
     if (!error && password !== confirmPassword)
       error = "Passwords do not match.";
@@ -113,49 +114,53 @@ exports.postRegister = async (req, res) => {
 
     if (error) {
       return res.render("auth/register", {
-        title: "meziumFx - Sign Up",
+        title: "Crybiance - Sign Up",
         formData: { fullName, email, country, phone },
         error_msg: error,
       });
     }
 
+    // Create user
     const newUser = new User({
       fullName,
       email,
       country,
-      phone: phone,
+      phone,
       username: email,
     });
 
     await User.register(newUser, password);
 
-    req.login(newUser, async (err) => {
+    req.login(newUser, (err) => {
       if (err) {
-        console.error("Auto-login error:", err.message);
+        console.error("⚠️ Auto-login error:", err.message);
         req.flash("success_msg", "Account created! Please log in manually.");
         return res.redirect("/auth/login");
       }
 
-      sendWelcomeEmail?.(newUser.email, newUser.fullName).catch((err) => {
-        console.error("Failed to send welcome email:", err.message);
+      // ⚡ Send email in background without blocking redirect
+      setImmediate(async () => {
+        try {
+          await sendWelcomeEmail(newUser.email, newUser.fullName);
+          console.log(`📧 Welcome email sent to ${newUser.email}`);
+        } catch (emailErr) {
+          console.error("📧 Failed to send welcome email:", emailErr.message);
+        }
       });
 
       req.flash(
         "success_msg",
-        "Welcome to meziumFx! Your account has been created."
+        `Welcome to Crybiance, ${newUser.fullName}! Your account has been created.`
       );
       return res.redirect("/dashboard");
     });
   } catch (err) {
-    console.error("Registration error:", err.message);
-    req.flash(
-      "error_msg",
-      "Sorry something went wrong. Please try again later."
-    );
+    console.error("❌ Registration error:", err.message);
+    req.flash("error_msg", "Something went wrong. Please try again later.");
     return res.render("auth/register", {
-      title: "meziumFx - Sign Up",
+      title: "Crybiance - Sign Up",
       formData: req.body,
-      error_msg: "Sorry something went wrong. Please try again later.",
+      error_msg: "Something went wrong. Please try again later.",
     });
   }
 };
@@ -173,7 +178,7 @@ exports.logout = (req, res) => {
 
 exports.getForgotPassword = (req, res) => {
   res.render("auth/forgot-password", {
-    title: "meziumFx - Forgot Password",
+    title: "Crybiance - Forgot Password",
   });
 };
 
